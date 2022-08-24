@@ -1,0 +1,9 @@
+## KUDOS
+20 3,10,17 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_kudos mainnet opensea --catchup >> /var/log/gitcoin/sync_kudos_catchup.log 2>&1
+*/10 4,11,18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_kudos mainnet opensea --start 1 >> /var/log/gitcoin/sync_kudos_all.log 2>&1
+*/9 3,10,17 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_kudos xdai id --start 1 >> /var/log/gitcoin/sync_kudos_xdai.log 2>&1
+45 */1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash kudos_revenue mainnet --account-address 0xAD278911Ad07534F921eD7D757b6c0e6730FCB16  >> /var/log/gitcoin/kudos_revenue.log  2>&1
+15,31 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash submit_pending_kudos  >> /var/log/gitcoin/submit_pending_kudos.log  2>&1
+30 */6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash process_pending_kudos_distributions 20 20 2 0  >> /var/log/gitcoin/process_pending_kudos_distributions.log  2>&1
+30 17 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data kudos  >> /var/log/gitcoin/post_data.log  2>&1
+5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_tx_status  >> /var/log/gitcoin/pull_tx_status.log  2>&1

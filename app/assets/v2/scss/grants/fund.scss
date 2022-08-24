@@ -87,8 +87,9 @@
 }
 
 #gitcoin-grant-input-amount {
-  width: 6rem;
+  width: 3rem;
   max-width: 100%;
+  flex: 0.5 1 auto;
 }
 
 #gitcoin-grant-input-amount-error {

@@ -10,11 +10,12 @@ const toBigNumber = (value) => {
 Vue.component('grantsCartEthereumZksync', {
   props: {
     currentTokens: { type: Array, required: true }, // Array of available tokens for the selected web3 network
-    donationInputs: { type: Array, required: true }, // donationInputs computed property from cart.js
+    donationInputs: { type: Array, required: false }, // donationInputs computed property from cart.js
     grantsByTenant: { type: Array, required: true }, // Array of grants in cart
     maxCartItems: { type: Number, required: true }, // max number of items in cart
     network: { type: String, required: true }, // web3 network to use
-    grantsUnderMinimalContribution: { type: Array, required: true } // Array of grants under min contribution
+    grantsUnderMinimalContribution: { type: Array, required: true }, // Array of grants under min contribution
+    activeCheckout: { type: String, required: false } // active checkout option
   },
 
   data: function() {
@@ -64,22 +65,6 @@ Vue.component('grantsCartEthereumZksync', {
   },
 
   computed: {
-    /**
-     * @dev List of tokens supported by zkSync + Gitcoin. To add a token to this list:
-     *   1. Make sure the token is supported by zkSync
-     *        Mainnet list: https://api.zksync.io/api/v0.1/tokens
-     *        Rinkeby list: https://rinkeby-api.zksync.io/api/v0.1/tokens
-     *   2. Add the token symbol to the appropriate list below
-     * @dev We hardcode the list here instead of fetching from the API to improve performance and
-     * reduce problems that arise if zkSync's server is slow
-     */
-    supportedTokens() {
-      const mainnetTokens = [ 'ETH', 'DAI', 'USDC', 'TUSD', 'USDT', 'SUSD', 'BUSD', 'LEND', 'BAT', 'KNC', 'LINK', 'MANA', 'MKR', 'REP', 'SNX', 'WBTC', 'ZRX', 'MLTT', 'LRC', 'HEX', 'PAN', 'SNT', 'YFI', 'UNI', 'STORJ', 'TBTC', 'EURS', 'GUSD', 'RENBTC', 'RNDR', 'DARK', 'CEL', 'AUSDC', 'CVP', 'BZRX', 'REN' ];
-      const rinkebyTokens = [ 'ETH', 'USDT', 'USDC', 'LINK', 'TUSD', 'HT', 'OMG', 'TRB', 'ZRX', 'BAT', 'REP', 'STORJ', 'NEXO', 'MCO', 'KNC', 'LAMB', 'GNT', 'MLTT', 'XEM', 'DAI', 'PHNX' ];
-
-      return this.network === 'rinkeby' ? rinkebyTokens : mainnetTokens;
-    },
-
     // Array of transfer objects in the format zkSync needs
     transfers() {
       // Generate array of objects used to send the transfer. We give each transfer a fee of zero,
@@ -135,7 +120,7 @@ Vue.component('grantsCartEthereumZksync', {
 
       // Get list of tokens in cart not supported by zkSync
       this.cart.unsupportedTokens = this.cart.tokenList.filter(
-        (token) => !this.supportedTokens.includes(token)
+        (token) => !appCart.$refs.cart.zkSyncSupportedTokens.includes(token)
       );
 
       // If currently selected fee token is still in the cart, don't change it. Otherwise, set
@@ -170,7 +155,6 @@ Vue.component('grantsCartEthereumZksync', {
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('zksync-data-updated', {
-        zkSyncSupportedTokens: this.supportedTokens,
         zkSyncEstimatedGasCost: estimatedGasCost
       });
     },
@@ -185,6 +169,7 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Reset zkSync modal status after a checkout failure
     resetZkSyncModal() {
+      appCart.$refs.cart.showConfirmationModal = false;
       this.zksync.checkoutStatus = 'not-started';
     },
 
@@ -210,6 +195,12 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Send a batch transfer based on donation inputs
     async checkoutWithZksync() {
+      appCart.$refs.cart.sendPaymentInfoEvent('zksync');
+      // Prompt web3 login if not connected
+      if (!provider) {
+        await onConnect();
+      }
+
       try {
         // Ensure wallet is connected
         if (!web3) {
@@ -244,7 +235,11 @@ Vue.component('grantsCartEthereumZksync', {
         }
 
         // Save off cart data
+        appCart.$refs.cart.activeCheckout = 'zksync';
         this.zksync.checkoutStatus = 'pending';
+
+        appCart.$refs.cart.showConfirmationModal = true;
+        this.zksync.showModal = false;
 
         // Send user to zkSync to complete checkout
         const txHashes = await this.zksync.checkoutManager.zkSyncBatchCheckout(
@@ -346,7 +341,7 @@ Vue.component('grantsCartEthereumZksync', {
         const userAmount = toBigNumber(zksyncBalances[tokenSymbol]);
         const requiredAmount = requiredAmounts[tokenSymbol];
 
-        if (requiredAmount.gt(userAmount))
+        if (typeof requiredAmount !== 'undefined' && requiredAmount.gt(userAmount))
           isBalanceSufficient = false;
       });
 
@@ -355,6 +350,29 @@ Vue.component('grantsCartEthereumZksync', {
         isBalanceSufficient,
         requiredAmounts
       };
+    },
+
+    // Checkout With zkSync
+    async checkoutWithzkSync() {
+      // Prompt web3 login if not connected
+      if (!provider) {
+        await onConnect();
+      }
+
+      const selectedETHCartToken = appCart.$refs.cart.selectedETHCartToken;
+      const unsuportedCheckoutZkSync = !appCart.$refs.cart.zkSyncSupportedTokens.includes(selectedETHCartToken);
+
+      if (unsuportedCheckoutZkSync) {
+        this.handleError(`zkSync checkout not supported due to the use of the token ${selectedETHCartToken}`, 'danger');
+        return;
+      }
+
+      if (this.grantsByTenant.length > this.maxCartItems) {
+        _alert(`zkSync checkout supports checkout for ${this.maxCartItems} items. Please remove ${this.grantsByTenant.length - this.maxCartItems} grants from your cart to use zkSync checkout or select standard
+        checkout.`, 'danger');
+        return;
+      }
+      this.zksync.showModal = true;
     }
   }
 });

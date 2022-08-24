@@ -80,7 +80,7 @@ def passport(request, pattern):
     except:
         return JsonResponse({'status': 'error', 'msg': 'Not found'})
 
-    cost_of_forgery = round((passport.profile.trust_bonus - 1) * 100, 1)
+    cost_of_forgery = round((passport.profile.final_trust_bonus - 1) * 100, 1)
     image_url = 'https://proofofpersonhood.com/images/passport_square.png' #TODO - make dynamic based upon how many stamps user has
     personhood_score = cost_of_forgery
     context = {

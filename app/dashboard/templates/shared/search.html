@@ -26,12 +26,12 @@
     <div class="has-search p-3">
       <form v-on:submit.prevent="search">
         <input type="text" class="form-control font-caption" v-model="term" @input="dirty" placeholder="Search Gitcoin">
-        <input type="submit" class="form-control font-caption mx-2" @click="search" value="Go">
+        <input type="submit" class="form-control font-caption mx-2" value="Go">
       </form>
     </div>
-    <template v-if="term.length < 4">
+    <template v-if="term.length < 3">
       <p class="gc-search-result__description font-smaller-2 text-center">
-        Type in [[ 4- term.length]] more characters to get results
+        Type in [[ 3 - term.length]] more characters to get results
       </p>
     </template>
 
@@ -40,11 +40,11 @@
         Click 'Go' to Search.
       </p>
     </template>
-    <template v-else-if="Object.keys(results).length">
+    <template v-else-if="results.length">
       <ul class="nav nav-tabs mt-1 gc-search-nav d-flex" role="tablist">
         <li class="nav-item flex-grow-1 text-center" v-for='(source_type, index) in source_types' :key="index">
-          <a class="nav-link nav-line gc-search-tab__title px-1" @click="currentTab = index" :class="{active: currentTab === index}" v-bind:href="'#' + source_type" data-toggle="tab">[[ labels[source_type] ]]
-            <span v-if="typeof results[source_type] !== 'undefined'">([[ results[source_type].length ]])</span>
+          <a class="nav-link nav-line gc-search-tab__title px-1" @click="change_tab(index, source_type)" :class="{active: currentTab === index}" v-bind:href="'#' + source_type" data-toggle="tab">[[ labels[source_type] ]]
+            <span v-if="typeof totals[source_type] !== 'undefined'">([[ totals[source_type] ]])</span>
             <span v-else>(0)</span>
           </a>
         </li>
@@ -52,13 +52,13 @@
       <div class="tab-content clearfix">
         <div class="tab-pane" :class="{active: currentTab === index}" v-bind:id="source_type" v-for='(source_type, index) in source_types' :key="index">
           <ul class="gc-search-result mb-0">
-            <template v-if="results && results[source_type]">
-              <li v-for="result in results[source_type]" class="gc-search-result__content p-3" :key="result.id">
+            <template v-if="results">
+              <li v-for="result in results" class="gc-search-result__content p-3" :key="result.id">
                <a :href="[[ result.url ]]" class="d-flex">
                   <img class="gc-search__avatar my-auto mr-3" :src="[[ result.img_url ]]" :alt="result.title" />
                   <div>
-                    <p class="gc-search-result__title font-body mb-0">[[ result.title ]]</p>
-                    <p class="gc-search-result__description font-caption mb-2">[[ result.description | truncate(70) ]]</p>
+                    <p class="gc-search-result__title font-body mb-0 line-clamp-1">[[ result.title ]]</p>
+                    <p class="gc-search-result__description font-caption mb-2 line-clamp-1">[[ result.description | truncate(70) ]]</p>
                     <div>
                       <span class="gc-search__tag font-weight-semibold font-smaller-4 py-1 px-3" :data-usercard="result.source_type === 'Profile' ? result.title : ''">
                         [[ result.source_type | capitalize ]]
@@ -67,18 +67,32 @@
                   </div>
                 </a>
               </li>
+
             </template>
             <template v-else>
               <li class="gc-search-result__content pt-3 gc-search-result__description font-smaller-2 text-center mb-3">
-                No matches found
+                No matches found<template v-if="hasMoreResults"> yet...</template>
               </li>
             </template>
           </ul>
         </div>
       </div>
+      <template v-if="hasMoreResults">
+        <div class="gc-search-more-results bg-white border-grey border-top-1 bottom-0 font-smaller-2 pb-3 position-sticky pt-3 text-center">
+          <template v-if="isLoading || isTypeSearchLoading">
+            <a class="text-muted cursor-none disable-hover-underline" @click.prevent="false">
+              <i class="font-smaller-1 fas fa-spinner fa-pulse mr-1"></i>
+              Fetching result
+            </a>
+          </template>
+          <template v-else>
+            <a class="cursor-pointer" @click="loadMoreResults">Load more results (showing [[ currentPage * perPage ]] of [[ currentTotal ]])...</a>
+          </template>
+        </div>
+      </template>
     </template>
 
-    <template v-else-if="isLoading">
+    <template v-else-if="isLoading || isTypeSearchLoading">
       <p class="text-center font-smaller-2 gc-search-result__description">
         <i class="font-smaller-1 fas fa-spinner fa-pulse mr-1"></i>
         Fetching result

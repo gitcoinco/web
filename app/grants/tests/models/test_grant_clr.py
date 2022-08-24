@@ -90,6 +90,17 @@ class TestGrantCLR:
         assert grant_clr.grant_filters == {}
         assert len(grant_clr.grant_filters) == 0
 
+
+    def test_grant_clr_has_grant_excludes(self):
+        """Test grant_excludes attribute is present and defaults to an empty dictionary."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'grant_excludes')
+        assert grant_clr.grant_excludes == {}
+        assert len(grant_clr.grant_excludes) == 0
+
+
     def test_grant_clr_has_subscription_filters(self):
         """Test subscription_filters attribute is present and defaults to an empty dictionary."""
 

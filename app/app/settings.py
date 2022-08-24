@@ -25,6 +25,7 @@ import warnings
 from django.utils.translation import gettext_noop
 
 import environ
+import mimetypes
 import raven
 import sentry_sdk
 from boto3.session import Session
@@ -40,7 +41,7 @@ env.read_env(str(root.path('app/.env')))  # reading .env file
 DEBUG = env.bool('DEBUG', default=True)
 QUESTS_LIVE = True
 ENV = env('ENV', default='local')
-DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test', 'travis'])
+DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test', 'ci'])
 IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
@@ -76,6 +77,10 @@ TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
 
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
+
+# Set .wasm mime type for dev env
+if DEBUG:
+    mimetypes.add_type("application/wasm", ".wasm", True)
 
 # Application definition
 INSTALLED_APPS = [
@@ -151,7 +156,8 @@ INSTALLED_APPS = [
     'adminsortable2',
     'debug_toolbar',
     'passport',
-    'quadraticlands'
+    'quadraticlands',
+    'mautic_logging',
 ]
 
 MIDDLEWARE = [
@@ -159,8 +165,8 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'app.middleware.drop_accept_langauge',
-    # 'app.middleware.bleach_requests',
+    'app.middleware.drop_accept_language',
+    'app.middleware.drop_recaptcha_post',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -214,6 +220,8 @@ if ENV in ['prod']:
         'default': env.db(),
         'read_replica_1': env.db('READ_REPLICA_1_DATABASE_URL'),
         'read_replica_2': env.db('READ_REPLICA_2_DATABASE_URL'),
+        'read_replica_3': env.db('READ_REPLICA_3_DATABASE_URL'),
+        'read_replica_4': env.db('READ_REPLICA_4_DATABASE_URL'),
         }
     DATABASE_ROUTERS = ['app.db.PrimaryDBRouter']
 
@@ -310,13 +318,20 @@ AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
 # Sentry
 SENTRY_DSN = env.str('SENTRY_DSN', default='')
 SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default=SENTRY_DSN)
-RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+
+# In case we are running / deploying from within a git repo, we want to use the git repo SHA
+# In case we are not in a github repo, we rely on an environment variable
+try:
+    RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+except:
+    RELEASE = env.str('GITHUB_SHA', default=' - dev build - ')
+
 RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='6.8.0')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
         integrations=[DjangoIntegration(), CeleryIntegration()],
-        traces_sample_rate=0.35
+        traces_sample_rate=0.25
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,
@@ -370,7 +385,7 @@ LOGGING = {
 }
 
 # Production logging
-if ENV not in ['local', 'test', 'staging', 'preview', 'travis']:
+if ENV not in ['local', 'test', 'staging', 'preview', 'ci']:
     # add AWS monitoring
     boto3_session = Session(
         aws_access_key_id=AWS_ACCESS_KEY_ID,
@@ -448,13 +463,13 @@ CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=Tr
 CACHEOPS_REDIS = env.str('CACHEOPS_REDIS', default='redis://redis:6379/0')
 
 CACHEOPS_DEFAULTS = {
-    'timeout': 60 * 60
+    'timeout': 60 * 60 * 5
 }
 
 # 'all' is an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}
 CACHEOPS = {
     '*.*': {
-        'timeout': 60 * 60,
+        'timeout': 60 * 60 * 5,
     },
     'auth.user': {
         'ops': 'get',
@@ -466,7 +481,7 @@ CACHEOPS = {
     },
     'auth.*': {
         'ops': ('fetch', 'get'),
-        'timeout': 60 * 60,
+        'timeout': 60 * 60 * 5,
     },
     'auth.permission': {
         'ops': 'all',
@@ -490,11 +505,11 @@ CACHEOPS = {
     },
     'dashboard.*': {
         'ops': ('fetch', 'get'),
-        'timeout': 60 * 30,
+        'timeout': 60 * 60 * 3,
     },
     'economy.*': {
         'ops': 'all',
-        'timeout': 60 * 60,
+        'timeout': 60 * 60 * 5,
     },
     'gas.*': {
         'ops': 'all',
@@ -523,10 +538,16 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
 # https://docs.celeryproject.org/en/latest/userguide/configuration.html#std-setting-task_routes
 CELERY_ROUTES = [
+    ('dashboard.tasks.calculate_trust_bonus', {'queue': 'gitcoin_passport'}),
     ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
     ('grants.tasks.batch_process_grant_contributions', {'queue': 'high_priority'}),
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
     ('dashboard.tasks.increment_view_count', {'queue': 'analytics'}),
+    ('dashboard.tasks.record_visit', {'queue': 'analytics'}),
+    ('dashboard.tasks.record_join', {'queue': 'analytics'}),
+    ('townsquare.tasks.increment_offer_view_counts', {'queue': 'analytics'}),
+    ('townsquare.tasks.increment_view_counts', {'queue': 'analytics'}),
+    ('townsquare.tasks.send_comment_email', {'queue': 'marketing'}),
     ('marketing.tasks.*', {'queue': 'marketing'}),
     ('grants.tasks.*', {'queue': 'default'}),
     ('dashboard.tasks.*', {'queue': 'default'}),
@@ -555,6 +576,7 @@ CACHES = {
     'legacy': env.cache('CACHE_URL', default='dbcache://my_cache_table'),
 }
 CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
+CACHES['default']['TIMEOUT'] = 60 * 60 * 3
 
 # HTTPS Handling
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
@@ -564,6 +586,7 @@ SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=False)
 
 CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=False)
 CSRF_COOKIE_HTTPONLY = env.bool('CSRF_COOKIE_HTTPONLY', default=True)
+CSRF_FAILURE_VIEW = 'retail.views.csrf_failure'
 SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=False)
 SECURE_BROWSER_XSS_FILTER = env.bool('SECURE_BROWSER_XSS_FILTER', default=True)
 SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=True)
@@ -643,17 +666,31 @@ SOCIAL_AUTH_SANITIZE_REDIRECTS = True
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True if ENV in ['prod', 'test', 'stage'] else False
 SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['state']
 
+# Ignore the default protected fields, because 'username' is among those, and specify a custom set
+# of fields to protected which does not include 'username'.
+# We want to achieve that the social auth app updates the username in gitcoin if it has been changed in github.
+SOCIAL_AUTH_NO_DEFAULT_PROTECTED_USER_FIELDS = True
+SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['id', 'pk', 'password', 'is_active', 'is_staff', 'is_superuser',]
+
 #custom scopes
 SOCIAL_AUTH_GH_CUSTOM_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GH_CUSTOM_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_GH_CUSTOM_SCOPE = ['read:org', 'public_repo']
 
 SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed', 'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username', 'social_core.pipeline.user.create_user', 'app.pipeline.save_profile',
-    'social_core.pipeline.social_auth.associate_user', 'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
+# This should be executed after the '...user_details' step, as the user_details step will
+# update the username (aka github handle) which is then used in `save_profile`. This
+# is relevant when the github username / handle changes.
+    'app.pipeline.save_profile',
 )
 
 # Gitter
@@ -872,6 +909,7 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+ACTIVE_ELASTIC_INDEX = env('ACTIVE_ELASTIC_INDEX', default='search-index-1')
 
 account_sid = env('TWILIO_ACCOUNT_SID', default='')
 auth_token = env('TWILIO_AUTH_TOKEN', default='')
@@ -898,9 +936,15 @@ IDENA_TOKEN_EXPIRY = 60 * 60 # 1 Hours
 IDENA_NONCE_EXPIRY = 60 * 2 # 2 Min
 
 # Match Payouts contract
-MATCH_PAYOUTS_ABI = '[ { "inputs": [ { "internalType": "address", "name": "_owner", "type": "address" }, { "internalType": "address", "name": "_funder", "type": "address" }, { "internalType": "contract IERC20", "name": "_dai", "type": "address" } ], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [], "name": "Finalized", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Funded", "type": "event" }, { "anonymous": false, "inputs": [], "name": "FundingWithdrawn", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutAdded", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutClaimed", "type": "event" }, { "inputs": [ { "internalType": "address", "name": "_recipient", "type": "address" } ], "name": "claimMatchPayout", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "dai", "outputs": [ { "internalType": "contract IERC20", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "enablePayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "finalize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "funder", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "", "type": "address" } ], "name": "payouts", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "components": [ { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" } ], "internalType": "struct MatchPayouts.PayoutFields[]", "name": "_payouts", "type": "tuple[]" } ], "name": "setPayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "state", "outputs": [ { "internalType": "enum MatchPayouts.State", "name": "", "type": "uint8" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "withdrawFunding", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ]'
-MATCH_PAYOUTS_ADDRESS = '0x0ebd2e2130b73107d0c45ff2e16c93e7e2e10e3a'
-MATCH_PAYOUTS_ROUND_NUM = 11
+with open(os.path.join(root, 'grants/match_payouts_abi.json'), 'r') as f:
+    MATCH_PAYOUTS_ABI = f.read()
+MATCH_PAYOUTS_ADDRESS = '0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B'
+
+
+# Merkle Payouts contract
+with open(os.path.join(root, 'grants/abi/merkle_payout.json'), 'r') as f:
+    MERKLE_PAYOUTS_ABI = f.read()
+
 
 # BulkCheckout contract
 # BulkCheckout parameters
@@ -914,3 +958,11 @@ CELERY_NODE = env.bool('CELERY_NODE', default=False)
 # GTC Token Distribution
 GTC_DIST_API_URL = env('GTC_DIST_API_URL', default='http://localhost:8000/not-valid-url')
 GTC_DIST_KEY = env('GTC_DIST_KEY', default='')
+
+# BUNDLE settings
+# Generating a checksun is optional. When egenerating the static files for a container build
+# we do not want to add a checksum
+BUNDLE_USE_CHECKSUM = env('BUNDLE_USE_CHECKSUM', default=True)
+
+# Datadog token for UI logging
+DATADOG_TOKEN = env('DATADOG_TOKEN', default=None)

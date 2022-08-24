@@ -35,15 +35,13 @@ from django.views.decorators.http import require_http_methods
 
 from app.utils import get_profiles_from_text
 from cacheops import cached_view
-from dashboard.models import (
-    Activity, ActivityIndex, HackathonEvent, Profile, Tip, get_my_earnings_counter_profiles, get_my_grants,
-)
+from dashboard.models import Activity, HackathonEvent, Profile, Tip
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
 from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
-from marketing.models import EmailInventory
-from perftools.models import JSONStore
+from marketing.models import EmailInventory, ImageDropZone
+from perftools.models import JSONStore, StaticJsonEnv
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.tasks import increment_view_counts
@@ -58,8 +56,10 @@ connect_types = ['status_update', 'wall_post', 'new_bounty', 'created_quest', 'n
 
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
-    activity_indexes = ActivityIndex.objects.filter(key__startswith=f'bounty:').values_list('activity__pk', flat=True)
-    activities = Activity.objects.filter(pk__in=list(activity_indexes),hidden=False).order_by('-created_on')
+    activities = Activity.objects.filter(
+        activities_index__key__startswith=f'bounty:',
+        hidden=False
+    ).order_by('-created_on')
 
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
@@ -67,6 +67,7 @@ def get_activities(tech_stack=None, num_activities=15):
     return activities
 
 def index(request):
+
     context = {
         'title': 'Build and Fund the Open Web Together',
         'card_title': 'Gitcoin - Build and Fund the Open Web Together',
@@ -91,6 +92,44 @@ def index(request):
             'bounties_gmv': '3.43m'
         }
     context.update(data_results)
+
+    try:
+        landingBanner = StaticJsonEnv.objects.get(key='landingBanner').data
+        slides = landingBanner['slides']
+
+        for index, slide in enumerate(slides):
+            slides[index]['img'] = ImageDropZone.objects.get(pk=slide['img']).image.url
+            if slide['backgroundImage']:
+                slides[index]['backgroundImage'] = ImageDropZone.objects.get(pk=slide['backgroundImage']).image.url
+
+
+        if len(slides) == 0:
+            landingBanner = {
+                'default': True,
+                'slides': [
+                    {
+                        'img': static('v2/images/home/Flying_ppl_optimized.svg'),
+                        'title': 'Build and Fund the Open Web Together',
+                        'subtitle': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.',
+                    }
+                ]
+            }
+
+        landingBanner['slides'] = slides
+
+    except:
+        landingBanner = {
+            'default': True,
+            'slides': [
+                {
+                    'img': static('v2/images/home/Flying_ppl_optimized.svg'),
+                    'title': 'Build and Fund the Open Web Together',
+                    'subtitle': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.',
+                }
+            ]
+        }
+
+    context.update({'landingBanner': landingBanner})
 
     return TemplateResponse(request, 'home/index2021.html', context)
 
@@ -412,7 +451,7 @@ def contributor_bounties(request, tech_stack):
     }
 
     if tech_stack == 'new':
-        return redirect('new_funding_short')
+        return redirect('new_bounty')
 
     try:
         store = JSONStore.objects.filter(view='contributor_landing_page', key=tech_stack).first()
@@ -742,13 +781,15 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-def get_specific_activities(what, trending_only, user, after_pk, request=None, page=None):
+def get_specific_activities(what, trending_only, user, after_pk, request=None, page=1, page_size=10):
 
     # 1. Init
     view_count_threshold = 10
-    activity_pks = []
+    start_index = (page-1) * page_size
+    end_index = page * page_size
 
     activities = Activity.objects.none()
+    filter_applied = False
 
     # 2. Choose which filter to index
 
@@ -756,63 +797,63 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
     if (
         what in ['grants', 'all_grants']
     ):
-        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:')
+        activities = Activity.objects.filter(activities_index__key__startswith='grant:')
+        filter_applied = True
     elif 'grant:' in what:
-        activity_pks = ActivityIndex.objects.filter(key=what)
+        activities = Activity.objects.filter(activities_index__key=what)
+        filter_applied = True
 
     # all Grants
     if what == 'all_grants':
-        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:')
+        activities = Activity.objects.filter(activities_index__key__startswith='grant:')
+        filter_applied = True
 
     # kudos
     if (
         what in ['kudos']
     ):
-        activity_pks = ActivityIndex.objects.filter(key__startswith='kudo:')
+        activities = Activity.objects.filter(activities_index__key__startswith='kudo:')
+        filter_applied = True
     elif 'kudos:' in what:
-        activity_pks = ActivityIndex.objects.filter(key=what.replace('kudos', 'kudo'))
+        activities = Activity.objects.filter(activities_index__key=what.replace('kudos', 'kudo'))
+        filter_applied = True
 
     # hackathon project
     if 'project:' in what:
-        activity_pks = ActivityIndex.objects.filter(key=what)
+        activities = Activity.objects.filter(activities_index__key=what)
+        filter_applied = True
 
     # tribes
     if 'tribe:' in what:
+        filter_applied = True
         handle = what[6:]
-        print(handle)
         profile = Profile.objects.filter(handle=handle).first()
         if profile:
-            activity_pks = ActivityIndex.objects.filter(key=f'profile:{profile.pk}')
+            activities = Activity.objects.filter(activities_index__key=f'profile:{profile.pk}')
 
     # hackathon activity
     if 'hackathon:' in what:
-        activity_pks = ActivityIndex.objects.filter(key=what)
+        activities = Activity.objects.filter(activities_index__key=what)
+        filter_applied = True
 
     # single activity
     if 'activity:' in what:
-        activity_pks = [what.replace('activity:', '')]
+        try:
+            activities = Activity.objects.filter(pk=what.replace('activity:', ''))
+            filter_applied = True
+        except ValueError:
+            # ValueError might be thrown if 'activity' is not a valid pk value (contains for example a string)
+            raise Http404
 
     # Defaults
-    if not activity_pks:
-        activity_pks = ActivityIndex.objects.all()
+    if not activities and not filter_applied:
+        # Just use all of the activity and allow the [start_index:end_index] slice to limit the response
+        activities = Activity.objects.all()
 
-    # Are the pks already in a list?
-    if not isinstance(activity_pks, list):
-        # Order the activity index data
-        activity_pks = activity_pks.order_by('-id')
-        # Pagination is done here
-        if page:
-            page_size = 10
-            start_index = (page-1) * page_size
-            end_index = page * page_size
-            activity_pks = activity_pks[start_index:end_index].values_list('activity_id', flat=True)
-        else:
-            activity_pks = activity_pks.values_list('activity_id', flat=True)
+    # 3. Cross-ref the activity_pks->activity_id with the Activity objects
+    activities = activities.filter(hidden=False).order_by('-created_on')
 
-    # Cross-ref the activity_pks->activity_id with the Activity objects
-    activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
-
-    # 4. Filter out activites based on on network
+    # 4. Filter out activities based on network
     network = 'rinkeby' if settings.DEBUG else 'mainnet'
     filter_network = 'rinkeby' if network == 'mainnet' else 'mainnet'
     if 'grant:' in what:
@@ -825,7 +866,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-    return activities
+
+    # 5. Apply pagination slice and return Activities
+    return activities[start_index:end_index]
 
 
 def activity(request):
@@ -834,7 +877,7 @@ def activity(request):
     page = int(request.GET.get('page', 1)) if request.GET.get('page') and request.GET.get('page').isdigit() else 1
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only') and request.GET.get('trending_only').isdigit() else 0
-    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request, page)
+    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request, page=page)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     activities = activities.cache()
 
@@ -1147,10 +1190,11 @@ def presskit(request):
 def handler403(request, exception=None):
     return error(request, 403)
 
+def csrf_failure(request, reason=""):
+    return error(request, 403)
 
 def handler404(request, exception=None):
     return error(request, 404)
-
 
 def handler500(request, exception=None):
     return error(request, 500)

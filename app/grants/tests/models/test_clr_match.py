@@ -46,36 +46,6 @@ class TestCLRMatch:
         assert hasattr(clr_match, 'has_passed_kyc')
         assert clr_match.has_passed_kyc == False
 
-    def test_clr_match_has_a_ready_for_test_payout_attribute(self):
-        """Test 'ready_for_test_payout' attribute is present and defaults to False."""
-
-        clr_match = CLRMatchFactory()
-
-        assert hasattr(clr_match, 'ready_for_test_payout')
-        assert clr_match.ready_for_test_payout == False
-
-    def test_clr_match_has_a_test_payout_tx(self):
-        """Test 'test_payout_tx' attribute is present."""
-
-        clr_match = CLRMatchFactory()
-
-        assert hasattr(clr_match, 'test_payout_tx')
-
-    def test_clr_match_has_a_test_payout_tx_date(self):
-        """Test 'test_payout_tx_date' attribute is present."""
-
-        clr_match = CLRMatchFactory()
-
-        assert hasattr(clr_match, 'test_payout_tx_date')
-
-    def test_clr_match_has_a_test_payout_contribution(self):
-        """Test 'test_payout_contribution' attribute is present and is an instance of Contribution."""
-
-        clr_match = CLRMatchFactory()
-
-        assert hasattr(clr_match, 'test_payout_contribution')
-        assert isinstance(clr_match.test_payout_contribution, Contribution)
-
     def test_clr_match_has_a_ready_for_payout_attribute(self):
         """Test 'ready_for_payout' attribute is present and defaults to False."""
 
@@ -113,3 +83,11 @@ class TestCLRMatch:
 
         assert hasattr(clr_match, 'comments')
         assert clr_match.comments == ''
+
+    def test_clr_match_has_a_merkle_claim_attribute(self):
+        """Test 'merkle_claim' attribute is present and defaults to {}."""
+
+        clr_match = CLRMatchFactory()
+
+        assert hasattr(clr_match, 'merkle_claim')
+        assert clr_match.merkle_claim == {}

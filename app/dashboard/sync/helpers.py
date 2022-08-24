@@ -37,7 +37,7 @@ def record_payout_activity(fulfillment):
                 created_by=kwargs['profile'])
             bounty.handle_event(event)
         activity = Activity.objects.create(**kwargs)
-        activity.populate_hackathon_activity_index()
+        activity.populate_activity_index()
 
     except Exception as e:
         logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty}")

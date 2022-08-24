@@ -1,0 +1,179 @@
+{% load i18n %}
+<form-wrapper v-if="step === 5" :heading="'Review Bounty'" :current-step="step" :total-steps="currentSteps.length"
+  @update-navigation="updateNav">
+
+  <!-- Bounty Information -->
+  <div class="mb-4">
+    <div class="row align-items-center mt-4 mb-3">
+      <!-- TODO: 
+      <div class="col-md-2 col-xl-1 text-center mb-2 mb-md-0">
+        <a :href="`/profile/${bounty.org_name}`" v-show="bounty.avatar_url"><img :class="`avatar avatar-big ${bounty.github_org_name}`" :src="[[bounty.avatar_url]]"></a>
+      </div> -->
+
+      <div class="col-md-8 col-xl-10">
+        <h4 id="title" class="font-title p-0 text-center text-lg-left">[[ form.title ]]</h4>
+        <div class="text-center text-lg-left">
+          <div class="tags font-caption d-inline-flex d-md-flex">
+            <div v-for="keyword in form.keywords" class="tag bounty-category-tag ml-0 mr-2 px-2">
+                <p>[[keyword]]</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-2 col-xl-1">
+        <div class="d-flex align-items-end flex-column">
+          <template v-if="form.peg_to_usd">
+            <div id="value_in_usdt_wrapper" class="tag bounty-info-amount-usd m-0 px-2">
+              <p class="inner-tooltip">
+                <span id="value_in_usdt">[[form.amountusd]]</span>
+                <span>USD</span>
+              </p>
+            </div>
+            <div>
+              <span class="bounty-info-payment-token mr-1" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">This bounty is pegged to USD. The amount of tokens you receive will be approximately worth this amount at the time of payout.</div>`'>
+                in <span class="bounty-info-payment-token-name mr-1">[[form.token && form.token.symbol]]</span> <i class="text-muted fas fa-info-circle"></i>
+              </span>
+            </div>
+          </template>
+
+          <template v-if="!form.peg_to_usd">
+            <div id="value_in_token_wrapper" class="tag bounty-info-amount-token m-0 px-2">
+              <p class="inner-tooltip">
+                <span id="value_in_token">[[form.amount]]</span>
+                <span>[[form.token && form.token.symbol]]</span>
+              </p>
+            </div>
+            <div id="value_in_usdt_wrapper" class="tag bounty-info-amount-usd m-0 mt-1 px-2">
+              <p class="inner-tooltip">
+                <span id="value_in_usdt">[[form.amountusd]]</span>
+                <span>USD</span>
+              </p>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12" v-if="network.toLowerCase().indexOf('mainnet') < 0">
+        <span class="font-caption text-center" id="network">WARNING: this is a [[network]] network bounty, and is NOT real money.
+        To see mainnet bounties, go to <a href="{% url 'explorer' %}">the bounty explorer</a> and search for mainnet bounties.</span>
+      </div>
+      <!-- <div class="col-12 text-center text-lg-left my-3 my-lg-0">
+        <div id="status" class="font-weight-semibold">[[ bounty.status ]]</div>
+      </div> -->
+    </div>
+    <div id="bounty-info-row" class="row font-body bounty-info">
+
+      <div v-if="form.bounty_type" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+        <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
+        <span v-if="form.bounty_type === 'Other'" class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_type">[[ form.bounty_type_other ]]</span>
+        <span v-else class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_type">[[ form.bounty_type ]]</span>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+        <span class="bounty-info-heading mr-1" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>
+          {% trans "Project Type" %} <i class="fas fa-info-circle"></i>
+        </span>
+        <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_type" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>[[ form.project_type ]]
+        </span>
+      </div>
+
+      <div v-if="form.project_length" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="form.project_length">
+        <span class="bounty-info-heading">{% trans "Time Commitment" %}</span>
+        <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_length">[[ form.project_length ]]</span>
+      </div>
+      <div v-if="form.experience_level" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+        <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
+        <span class="bounty-info-text pr-sm-3 pr-md-5" id="experience_level">[[ form.experience_level ]]</span>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+        <span class="bounty-info-heading" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %} <i class="fas fa-info-circle"></i></span>
+        <span class="bounty-info-text pr-sm-3 pr-md-5" id="permission_type" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>[[ form.permission_type ]]</span>
+      </div>
+      <div id="fulfillment_accepted_on_wrapper" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="form.fulfillment_accepted_on">
+        <span class="bounty-info-heading">{% trans "Accepted" %} </span>
+        <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="form.fulfillment_accepted_on" :title="form.fulfillment_accepted_on | momentFormat" id="fulfillment_accepted_on">
+          [[ form.fulfillment_accepted_on | moment ]]
+        </time>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="form.reserved_for_user_handle">
+        <span class="bounty-info-heading" id="bounty_reserved_for_label">{% trans "Reserved For" %} </span>
+        <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_reserved_for">[[ form.reserved_for_user_handle ]]</span>
+      </div>
+    </div>
+
+    <div id="bounty-info-row" class="row font-body bounty-info mt-3">
+      <div v-if="form.expirationTimeDelta" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+        <span class="bounty-info-heading">{% trans "Submission Cutoff Date" %}</span>
+        <span v-if="form.never_expires" class="bounty-info-text pr-sm-3 pr-md-5">Never expires</span>
+        <span v-else-if="isExpired" class="bounty-info-text pr-sm-3 pr-md-5">Expired</span>
+        <span v-else-if="expiresAfterAYear" class="bounty-info-text pr-sm-3 pr-md-5">More than a year</span>
+        <time v-else class="bounty-info-text pr-sm-3 pr-md-5" :datetime="form.expirationTimeDelta" :title="form.expirationTimeDelta | momentFormat" id="expires_date">
+          [[ form.expirationTimeDelta | moment ]]
+        </time>
+        </div>
+
+      <div v-if="form.payoutDate && !form.never_expires" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+        <span class="bounty-info-heading">{% trans "Estimated Payout Date" %}</span>
+        <span v-if="isPayoutDateExpired" class="bounty-info-text pr-sm-3 pr-md-5">Expired</span>
+        <span v-else-if="payoutDateExpiresAfterAYear" class="bounty-info-text pr-sm-3 pr-md-5">More than a year</span>
+        <time v-else class="bounty-info-text pr-sm-3 pr-md-5" :datetime="form.expirationTimeDelta" :title="form.payoutDate | momentFormat" id="payout_date">
+          [[ form.payoutDate | moment ]]
+        </time>
+      </div>
+    </div>
+
+    <div v-if="form.bounty_owners && form.bounty_owners.length > 0" class="mt-3">
+      <span class="bounty-info-heading">{% trans "Bounty Owner" %}</span>
+
+      <div id="bounty-info-row" class="row font-body bounty-info">
+        <div class="col-12 col-sm-4 col-md-2 d-flex mt-1 text-nowrap" v-for="owner in form.bounty_owners">                
+          <div class="mr-2">
+            <img class="rounded-circle" :src="owner.avatar_url" width="24" height="24"/>
+          </div>
+          <span style="padding-top: 2px;">[[owner.text]]</span>
+        </div>              
+      </div>
+    </div>
+
+    <div v-if="nonEmptyContactDetails && nonEmptyContactDetails.length > 0" class="mt-3">
+      <span class="bounty-info-heading">{% trans "Contacts" %}</span>
+
+      <div id="bounty-info-row" class="d-flex flex-wrap font-body bounty-info">
+        <div class="d-flex mt-1 text-nowrap" v-for="contact in nonEmptyContactDetails">                
+          <span v-if="contact.type=='Discord'" class="mr-2"><i class="fab fa-discord mr-1"></i>[[contact.value]]</span>
+          <span v-if="contact.type=='Email'" class="mr-2"><i class="fal fa-envelope mr-1"></i>[[contact.value]]</span>
+          <span v-if="contact.type=='Telegram'" class="mr-2"><i class="fab fa-telegram-plane mr-1"></i>[[contact.value]]</span>
+        </div>              
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 mt-2">
+        <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
+        <div v-if="form.bountyInformationSource === 'github'" class="issue_description" :inner-html.prop="(form.issueDetails ? form.issueDetails.description : '') | markdownit"></div>
+        <render-quill v-else :delta="JSON.stringify(form.richDescriptionContent)"></render-quill>
+      </div>
+    </div>
+
+    <div v-if="form.richAcceptanceCriteriaText" class="row">
+      <div class="col-12 mt-2">
+        <h5 class="bounty-heading mt-0 pt-4">{% trans "Acceptance Criteria" %}</h5>
+        <div class="acceptance_criteria">
+          <render-quill :delta="JSON.stringify(form.richAcceptanceCriteria)"></render-quill>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="form.richResourcesText" class="row">
+      <div class="col-12 mt-2">
+        <h5 class="bounty-heading mt-0 pt-4">{% trans "Resources" %}</h5>
+        <div class="resources">
+          <render-quill :delta="JSON.stringify(form.richResources)"></render-quill>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</form-wrapper>

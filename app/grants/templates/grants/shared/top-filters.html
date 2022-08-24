@@ -4,12 +4,18 @@
 
     <div class="row mt-2 mb-3 mt-xl-0 font-caption">
 
-      <span class="col-12 col-lg-6 text-right text-lg-left pt-2 my-auto">
+      <span class="col-12 col-lg-6 text-right text-lg-left pt-2 my-auto font-header">
         <template v-if="grants && grants.length">
           <span class="font-weight-semibold">[[numGrants.toLocaleString()]]</span>
           [[ 'Grant' | pluralize(numGrants)]]
           <span v-if="params.keyword">- '[[params.keyword]]'</span>
         </template>
+
+        <copy-clipboard v-if="currentCLR && currentCLR.shareURL" class="ml-3 btn-sm btn-outline-black" :string="[[ currentCLR.shareURL ]]">
+          <i class="far fa-share-alt"></i>
+          Share Grant Round
+        </copy-clipboard>
+
       </span>
 
       <div class="col-12 col-lg-6 text-right pt-2">
@@ -20,7 +26,9 @@
               <v-select class="vselect-clean rounded-pill" 
                         style="min-width:230px; border: 1px solid #ced4da;" 
                         id="experience_level" 
-                        :options="selectOptions.concat(adminOptions)" 
+                        :options="params.keyword && params.keyword !== '' 
+                                  ? selectOptions.concat(adminOptions) 
+                                  : selectOptions.concat(adminOptions).filter(option => option.value !== '')"
                         :searchable="false" 
                         :clearable="false" 
                         :selectable="(option) => !option.hasOwnProperty('group')" 
@@ -32,7 +40,9 @@
               <v-select class="vselect-clean rounded-pill" 
                         style="min-width:230px; border: 1px solid #ced4da;" 
                         id="experience_level" 
-                        :options="selectOptions" 
+                        :options="params.keyword && params.keyword !== '' 
+                                  ? selectOptions 
+                                  : selectOptions.filter(option => option.value !== '')" 
                         :searchable="false" 
                         :clearable="false" 
                         :selectable="(option) => !option.hasOwnProperty('group')" 

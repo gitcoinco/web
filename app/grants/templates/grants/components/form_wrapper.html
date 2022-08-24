@@ -1,0 +1,32 @@
+<script type="text/x-template" id="form-wrapper">
+  <div class="create-wrapper">
+    <div class="new-border" :class="isPreview ? 'preview-shadow p-0' : ''">
+      <template v-if="!isPreview">
+        <p>Step [[currentStep]] of [[totalSteps]]</p>
+        <h4>[[heading]]</h4>
+      </template>
+      <slot></slot>
+    </div>
+    <slot name="footer"></slot>
+    <div class="d-flex justify-content-center" :class="isPreview ? 'preview-navigation' : 'navigation'">
+      <button
+        :class="isPreview ? 'btn btn-lg btn-outline-primary px4' : ''"
+        :aria-disabled="currentStep === 1"
+        :disabled="currentStep === 1"
+        type="button"
+        @click="$emit('update-navigation', -1)"
+      >
+        <i v-if="!isPreview" class="text-primary pr-2 fa fa-arrow-left"></i> [[ currentStep === totalSteps ? 'Edit' : 'Back']]
+      </button>
+      <button
+        type="button"
+        :class="isPreview ? 'btn btn-lg btn-primary px4' : ''"
+        :aria-disabled="disableConfirm"
+        :disabled="disableConfirm"
+        @click="$emit('update-navigation', 1)"
+      >
+        [[ currentStep === totalSteps ? 'Confirm' : 'Next']] <i v-if="!isPreview" class="text-primary pl-2 fa fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</script>

@@ -13,14 +13,14 @@ WEB_CONTAINER_ID := $$(docker inspect --format="{{.Id}}" ${CONTAINER_NAME})
 
 autotranslate: ## Automatically translate all untranslated entries for all LOCALES in settings.py.
 	@echo "Starting makemessages..."
-	@docker-compose exec web python3 app/manage.py makemessages -a -d django -i node_modules -i static -i ipfs
+	@docker-compose exec web python3.7 app/manage.py makemessages -a -d django -i node_modules -i static -i ipfs
 	@echo "Starting JS makemessages..."
-	@docker-compose exec web python3 app/manage.py makemessages -a -d djangojs -i node_modules -i static -i assets/v2/js/lib/ipfs-api.js
+	@docker-compose exec web python3.7 app/manage.py makemessages -a -d djangojs -i node_modules -i static -i assets/v2/js/lib/ipfs-api.js
 	@echo "Starting autotranslation of messages..."
-	@docker-compose exec web python3 app/manage.py translate_messages -u
+	@docker-compose exec web python3.7 app/manage.py translate_messages -u
 	# TODO: Add check for messed up python var strings.
 	@echo "Starting compilemessages..."
-	@docker-compose exec web python3 app/manage.py compilemessages -f
+	@docker-compose exec web python3.7 app/manage.py compilemessages -f
 	@echo "Translation Completed!"
 
 build: ## Build the Gitcoin Web image.
@@ -40,10 +40,10 @@ push: ## Push the Docker image to the Docker Hub repository.
 	@docker push "${REPO_NAME}"
 
 bundle: ## Create bundles for all `bundle` blocks then compress with webpack
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web bash -c "cd /code/app && python3 manage.py bundle && yarn run build"
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web bash -c "cd /code/app && python3.7 manage.py bundle && yarn run build"
 
 collect-static: ## Collect newly added static resources from the assets directory.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web bash -c "cd /code/app && python3 manage.py collectstatic -i other --no-input"
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web bash -c "cd /code/app && python3.7 manage.py collectstatic -i other --no-input"
 
 compress-images: ## Compress and optimize images throughout the repository. Requires optipng, svgo, and jpeg-recompress.
 	@./scripts/compress_images.bash
@@ -69,21 +69,19 @@ fresh: ## Completely destroy all compose assets and start compose with a fresh b
 	@docker-compose down -v; docker-compose up -d --build;
 
 load_initial_data: ## Load initial development fixtures.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py loaddata initial
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py loaddata initial
+
+load_clr_grant_match_data:
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py loaddata app/app/fixtures/users.json
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py loaddata app/app/fixtures/profiles.json
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py loaddata initial
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py loaddata app/app/fixtures/clr_match.json
 
 logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
-cypress: ## Open cypress testing UI
-	@npx cypress open
-
 cypress-local: ## Run the cypress tests locally - the application MUST already be running for these to pass
-	@source "./app/app/.env"
-	@npx cypress install
-	@npx cypress run --headed --browser chrome
-
-cypress-docker: ## Run the cypress tests in a container - the application MUST already be running for these to pass
-	@docker-compose exec -e VERBOSE=1 -e CYPRESS_REMOTE_DEBUGGING_PORT=9222 web node_modules/.bin/cypress run --browser chrome --headed
+	./bin/cypress/local
 
 pytest: ## Run pytest (Backend)
 	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum
@@ -100,26 +98,26 @@ stylelint: ## Run stylelint against the project directory. Requires node, npm, a
 tests: pytest eslint stylelint ## Run the full test suite.
 
 migrate: ## Migrate the database schema with the latest unapplied migrations.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py migrate
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py migrate
 
 migrations: ## Generate migration files for schema changes.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py makemigrations
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py makemigrations
 
 compilemessages: ## Execute compilemessages for translations on the web container.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py compilemessages
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py compilemessages
 
 makemessages: ## Execute makemessages for translations on the web container.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py makemessages
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py makemessages
 
 get_ipdb_shell: ## Drop into the active Django shell for inspection via ipdb.
 	@echo "Attaching to container: ($(CONTAINER_NAME)) - ($(WEB_CONTAINER_ID))"
 	@docker attach $(WEB_CONTAINER_ID)
 
 get_django_shell: ## Open a standard Django shell.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py shell
 
 get_shell_plus: ## Open a standard Django shell.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell_plus
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3.7 app/manage.py shell_plus
 
 pgactivity: ## Run pg_activivty against the local postgresql instance.
 	@docker-compose exec web scripts/pg_activity.bash

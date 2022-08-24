@@ -1,59 +1,31 @@
 {% load static humanize i18n grants_extra %}
 <script type="text/x-template" id="template-grant-details">
   <div>
-    {% if should_show_claim_match_button %}
-      <div id="claim-payout-banner" class="mt-5 mb-4">
-        <div class="alert alert-primary border-primary align-items-center mx-auto
-          col-12 col-md-8
-          d-flex flex-column flex-md-row justify-content-lg-between
-        ">
-          <p class="my-0">
-            Your grant has received
-            <span class="font-weight-semibold">matching funds from Gitcoin Grants Matching Pool.</span>
-          </p>
-          <b-button v-b-modal.claim-payout-modal variant="primary"
-            class="btn-block mt-2 mt-md-0 w-md-auto"
-          >
-            Claim Funds
-          </b-button>
-        </div>
-      </div>
-
-      <b-modal id="claim-payout-modal" hide-header hide-footer>
-        <div class="mx-md-4">
-          <div class="text-center">
-            <img class="my-4" src="{% static 'v2/images/grants/claim.svg' %}" alt="claim funds">
-          </div>
-
-          <h2 class="text-center mb-4">
-            Claim your grant funds
-          </h2>
-
-          <hr/>
-          <div class="row">
-            <div class="col-8">
-              <p class="mb-1 mt-2 font-subheader">Matching Funds</p>
-              <p class="mt-0">
-                You’ve received
-                <span class="font-weight-semibold">${{ amount_available }}</span>
-                from the Gitcoin Grants Matching Pool
-              </p>
-            </div>
-
-            <div class="col-4 my-auto">
-              <button @click="claimMatch(grant.admin_address); $bvModal.hide('claim-payout-modal')"
-                class="btn btn-primary mb-2 w-100" id="claim-match">
-                Claim
-              </button>
-            </div>
-          </div>
-        </div>
-      </b-modal>
-    {% endif %}
 
     <slot></slot>
     <div class="container grid grid-template-sidebar">
-      <div class="grant-data">
+      <div class="grant-data overflow-auto">
+        <!-- Inactive Grant -->
+        <div v-if="!grant.active && !grant.verified">
+          <b-alert show dismissible variant="primary" class="border border-primary">
+            <div class="row">
+              <div class="col-auto col-md-10">
+                <i class="fas fa-info-circle mr-2"></i>
+                <span class="text-black">
+                  <b>Your grant is currently inactive.</b> We review grants more often around grants rounds. Check your review status
+                  <a
+                    href="https://gitcoin.notion.site/fc5155ddb7804560a42387043bd805c1?v=937073ff11d149d29e08aa5901befc77"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    class="text-black"
+                  >
+                    <u>here.</u>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </b-alert>
+        </div>
         <div class="mt-3 border-bottom">
           <!-- Title -->
           <h2>[[grant.title]]</h2>
@@ -62,19 +34,26 @@
           <div class="row my-4">
 
             <div class="col-12 col-md-auto">
-              <!-- Grant Type -->
-              <a :href="`/grants/explorer/?grant_types=${item.fields.name}`"
-                v-for="item in grant.grant_type"
-                class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2 text-capitalize">
-                [[item.fields.label]]
-              </a>
 
-              <!-- Grant Tags -->
-              <a :href="`/grants/explorer/?grant_tags=${item.fields.name}`"
-                v-for="item in grant.grant_tags"
-                class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">
-                [[item.fields.name]]
-              </a>
+              <!-- Grant Eligibility Tags -->
+              <template v-for="item in grant.grant_tags">
+                <a v-if="item.fields.is_eligibility_tag"
+                  v-b-tooltip.hover.bottom title="Eligibility Tag"
+                  class="badge badge-pill bg-tags text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2"
+                >
+                  [[item.fields.name]]
+                </a>
+              </template>
+
+              <!-- Grant Discovery Tags -->
+              <template v-for="item in grant.grant_tags">
+                <a v-if="!item.fields.is_eligibility_tag"
+                  v-b-tooltip.hover.bottom title="Discovery Tag"
+                  class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2"
+                >
+                  [[item.fields.name]]
+                </a>
+              </template>
 
             </div>
 
@@ -82,7 +61,7 @@
 
         </div>
 
-        <div class="border-bottom py-4 mt-1 row font-smaller-1 mb-4">
+        <div class="row border-bottom font-smaller-1 py-4 mx-0 mt-1 mb-4 ">
 
           <!-- Grant Link -->
           <div class="col-12 col-md-5 col-md-auto mb-3">
@@ -113,7 +92,7 @@
                   class="col-auto badge badge-pill bg-lightpurple text-primary font-weight-semibold" id="wallet-zkscan-link">
                   zkSync
                 </a>
-                <a target="_blank" :href="`https://polygonscan.com/address/${grant.admin_address}`"
+                <a v-if="!grant.is_contract_address" target="_blank" :href="`https://polygonscan.com/address/${grant.admin_address}`"
                   class="col-auto badge badge-pill bg-lightpurple text-primary font-weight-semibold" id="wallet-polygonscan-link">
                   Polygon
                 </a>
@@ -236,6 +215,19 @@
                 <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.algorand_payout_address"><i class="far fa-copy"></i></copy-clipboard>
               </div>
             </template>
+
+            <!-- COSMOS -->
+            <template v-if="grant.tenants && grant.tenants.indexOf('COSMOS') > -1">
+              <div class="d-flex align-items-center">
+                <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/cosmos.svg' %}" alt="" width="16">
+                <a target="_blank" :href="`https://mintscan.io/cosmos/account/${grant.cosmos_payout_address}`">
+                  <span id="cosmos-address" class="wallet-address" v-b-tooltip.hover.bottom="grant.cosmos_payout_address">
+                    [[grant.cosmos_payout_address | truncateHash]]
+                  </span>
+                </a>
+                <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.cosmos_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+              </div>
+            </template>
           </div>
 
           <!-- Twitter Verified-->
@@ -272,7 +264,7 @@
           <div class="col-12 col-md-5 col-md-auto mb-3 mb-md-1 text-grey-400">
             <i class="fas fa-stopwatch text-grey-400"></i>
             <span class="py-1 px-2 font-weight-normal mr-2">
-              Updated [[grant.last_update | moment]]
+              Updated [[grant.last_update]]
             </span>
           </div>
 
@@ -290,9 +282,9 @@
 
           <div class="row mt-2">
             <div class="col mb-5">
-              <h3>Lifetime funding received</h3>
-              <h2>$[[grant.amount_received || 0 | round | formatNumber ]]</h2>
-              <span>raised from all contributors</span>
+              <h3>Estimated lifetime funding received</h3>
+              <h2>[[ grant.rounded_lifetime_amount ]]</h2>
+              <span>This number should not be used for accounting purposes.</span>
             </div>
           </div>
 
@@ -307,13 +299,13 @@
 
           <div class="row mt-2" v-if="grant.clr_round_num && grant.is_clr_eligible">
             <div class="col col-4">
-              <h2>$[[ grant.amount_received_in_round || 0 | round | formatNumber ]]</h2>
+              <h2>$[[ grant.amount_received_in_round  ]]</h2>
               <span>
                 raised from [[ grant.positive_round_contributor_count ]] contributors
               </span>
             </div>
             <div v-if="grant?.clr_prediction_curve?.[0]?.[1] > 0" class="col col-4">
-              <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] || 0 | round | formatNumber ]]</h2>
+              <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] | formatNumber ]]</h2>
               <span>estimated QF matching</span>
               <i
                 class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
@@ -325,8 +317,7 @@
                     <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" rel="noopener noreferrer" target="_blank">Learn more</a>
                   </p>
                   <p>
-                    This grant is currently part of [[ grant?.active_round_names.length ]] active matching round
-                    <template v-if="grant?.active_round_names.length > 1">s</template>:
+                    This grant is currently part of [[ grant?.active_round_names.length ]] active matching round<template v-if="grant?.active_round_names.length > 1">s</template>:
                     <dl class="mt-0">
                       <li v-for="round_name in grant.active_round_names">[[round_name]]</li>
                     </dl>
@@ -345,7 +336,7 @@
       </div>
 
       <!-- Grant Management -->
-      <div class="grant-managment mt-4 mt-md-0">
+      <div class="grant-managment mt-4 mt-md-0" v-if="(grant.is_on_team || isStaff)">
         <b-card>
 
           <!-- Admin Message -->
@@ -358,25 +349,6 @@
               [[grant.admin_message]]
             </b-card-text>
             <hr class="my-4">
-          </template>
-
-          <!-- Inactive Grant -->
-          <template v-if="!grant.active && !grant.verified">
-            <b-card-text>
-              <p class="font-weight-semibold mb-2">
-                <i class="fal fa-exclamation-circle mr-1"></i>
-                Your grant is inactive
-              </p>
-              Our team reviews each grant before it goes live on the website.
-              This process usually takes 1-2 days.
-            </b-card-text>
-
-            <a class="btn btn-block btn-primary" href="https://support.gitcoin.co/kb/article/79-why-isn-t-my-grant-active/" rel="noopener noreferrer">
-              Read Grant Approval Process
-            </a>
-
-            <hr class="my-4">
-
           </template>
 
           <!-- Verify Grant -->
@@ -423,27 +395,70 @@
             <hr class="my-4">
           </template>
 
-
-          <!-- L2 contributions -->
-          <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
+          <!-- Max matching reached -->
+          <template v-if="grant.__has_reached_cap && grant.active && (grant.is_on_team || isStaff)">
             <b-card-text>
               <p class="font-weight-semibold mb-2">
                 <i class="fal fa-wallet mr-1"></i>
-                You’ve received L2 contributions
+                Maximum matching reached
               </p>
-              Some of your grant funds may be in L2 (zkSync or Polygon).
-              Read more on how to withdraw from L2 wallets.
+              Your grant can still receive contributions, but will not get additional matching funds this round because it has reached the maximum matching cap.
             </b-card-text>
-            <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/75-how-do-i-withdraw-my-funds-from-an-l2-layer-zksync-and-or-polygon-matic/" target="_blank">
-              Read L2 Withdrawal guide
+            <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/" target="_blank">
+              Learn More
             </a>
+            <hr class="my-4">
+          </template>
+
+          <!-- Claim Matching Funds -->
+          <template v-if="grant.active && grant.has_pending_claim && (grant.is_on_team || isStaff)">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="green fal fa-coins mr-1"></i>
+                Claim your matching funds
+              </p>
+              Congratulations! The matching funds for your grant is ready to claim
+            </b-card-text>
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}?grant={{ grant.id }}">
+              Claim Funds
+            </a>
+            <hr class="my-4">
+          </template>
+
+          <!-- Matching Funds are in review -->
+          <template v-if="grant.active && grant.has_claims_in_review && (grant.is_on_team || isStaff)">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-coins mr-1"></i>
+                Your matching funds are in review
+              </p>
+              Your grant has received matching funds from one or more matching pools and are now in review.
+            </b-card-text>
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}?grant={{ grant.id }}">
+              View Matching Funds
+            </a>
+            <hr class="my-4">
+          </template>
+
+
+          <!--  Claim History -->
+          <template v-if="grant.active && grant.has_claim_history && (grant.is_on_team || isStaff)">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-coins mr-1"></i>
+                View your matching funds
+              </p>
+              View matching funds received and claim history.
+            </b-card-text>
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}?tab=claim_history&grant={{ grant.id }}">
+              View Matching History
+            </a>
+            <hr class="my-4">
           </template>
 
 
           <!-- Edit Grant Button -->
           <template v-if="!grant.is_idle && (grant.is_on_team || isStaff)">
-            <hr class="my-4">
-
             <b-card-text>
               <p class="font-weight-semibold mb-2">
                 <i class="fal fa-edit mr-1"></i>
@@ -453,14 +468,39 @@
             </b-card-text>
             <button class="btn btn-block btn-primary" @click="editGrantModal()" v-if="fullview">Edit Grant</button>
             <a class="btn btn-block btn-primary" :href="grant.details_url" target="_blank" v-else>Edit Grant</a>
+            <hr class="my-4">
           </template>
+
+
+          <!-- L2 contributions -->
+          {% if has_recent_l2_contributions %}
+            <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
+              <b-card-text>
+                <p class="font-weight-semibold mb-2">
+                  <i class="fal fa-wallet mr-1"></i>
+                  You’ve received L2 contributions
+                </p>
+                Some of your grant funds may be in L2 (zkSync or Polygon).
+                <span v-if="grant.is_contract_address">
+                  Polygon contributions are not supported
+                  for your grant since it is using a contract address (e.g. Gnosis Safe, multi-sig wallet).
+                </span>
+                <span v-else>
+                  Read more on how to withdraw from L2 wallets.
+                </span>
+              </b-card-text>
+              <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/gitcoin-grants/grantee-questions#withdrawing-funds" target="_blank">
+                Read L2 withdrawal guides
+              </a>
+            </template>
+          {% endif %}
 
         </b-card>
 
       </div>
 
       <!-- CLR details and Add-to/remove-from cart -->
-      <div class="grant-checkout">
+      <div class="grant-checkout text-nowrap">
         <div class="rounded shadow-sm bg-white px-3 pt-3 pb-3 border">
           <div v-if="grant.clr_prediction_curve?.length" style="max-width: 250px;" :class="`mx-auto mb-3 mt-2 position-relative${grant.clr_round_num && grant.is_clr_eligible ? '' : ' clr-disabled'}`">
             <svg width="145" height="77" viewBox="0 0 145 77" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -471,8 +511,19 @@
             <div class="d-inline-flex flex-column-reverse mt-n4 position-absolute" style="right: 0px;">
               <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && (index == 1 || index == 3)" class="bg-white d-flex flex-column" style="flex: 1 1 50%;margin-top: 14px;">
                 <!-- 1, 100 $ matching (reversed to display against fake chart) -->
-                <span>$[[prediction[0] ]] contribution</span>
-                <span class="text-secondary"><b>$[[prediction[2] || 0 | round]] match</b></span>
+                <span>$[[prediction[0] ]] contribution
+                  <i v-if="grant.__has_reached_cap && index === 1" class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
+                    id="tooltip-matching-cap"
+                  ></i>
+                </span>
+                <b-tooltip v-if="grant.__has_reached_cap && index === 1" target="tooltip-matching-cap" triggers="hover">
+                  <div class="text-left p-2">
+                    <p>
+                      This grant can still receive contributions, but will not receive additional matching funds this round because it has reached the maximum matching cap. <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
+                    </p>
+                  </div>
+                </b-tooltip>
+                <span class="text-secondary"><b>$[[ prediction[2] ]] match</b></span>
               </div>
             </div>
           </div>
@@ -501,32 +552,47 @@
               :data-grant="grant.id"
             >
               <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
-              Follow
+              Add to Favorites
             </button>
+            <b-alert
+              :show="dismissFavoriteAlertCountDown"
+              dismissible
+              variant="primary"
+              @dismissed="dismissFavoriteAlertCountDown = 0"
+              class="border border-primary alert-fixed-top mr-md-4 mr-0"
+            >
+              <div class="row">
+                <div class="col-auto col-md-7">
+                  <i class="fas fa-star mr-2"></i>
+                  <span class="text-black">Added to Favorites</span>
+                </div>
+                <div class="col-auto col-md-5 text-nowrap text-right">
+                  <a href="{% url 'grants:grants_explorer' %}?following=true&idle=true">View Favorites</a>
+                </div>
+              </div>
+            </b-alert>
           </div>
 
           <!-- Grants Rules-->
-          <div>
-            <div class="d-inline font-smaller-2 cursor-pointer" id="popover-target-1" style="width: 65px;">
-              <i class="fas fa-info-circle mr-2"></i>
-              Rules
-            </div>
-            <b-popover target="popover-target-1" triggers="hover" placement="left">
-              <template #title>Rules</template>
-              <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
-              <ul class="pl-3">
-                <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
-                <li><b>DO NOT</b> make up a new identity to contribute.</li>
-                <li><b>DO NOT</b> try to falsify a contribution.</li>
-              </ul>
-              If you see someone breaking the rules, please use 'Flag Grant' to report them.
-            </b-popover>
+          <div class="d-inline font-smaller-2 cursor-pointer my-auto" id="popover-target-1" style="width: 65px;">
+            <i class="fas fa-info-circle mr-2"></i>
+            Rules
+          </div>
+          <b-popover target="popover-target-1" triggers="hover" placement="left">
+            <template #title>Rules</template>
+            <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
+            <ul class="pl-3">
+              <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
+              <li><b>DO NOT</b> make up a new identity to contribute.</li>
+              <li><b>DO NOT</b> try to falsify a contribution.</li>
+            </ul>
+            If you see someone breaking the rules, please use 'Flag Grant' to report them.
+          </b-popover>
 
-            <!-- Grants Flag-->
-            <div class="ml-3 d-inline font-smaller-2 cursor-pointer" v-if="!grant.is_on_team" @click="flag">
-              <i class="text-grey-400 fas fa-flag mr-2"></i>
-              Flag
-            </div>
+          <!-- Grants Flag-->
+          <div class="ml-3 d-inline font-smaller-2 cursor-pointer my-auto" v-if="!grant.is_on_team" @click="flag">
+            <i class="text-grey-400 fas fa-flag mr-2"></i>
+            Flag
           </div>
 
         </div>
@@ -625,7 +691,7 @@
           <label class="font-subheader letter-spacing text-grey-500 mb-0 mr-3" for="title">Logo background color</label>
           <input type="color" v-model="logoBackground" @input="changeColor">
         </div>
-        
+
         <!-- Github -->
         <div class="col-12 mb-3">
           <label class="mt-3 font-subheader letter-spacing text-grey-500" for="github_project_url">Github URL</label>
@@ -696,6 +762,32 @@
           <h4 class="font-bigger-1 text-black">Help contributors discover your grant</h4>
         </div>
 
+        <!-- Project Tags -->
+        <div class="col-12 mb-3">
+          <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
+
+          <v-select id="grant-details-edit-tags" class="grant-edit-disable-select" placeholder="Add tags to help others discover your grant" :options="grant_tags" label="name" v-model="grant_salected_tags" :reduce="tag => tag.id" multiple disabled>
+            <template #search="{attributes, events}">
+              <input
+                class="vs__search"
+                :required="!grant_tags.length"
+                v-bind="attributes"
+                v-on="events"
+              />
+            </template>
+            <template v-slot:option="option">
+              <span class="font-weight-semibold">[[ option.value ]]</span>
+            </template>
+          </v-select>
+
+          <b-tooltip custom-class="grant-edit-tooltip" target="grant-details-edit-tags" triggers="hover" placement="bottomright">
+            Editing tags requires approval as it might affect your matching round eligibility. <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
+            <br><br>
+            To request new tags, please fill in this <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSeiaaPaYC2HkTvM_uXhlCeKSBVXX382rH4bEMDlyVynLCAeug/viewform">request form</a>
+          </b-tooltip>
+      </div>
+
+
         <!-- Project Stage -->
         <div class="col-12 mb-3">
           <label class="mt-3 font-subheader letter-spacing text-grey-500">Project Stage</label>
@@ -728,6 +820,184 @@
               (If unchecked, your grant will not be a part of the CLR rounds on Gitcoin)
             </span>
           </b-form-checkbox>
+        </div>
+
+        <!-- Chain -->
+        <div class="mb-4 col-12">
+          <hr>
+          <h5 class="mt-5 mb-4 font-weight-normal">Funding Details</h5>
+
+          <label class="font-subheader font-weight-light letter-spacing" for="bounty_chain">Select a blockchain</label>
+
+          <v-select id="grant-details-edit-funding-details" class="grant-edit-disable-select" placeholder="Select a blockchain to receive funding" :options="grantChains" label="label" v-model="chainId" :reduce="state => state.name" disabled>
+            <template v-slot:option="option">
+              <span class="font-weight-semibold">[[ option.label ]]</span>
+            </template>
+          </v-select>
+
+          <b-tooltip custom-class="grant-edit-tooltip" target="grant-details-edit-funding-details" triggers="hover" placement="bottomright">
+            To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+          </b-tooltip>
+        </div>
+
+        <!-- Wallet Address -->
+        <div class="mb-3 col-12">
+          <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="eth_payout_address">
+              ETH Recipient Wallet Address
+            </label>
+
+            <div id="eth_payout_address_wrapper">
+              <input id="eth_payout_address" v-model="grant.admin_address" name="eth_payout_address" class="form__input form__input-lg vs--disabled" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="eth_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+
+          <template v-else-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="zcash_payout_address">
+              Transparent Zcash Recipient Wallet Address
+            </label>
+
+            <div id="zcash_payout_address_wrapper">
+              <input id="zcash_payout_address" v-model="grant.zcash_payout_address" name="zcash_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="t-" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="zcash_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('CELO') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="celo_payout_address">
+              CELO Recipient Wallet Address
+            </label>
+
+            <div id="celo_payout_address_wrapper">
+              <input id="celo_payout_address" v-model="grant.celo_payout_address" name="celo_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="celo_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('ZIL') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="zil_payout_address">
+              Zilliqa Recipient Wallet Address
+            </label>
+
+            <div id="zil_payout_address_wrapper">
+              <input id="zil_payout_address" v-model="grant.zil_payout_address" name="zil_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="zil_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('HARMONY') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="harmony_payout_address">
+              Harmony Recipient Wallet Address
+            </label>
+
+            <div id="harmony_payout_address_wrapper">
+              <input id="harmony_payout_address" v-model="grant.harmony_payout_address" name="harmony_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="harmony_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('BINANCE') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="binance_payout_address">
+              Binance Recipient Wallet Address
+            </label>
+
+            <div id="binance_payout_address_wrapper">
+              <input id="binance_payout_address" v-model="grant.binance_payout_address" name="binance_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="binance_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('POLKADOT') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="polkadot_payout_address">
+              Polkadot Recipient Wallet Address
+            </label>
+
+            <div id="polkadot_payout_address_wrapper">
+              <input id="polkadot_payout_address" v-model="grant.polkadot_payout_address" name="polkadot_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="polkadot_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('KUSAMA') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="kusama_payout_address">
+              Kusama Recipient Wallet Address
+            </label>
+
+            <div id="kusama_payout_address_wrapper">
+              <input id="kusama_payout_address" v-model="grant.kusama_payout_address" name="kusama_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="kusama_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('RSK') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="rsk_payout_address">
+              RSK Recipient Wallet Address
+            </label>
+
+            <div id="rsk_payout_address_wrapper">
+              <input id="rsk_payout_address" v-model="grant.rsk_payout_address" name="rsk_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="rsk_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('ALGORAND') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="algorand_payout_address">
+              Algorand Recipient Wallet Address
+            </label>
+
+            <div id="algorand_payout_address_wrapper">
+              <input id="algorand_payout_address" v-model="grant.algorand_payout_address" name="algorand_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="algorand_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('COSMOS') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="cosmos_payout_address">
+              Cosmos Recipient Wallet Address
+            </label>
+
+            <div id="cosmos_payout_address_wrapper">
+              <input id="cosmos_payout_address" v-model="grant.cosmos_payout_address" name="cosmos_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="cosmos_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
         </div>
 
         <!-- Save/Cancel -->
@@ -876,10 +1146,20 @@
     grid-template-areas: "grant-data";
   }
 
+  .bg-tags {
+    background-color: #D0E2FF;
+  }
+
   @media only screen and (max-width: 600px) {
     #sidebar-grant-edit {
       padding: 10px 0px;
       width: 100% !important;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .grant_data {
+      overflow: hidden;
     }
   }
 

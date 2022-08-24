@@ -20,24 +20,18 @@ import json
 import time
 
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
-from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.abi import erc20_abi as abi
-from dashboard.models import Activity, Earning, Profile, Tip, TipPayout
+from dashboard.models import Profile, Tip, TipPayout
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from dashboard.tip_views import record_tip_activity
-from dashboard.utils import get_tx_status, get_web3, has_tx_mined
+from dashboard.utils import get_web3, has_tx_mined
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from marketing.mails import (
-    grant_match_distribution_final_txn, grant_match_distribution_kyc, grant_match_distribution_test_txn,
-)
 from perftools.models import JSONStore
-from townsquare.models import Comment
-from web3 import HTTPProvider, Web3
+from web3 import Web3
 
 WAIT_TIME_BETWEEN_PAYOUTS = 15
 

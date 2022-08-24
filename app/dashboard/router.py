@@ -34,6 +34,7 @@ from .models import (
     ProfileSerializer, SearchHistory, TribeMember, UserDirectory,
 )
 from .tasks import increment_view_count
+from .utils import add_param_to_querySet
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +140,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     event = HackathonEventSerializer(many=False)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
+    owners = ProfileSerializer(many=True, read_only=True)
+    bounty_owner_profile = ProfileSerializer()
 
     def override_bounty_owner_email(self, obj):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 0)))
@@ -169,7 +172,10 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
             'additional_funding_summary', 'funding_organisation', 'paid', 'event',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
-            'featuring_date', 'repo_type', 'funder_last_messaged_on', 'can_remarket', 'is_reserved'
+            'featuring_date', 'repo_type', 'funder_last_messaged_on', 'can_remarket', 'is_reserved',
+            'contact_details', 'usd_pegged_value_in_token_now', 'usd_pegged_value_in_token', 
+            'value_true_usd', 'peg_to_usd', 'owners', 'payout_date', 'acceptance_criteria', 'resources',
+            'bounty_source', 'bounty_owner_profile', 'never_expires', 'custom_issue_description'
         )
 
     def create(self, validated_data):
@@ -247,7 +253,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
 
             if sponsor:
                 queryset = queryset.filter(
-                    Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
+                    Q(bounty__github_url__contains=sponsor.lower()) | Q(bounty__bounty_owner_github_username=sponsor)
                 )
         elif sponsor:
             queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle=sponsor.lower()) | Q(
@@ -300,7 +306,12 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
 
 
 class BountySerializerSlim(BountySerializer):
+    interested_count = serializers.SerializerMethodField()
 
+    def get_interested_count(self, obj):
+        # It is expected that slim_interested_count will be an annotated fielf coming from the query
+        # it is not part of model
+        return obj.slim_interested_count
 
     class Meta:
         """Define the bounty serializer metadata."""
@@ -310,7 +321,7 @@ class BountySerializerSlim(BountySerializer):
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested_count', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
-            'bounty_categories'
+            'bounty_categories', 'value_true_usd', 'peg_to_usd'
         )
 
 
@@ -359,23 +370,17 @@ class BountiesViewSet(viewsets.ModelViewSet):
         # else:
         #     queryset = queryset.filter(event=None)
 
-        for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_categories',
-                    'bounty_owner_address', 'idx_status', 'network', 'bounty_owner_github_username',
-                    'standard_bounties_id', 'permission_type', 'project_type', 'pk']:
+        # check for key in params and add to querySet
+        for key in ['idx_status', 'network', 'experience_level', 'project_length',
+            'bounty_type', 'bounty_categories', 'pk', 'standard_bounties_id',
+            'permission_type', 'project_type']:
             if key in param_keys:
-                # special hack just for looking up bounties posted by a certain person
-                request_key = key if key != 'bounty_owner_address' else 'coinbase'
-                val = self.request.query_params.get(request_key, '')
+                queryset = add_param_to_querySet(key, queryset, self.request.query_params)
 
-                values = val.strip().split(',')
-                values = [value for value in values if value and val.strip()]
-                if values:
-                    _queryset = queryset.none()
-                    for value in values:
-                        args = {}
-                        args[f'{key}__icontains'] = value.strip()
-                        _queryset = _queryset | queryset.filter(**args)
-                    queryset = _queryset
+        # check for key in params and add to querySet via a case-insensitive contains
+        for key in ['raw_data', 'bounty_owner_address', 'bounty_owner_github_username']:
+            if key in param_keys:
+                queryset = add_param_to_querySet(key + '__icontains', queryset, self.request.query_params)
 
         if 'reserved_for_user_handle' in param_keys:
             handle = self.request.query_params.get('reserved_for_user_handle', '')
@@ -411,12 +416,17 @@ class BountiesViewSet(viewsets.ModelViewSet):
         applicants = self.request.query_params.get('applicants')
         if applicants == '0':
             queryset = queryset.annotate(
-                interested_count=Count("interested")
-            ).filter(interested_count=0)
+                slim_interested_count=Count("interested")
+            ).filter(slim_interested_count=0)
         elif applicants == '1-5':
             queryset = queryset.annotate(
-                interested_count=Count("interested")
-            ).filter(interested_count__gte=1).filter(interested_count__lte=5)
+                slim_interested_count=Count("interested")
+            ).filter(slim_interested_count__gte=1).filter(slim_interested_count__lte=5)
+        else:
+            # We do not filter by interested count, but we still need the aggregation for the serializer
+            queryset = queryset.annotate(
+                slim_interested_count=Count("interested")
+            )
 
         # filter by who is interested
         if 'started' in param_keys:
@@ -441,7 +451,7 @@ class BountiesViewSet(viewsets.ModelViewSet):
                 _queryset = queryset.none()
                 for value in values:
                     org = value.strip()
-                    _queryset = _queryset | queryset.filter(github_url__icontains=f'https://github.com/{org}')
+                    _queryset = _queryset | queryset.filter(github_url__contains=f'https://github.com/{org.lower()}')
                 queryset = _queryset
 
         # Retrieve all fullfilled bounties by fulfiller_username

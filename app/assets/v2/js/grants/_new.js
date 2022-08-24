@@ -1,8 +1,24 @@
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 
+const step1Errors = [ 'grant_tags', 'tag_eligibility_reason', 'has_external_funding' ];
+const step2Errors = [ 'title', 'description', 'reference_url', 'twitter_handle_1' ];
+const step3Errors = ['chainId'];
+const errorsByStep = [ step1Errors, step2Errors, step3Errors ];
+
 Vue.mixin({
+  data() {
+    return {
+      step: 1,
+      description: '',
+      richDescription: ''
+    };
+  },
   methods: {
+    quilUpdated({ quill, text }) {
+      this.description = text;
+      this.richDescription = JSON.stringify(quill.getContents());
+    },
     showQuickStart: function() {
 
       fetch('/grants/quickstart')
@@ -78,10 +94,10 @@ Vue.mixin({
         });
       });
     },
+    validateTwitterHandle: (input) => input && !(/^@?[a-zA-Z0-9_]{2,15}$/).test(input),
     checkForm: function(e) {
       let vm = this;
 
-      vm.submitted = true;
       vm.errors = {};
       if (!vm.form.title.length) {
         vm.$set(vm.errors, 'title', 'Please enter the title');
@@ -92,10 +108,10 @@ Vue.mixin({
       if (!vm.form.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
-      if (vm.form.twitter_handle_1 && !(/^@?[a-zA-Z0-9_]{4,15}$/).test(vm.form.twitter_handle_1)) {
+      if (this.validateTwitterHandle(vm.form.twitter_handle_1)) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
       }
-      if (vm.form.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{4,15}$/).test(vm.form.twitter_handle_2)) {
+      if (this.validateTwitterHandle(vm.form.twitter_handle_2)) {
         vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
       }
 
@@ -131,6 +147,8 @@ Vue.mixin({
         vm.$set(vm.errors, 'rsk_payout_address', 'Please enter RSK address');
       } else if (vm.chainId == 'algorand' && !vm.form.algorand_payout_address) {
         vm.$set(vm.errors, 'algorand_payout_address', 'Please enter Algorand address');
+      } else if (vm.chainId == 'cosmos' && !vm.form.cosmos_payout_address) {
+        vm.$set(vm.errors, 'cosmos_payout_address', 'Please enter Cosmos address');
       }
 
       if (!vm.form.grant_type) {
@@ -139,26 +157,42 @@ Vue.mixin({
       if (!vm.form.grant_tags.length > 0) {
         vm.$set(vm.errors, 'grant_tags', 'Please select one or more grant tag');
       }
-      if (vm.form.description_rich.length < 10) {
+      if (!vm.form.tag_eligibility_reason.length) {
+        vm.$set(vm.errors, 'tag_eligibility_reason', 'Please enter eligibility tag reasoning');
+      }
+      if (vm.richDescription.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
       }
       if (!vm.form.has_external_funding) {
         vm.$set(vm.errors, 'has_external_funding', 'Please select if grant has external funding');
       }
+      const errorKeys = Object.keys(vm.errors);
 
-      if (Object.keys(vm.errors).length) {
+
+      if (errorKeys.length) {
+        // find the the first step that has errors and redirect to it
+        const errorsByPage = errorsByStep.map((stepErrors, i) => {
+          // if current errors are found in this step return step
+          return errorKeys.filter((error) => stepErrors.includes(error)).length ? (i + 1) : 100;
+        });
+        // only redirect if on confirm step
+
+        if (vm.step === vm.currentSteps.length) {
+          // set step to the first step that has an error
+          vm.step = Math.min(...errorsByPage);
+        }
+
         return false; // there are errors the user must correct
       }
-      vm.submitted = false;
-      return true; // no errors, continue to create grant
+
+      return true;
     },
-    submitForm: async function(event) {
-      event.preventDefault();
+    submitForm: async function() {
       let vm = this;
       let form = vm.form;
 
       // Exit if form is not valid
-      if (!vm.checkForm(event))
+      if (!vm.checkForm())
         return;
 
       if (form.reference_url.startsWith('www.')) {
@@ -169,8 +203,8 @@ Vue.mixin({
         'title': form.title,
         'reference_url': form.reference_url,
         'logo': vm.logo,
-        'description': vm.$refs.quillEditorDesc.quill.getText(),
-        'description_rich': JSON.stringify(vm.$refs.quillEditorDesc.quill.getContents()),
+        'description': vm.description,
+        'description_rich': vm.richDescription,
         'team_members[]': form.team_members,
         'handle1': form.twitter_handle_1,
         'handle2': form.twitter_handle_2,
@@ -185,8 +219,10 @@ Vue.mixin({
         'kusama_payout_address': form.kusama_payout_address,
         'rsk_payout_address': form.rsk_payout_address,
         'algorand_payout_address': form.algorand_payout_address,
+        'cosmos_payout_address': form.cosmos_payout_address,
         'grant_type': form.grant_type,
         'tags[]': form.grant_tags,
+        'tag_eligibility_reason': form.tag_eligibility_reason,
         'network': form.network,
         'region': form.region,
         'has_external_funding': form.has_external_funding
@@ -236,6 +272,7 @@ Vue.mixin({
           });
           if (response.status == 200) {
             window.location = response.url;
+            localStorage['grant_state'] = 'created';
           } else {
             vm.submitted = false;
             _alert('Unable to create grant. Please try again', 'danger');
@@ -263,6 +300,7 @@ Vue.mixin({
       form.kusama_payout_address = '';
       form.rsk_payout_address = '';
       form.algorand_payout_address = '';
+      form.cosmos_payout_address = '';
     },
     onFileChange(e) {
       let vm = this;
@@ -300,6 +338,17 @@ Vue.mixin({
       const extracted = matchResult ? `@${matchResult[1]}` : inputField.value;
 
       this.$set(this.form, inputField.id, extracted);
+    },
+    updateNav: function(direction) {
+      if (direction === 1) {
+        if (this.step === this.currentSteps.length) {
+          this.submitForm();
+          return;
+        }
+        this.step += direction;
+      } else if (this.step > 1) {
+        this.step += direction;
+      }
     }
   },
   watch: {
@@ -350,12 +399,13 @@ const grant_chains = [
   { 'name': 'binance', 'label': 'Binance'},
   { 'name': 'polkadot', 'label': 'Polkadot'},
   { 'name': 'kusama', 'label': 'Kusama'},
-  { 'name': 'algorand', 'label': 'Algorand'}
+  { 'name': 'algorand', 'label': 'Algorand'},
+  { 'name': 'rsk', 'label': 'RSK'},
+  { 'name': 'cosmos', 'label': 'Cosmos'}
 ];
 
 if (document.contxt.is_staff) {
   const staff_chains = [
-    { 'name': 'rsk', 'label': 'RSK'}
   ];
 
   grant_chains.push(...staff_chains);
@@ -406,8 +456,10 @@ if (document.getElementById('gc-new-grant')) {
           kusama_payout_address: '',
           rsk_payout_address: '',
           algorand_payout_address: '',
+          cosmos_payout_address: '',
           grant_type: 'gr12',
           grant_tags: [],
+          tag_eligibility_reason: '',
           network: 'mainnet'
         },
         editorOptionPrio: {
@@ -426,6 +478,29 @@ if (document.getElementById('gc-new-grant')) {
       };
     },
     computed: {
+      disableConfirm() {
+        return this.submitted && this.step === this.currentSteps.length && Object.keys(this.errors).length === 0;
+      },
+      grantTagOptions() {
+        const sorted_tags = this.grant_tags.sort((a, b) => a.id - b.id);
+        const next_id = sorted_tags[sorted_tags.length - 1].id + 1;
+        const all_tags = this.grant_tags.sort((a, b) => b.is_eligibility_tag - a.is_eligibility_tag);
+        const first_discovery = (tag) => tag.is_eligibility_tag === 0;
+
+        all_tags.unshift({
+          id: 0,
+          name: 'eligibility tags'.toUpperCase(),
+          is_eligibility_tag: 'label'
+        });
+
+        all_tags.splice(all_tags.findIndex(first_discovery), 0, {
+          id: next_id,
+          name: 'discovery tags'.toUpperCase(),
+          is_eligibility_tag: 'label'
+        });
+
+        return all_tags;
+      },
       queryParams() {
         return new URLSearchParams(window.location.search);
       },
@@ -452,6 +527,33 @@ if (document.getElementById('gc-new-grant')) {
           }
           return value;
         };
+      },
+      currentSteps() {
+        const steps = [
+          {
+            text: 'Eligibility & Discovery',
+            active: false
+          },
+          {
+            text: 'Grant Details',
+            active: false
+          },
+          {
+            text: 'Owner Information',
+            active: false
+          },
+          {
+            text: 'Review Grant',
+            active: false
+          }
+        ];
+
+        if (this.step == 100) {
+          this.step = steps.length;
+        }
+
+        steps[this.step - 1].active = true;
+        return steps;
       }
     },
     mounted() {
@@ -466,7 +568,8 @@ if (document.getElementById('gc-new-grant')) {
         'eth_payout_address',
         'grant_type',
         'team_members',
-        'grant_tags'
+        'grant_tags',
+        'tag_eligibility_reason'
       ];
 
       for (const key of writeToRoot) {

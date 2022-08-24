@@ -33,13 +33,15 @@ if (document.getElementById('grants-showcase')) {
     network: 'mainnet',
     state: 'active',
     profile: false,
-    sub_round_slug: false,
+    round_num: document.round_num ? document.round_num : 0,
+    customer_name: document.customer_name ? document.customer_name : false,
+    sub_round_slug: document.sub_round_slug ? document.sub_round_slug : false,
     collections_page: 1,
     grant_regions: [],
     grant_types: [],
     grant_tags: [],
     tenants: [],
-    idle: false,
+    idle: true,
     featured: true,
     round_type: false
   };
@@ -66,7 +68,8 @@ if (document.getElementById('grants-showcase')) {
     {'name': 'KUSAMA', 'label': 'Kusama'},
     {'name': 'BINANCE', 'label': 'Binance'},
     {'name': 'RSK', 'label': 'Rsk'},
-    {'name': 'ALGORAND', 'label': 'Algorand'}
+    {'name': 'ALGORAND', 'label': 'Algorand'},
+    {'name': 'COSMOS', 'label': 'Cosmos'}
   ];
 
   var appGrants = new Vue({
@@ -80,6 +83,7 @@ if (document.getElementById('grants-showcase')) {
       grantTenants: grantTenants,
       grant_tags: [],
       grant: {},
+      dismissFavoriteAlertCountDown: 0,
       collectionsPage: null,
       cart_data_count: CartData.length(),
       network: document.network,
@@ -100,7 +104,9 @@ if (document.getElementById('grants-showcase')) {
       view: localStorage.getItem('grants_view') || 'grid',
       shortView: true,
       bottom: false,
-      sub_round_slug: false,
+      round_num: document.round_num,
+      customer_name: document.customer_name,
+      sub_round_slug: document.sub_round_slug,
       cart_lock: false,
       collection_id: document.collection_id,
       collection_title: document.collection_title,
@@ -131,17 +137,21 @@ if (document.getElementById('grants-showcase')) {
       activeTimeout: null,
       scrollTriggered: false,
       previouslyLoadedGrants: {},
+      closed: true,
       selectOptions: [
         {group: 'Discover', label: null},
+        {label: 'Most Relevant', value: ''},
         {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
         {label: 'Trending', value: '-metadata__upcoming'},
         {label: 'Undiscovered Gems', value: '-metadata__gem'},
+        {label: 'GTC Conviction Voting', value: '-metadata__cv'},
         {label: 'Recently Updated', value: '-last_update'},
         {label: 'Newest', value: '-created_on'},
         {label: 'Oldest', value: 'created_on'},
         {label: 'A to Z', value: 'title'},
         {label: 'Z to A', value: '-title'},
         {group: 'Current Round', label: null},
+        {label: 'Highest Match Amount', value: '-clr_prediction_curve__0__1'},
         {label: 'Highest Amount Raised', value: '-amount_received_in_round'},
         {label: 'Highest Contributor Count', value: '-positive_round_contributor_count'},
         {group: 'All-Time', label: null},
@@ -155,6 +165,12 @@ if (document.getElementById('grants-showcase')) {
       ]
     },
     methods: {
+      isSelectedRoundType: function(round_type, key) {
+        return (this.params.round_type && this.params.round_type == round_type) || (!this.params.round_type && key == 0);
+      },
+      isSelectedCLR: function(current_clr_sub_round_slug, current_clr_round_num, clr) {
+        return (current_clr_sub_round_slug == clr.sub_round_slug && current_clr_round_num == clr.round_num);
+      },
       toggleStyle: function(style) {
 
         if (!style) {
@@ -174,7 +190,7 @@ if (document.getElementById('grants-showcase')) {
       },
       fetchClrGrants: async function() {
         let vm = this;
-        let url = '/api/v0.1/grants_clr/';
+        let url = '/api/v0.1/grants_clr/?page_size=25';
         let getClr = await fetch(url);
         let clrJson = await getClr.json();
 
@@ -319,6 +335,7 @@ if (document.getElementById('grants-showcase')) {
 
 
       },
+      idleOrHiddenGrants: (grant) => grant.is_hidden || grant.is_idle,
       fetchGrants: async function(page, append_mode, replaceHistory) {
         let vm = this;
 
@@ -440,8 +457,9 @@ if (document.getElementById('grants-showcase')) {
 
         const profile = (vm.params.profile ? 'profile=' + vm.params.profile : '');
         const featured = (vm.params.featured ? 'featured=' + vm.params.featured : '');
+        const pageSize = 'page_size=12';
 
-        let url = `/api/v0.1/grants_collections/?${profile}&${featured}`;
+        let url = `/api/v0.1/grants_collections/?${profile}&${featured}&${pageSize}`;
 
         if (vm.collectionsPage && append_mode) {
           url = vm.collectionsPage;
@@ -662,6 +680,8 @@ if (document.getElementById('grants-showcase')) {
       selectRoundType: function(roundType) {
         // round_type_selected
         this.params.round_type = roundType;
+        // open the dropdown menu on mobile
+        this.closed = false;
         // clear selected round
         this.params.sub_round_slug = false;
         this.params.round_num = 0;
@@ -742,6 +762,7 @@ if (document.getElementById('grants-showcase')) {
           };
 
           currentCLR.formatted_dates = formatted_dates;
+          currentCLR.shareURL = window.location.origin + '/grants/clr/' + currentCLR.sub_round_slug;
         }
 
         return currentCLR;
@@ -762,6 +783,9 @@ if (document.getElementById('grants-showcase')) {
       },
       showLoading() {
         return this.lock && !this.scrollTriggered;
+      },
+      showLoadingCollections() {
+        return this.loadingCollections && !this.scrollTriggered;
       }
     },
     beforeMount() {

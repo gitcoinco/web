@@ -3,8 +3,14 @@
 {% trans "New Grant Created" %}
 
 {% trans "You've created a new grant!" %}
-{% trans "It would take 1-2 business days for your grant to approved." %}
-{% trans "Get ready to buidl and push forward open source!" %}
+{% blocktrans with link="https://gitcoin.notion.site/fc5155ddb7804560a42387043bd805c1?v=937073ff11d149d29e08aa5901befc77" %}
+  We are reviewing grants as we get closer to each grant round.
+  You can check the status of your grant on this Notion board ({{ link }}).
+  Please be patient while we review your grant."
+{% endblocktrans %}
+{% blocktrans with link="https://academy.binance.com/en/glossary/buidl" %}
+  In the mean time, get ready to buidl ({{link}}) and push forward open source!
+{% endblocktrans %}
 
 {% trans "Title" %} : {{ grant.title }}
 

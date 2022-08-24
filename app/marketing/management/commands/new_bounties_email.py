@@ -52,7 +52,7 @@ class Command(BaseCommand):
             try:
                 counter_eval_total += 1
                 # KO 21/16/03 - evalute suppression list in queue
-                # if should_suppress_notification_email(es.email, 'new_bounty_notifications'):
+                # if allowed_to_send_email(es.email, 'new_bounty_notifications'):
                 #    continue
                 
                 # prep

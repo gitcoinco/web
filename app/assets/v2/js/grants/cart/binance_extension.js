@@ -6,20 +6,28 @@ const contributeWithBinanceExtension = async(grant, vm) => {
   let amount = grant.grant_donation_amount * 10 ** decimals;
   let to_address = grant.binance_payout_address;
   let from_address;
+  let account_balance;
 
-  try {
-    from_address = await binance_utils.getSelectedAccount();
-  } catch (error) {
+  await binance_utils.getSelectedAccount().then((address) => {
+    from_address = address;
+  }).catch(() => {
     _alert({ message: 'Please ensure your Binance Chain Extension wallet is installed and enabled'}, 'danger');
+
     return;
-  }
+  });
 
   if (!token_name) {
     token_name = 'BNB';
   }
 
   if (token_name === 'BNB') {
-    const account_balance = await binance_utils.getAddressBalance(from_address);
+
+    try {
+      account_balance = await binance_utils.getAddressBalance(from_address);
+    } catch (error) {
+      _alert({ message: 'Please ensure your Binance Chain Extension wallet is installed and enabled'}, 'danger');
+      return;
+    }
 
     if (Number(account_balance) < amount) {
       _alert({ message: `Account needs to have more than ${amount / 10 ** decimals} BNB for payout` }, 'danger');
@@ -28,7 +36,12 @@ const contributeWithBinanceExtension = async(grant, vm) => {
   } else if (token_name === 'BUSD') {
     const busd_contract_address = '0xe9e7cea3dedca5984780bafc599bd69add087d56';
 
-    const account_balance = await binance_utils.getAddressTokenBalance(from_address, busd_contract_address);
+    try {
+      account_balance = await binance_utils.getAddressTokenBalance(from_address, busd_contract_address);
+    } catch (error) {
+      _alert({ message: 'Please ensure your Binance Chain Extension wallet is installed and enabled'}, 'danger');
+      return;
+    }
 
     if (Number(account_balance) < amount) {
       _alert({ message: `Account needs to have more than ${amount / 10 ** decimals} BUSD for payout` }, 'danger');

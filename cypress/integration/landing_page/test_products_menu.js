@@ -1,9 +1,7 @@
-describe('Products menu', () => {
-  before(() => {
-    cy.setupMetamask();
-  });
+describe('Products menu', { tags: ['platform'] }, () => {
 
   beforeEach(() => {
+    cy.acceptCookies();
     cy.impersonateUser();
   });
 
@@ -11,15 +9,11 @@ describe('Products menu', () => {
     cy.logout();
   });
 
-  after(() => {
-    cy.clearWindows();
-  });
-
   it('navigates to the grants explorer when \'Explore Grants\' is selected', () => {
     cy.get('#dropdownProducts').trigger('mouseenter');
     cy.contains('Grants Crowdfunding for Open Source').trigger('mouseenter');
     cy.contains('Explore Grants').click();
-    
+
     cy.url().should('contain', 'grants/explorer');
   });
 });

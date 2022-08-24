@@ -61,8 +61,13 @@ def get_response(response):
         column_header = report.get('columnHeader', {})
         dimension_headers = column_header.get('dimensions', [])
         metric_headers = column_header.get('metricHeader', {}).get('metricHeaderEntries', [])
-
-        for row in report.get('data', {}).get('rows', []):
+        
+        rows = report.get('data', {}).get('rows', [])
+        
+        if not rows:
+            return '0'
+        
+        for row in rows:
             dimensions = row.get('dimensions', [])
             date_range_values = row.get('metrics', [])
 

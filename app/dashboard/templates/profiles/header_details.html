@@ -81,7 +81,7 @@
 
   |
 
-  <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Github">
+  <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.html_url }}" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Github">
     <i class="fab fa-github"></i>
   </a>
   {% if profile.data.blog and user.is_authenticated %}

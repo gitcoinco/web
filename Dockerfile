@@ -5,23 +5,24 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Define packages to be installed
-ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip inkscape libmagic-dev build-essential python-dev libssl-dev python3-dev libsecp256k1-dev libsodium-dev python3-pip"
+ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip libmagic-dev build-essential python-dev libssl-dev python3.7-dev python3.7 libsecp256k1-dev libsodium-dev python3.7-distutils"
 ARG BUILD_DEPS="gcc g++ curl postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
 ARG CHROME_DEPS="fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcairo2 libcups2 libcurl3-gnutls libdrm2 libexpat1 libgbm1 libglib2.0-0 libnspr4 libgtk-3-0 libpango-1.0-0 libx11-6 libxcb1 libxcomposite1 libxdamage1 libxext6 libxfixes3 libxkbcommon0 libxrandr2 libxshmfence1 xdg-utils"
 ARG CYPRESS_DEPS="libgtk2.0-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libxtst6 xauth xvfb"
 
-# Inkscape
+# Install general dependencies.
 RUN apt-get update
 RUN apt-get install -y software-properties-common
-RUN add-apt-repository ppa:inkscape.dev/stable
-RUN apt-get update
-
-# Install general dependencies.
 RUN add-apt-repository universe
 RUN apt-get update
 RUN apt-get install -y $PACKAGES
 RUN apt-get update --fix-missing
 RUN apt-get install -y $BUILD_DEPS --fix-missing
+
+
+RUN curl https://bootstrap.pypa.io/get-pip.py > /tmp/get-pip.py
+RUN python3.7 /tmp/get-pip.py
+RUN rm /tmp/get-pip.py
 
 # Install google chrome for cypress testing
 WORKDIR /usr/src
@@ -55,7 +56,11 @@ RUN pip3 install --upgrade -r test.txt
 
 # Copy over docker-command (start-up script)
 COPY bin/docker-command.bash /bin/docker-command.bash
+COPY bin/review-env-initial-data.bash /bin/review-env-initial-data.bash
+COPY bin/celery/worker/run.sh /bin/celery/worker/run.sh
+
 RUN dos2unix /bin/docker-command.bash
+RUN dos2unix /bin/review-env-initial-data.bash
 
 # Copy over code directory
 COPY app/ /code/app/
@@ -68,15 +73,19 @@ RUN apt-get install -y yarn
 RUN yarn global add n
 RUN n stable
 
-# Increase number of watched files (524288 is the max we can set this to)
+COPY package.json /code/
+RUN cd /code && yarn install
+
+# Increase number of file watches (524288 is the max we can set this to)
 RUN echo fs.inotify.max_user_watches=524288 >> /etc/sysctl.conf
 
-# Init 
+# Init
 EXPOSE 9222
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD ["bash", "/bin/docker-command.bash"]
+WORKDIR /code/app
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "--timeout", "120", "app.wsgi:application", "--max-requests=200"]
 
-# Save image
+# Tag
 ARG BUILD_DATETIME
 ARG SHA1
 LABEL co.gitcoin.description="Gitcoin web application image" \

@@ -171,7 +171,7 @@ The [initial test data](#initial-test-data) comes with a pre-configured
 superuser. You can also create a new one using the following command:
 
 ```shell
-docker-compose exec web python3 app/manage.py createsuperuser
+docker-compose exec web python3.7 app/manage.py createsuperuser
 ```
 
 Make sure that the services are already running. See [Startup server](#startup-server) for an example.
@@ -193,12 +193,27 @@ If the script worked correctly, you will be asked for the following information:
 7. Congratulations, your local environment now supports your custom token!
 8. You may continue administering your token over at [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh).  Hint:  Maybe you should mint some? 🤔
 
+In case `tokenfactory.surge.sh` doesn't work, you can deploy a simple `ERC20` token to a testnet using [remix](https://remix.ethereum.org).
+
+```
+// SPDX-License-Identifier:MIT
+pragma solidity 0.8.10;
+
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.4.2/contracts/token/ERC20/ERC20.sol";
+
+contract Token is ERC20 {
+    constructor() ERC20("My Test Token", "TEST") {
+        _mint(msg.sender, 1_000_000 * (10 ** decimals()));
+    }
+}
+```
+
 ## Optional: Import bounty data from web3 to your database
 
 This can be useful if you'd like data to test with shared data:
 
 ```shell
-docker-compose exec web python3 app/manage.py sync_geth rinkeby -20 99999999999
+docker-compose exec web python3.7 app/manage.py sync_geth rinkeby -20 99999999999
 ```
 
 **Note:** using the `sync_geth` command can potentially break some of the [Initial test data](#initial-test-data) fixtures.
@@ -236,7 +251,7 @@ make fresh # docker-compose down -v; docker-compose up -d --build;
 `Q: How can I access the django administration login?`
 
 ```shell
-make superuser # docker-compose exec web python3 app/manage.py createsuperuser
+make superuser # docker-compose exec web python3.7 app/manage.py createsuperuser
 open http://localhost:8000/_administration
 ```
 
@@ -313,8 +328,8 @@ Copy and paste
 
 ```json
 {
-    "experimental": true 
-} 
+    "experimental": true
+}
 ```
 
 #### On-chain activities
@@ -346,7 +361,7 @@ Add `import ipdb;ipdb.set_trace()` to the method you want to inspect, you then r
 
 `Q: How can I access the Django shell, similar to: python manage.py shell ?`
 
-Simply run: `make get_django_shell` or `docker-compose exec web python3 app/manage.py shell`
+Simply run: `make get_django_shell` or `docker-compose exec web python3.7 app/manage.py shell`
 
 #### Access BASH
 

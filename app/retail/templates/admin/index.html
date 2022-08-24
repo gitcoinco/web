@@ -18,7 +18,7 @@
 {% endcomment %}
 {% load i18n static bundle %}
 {% block extrastyle %}{{ block.super }}
-  {% bundle css file admin_dashboard %}
+  {% bundle css file retail_admin_dashboard %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
   {% endbundle %}
 {% endblock %}
@@ -116,6 +116,9 @@
     </ul>
     <ul>
       <a href="/_administration/docs">View the admin docs</a>
+    </ul>
+    <ul>
+      <a href="/_administration/export_grants_ethelo">Export Grants for Ethelo</a>
     </ul>
   </div>
 

@@ -57,6 +57,7 @@ from grants.views import cart_thumbnail
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
+from .views import redirect_view
 
 urlpatterns = [
 
@@ -76,6 +77,7 @@ urlpatterns = [
 
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
+    re_path(r'^passport/?', dashboard.views.passport, name='passport'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
@@ -137,7 +139,31 @@ urlpatterns = [
         name='profile_set_tax_settings'
     ),
 
-    # verification services
+
+    # grants2.0 Verification Services
+    url(
+        r'^api/v2/profile/(?P<handle>.*)/passport/stamp/check',
+        dashboard.views.check_passport_stamps,
+        name='check_passport_stamp'
+    ),
+    url(
+        r'^api/v2/profile/(?P<handle>.*)/passport/verify',
+        dashboard.views.verify_passport,
+        name='verify_passport'
+    ),
+    url(
+        r'^api/v2/profile/(?P<handle>.*)/passport/unlink',
+        dashboard.views.unlink_passport,
+        name='unlink_passport'
+    ),
+    url(
+        r'^api/v2/profile/(?P<handle>.*)/passport/trust_bonus',
+        dashboard.views.get_passport_trust_bonus,
+        name='get_passport_trust_bonus'
+    ),
+
+
+    # grants1.0 Verification Services
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_user_sms/?$',
         dashboard.views.send_verification,
@@ -237,6 +263,8 @@ urlpatterns = [
     #     dashboard.views.verify_user_duniter,
     #     name='verify_user_duniter'
     # ),
+
+
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -393,8 +421,6 @@ urlpatterns = [
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
-    url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),  # TODO: Remove
-    url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),  # TODO: Remove
     # TODO: Rename below to bounty/
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
@@ -442,6 +468,9 @@ urlpatterns = [
     ),
 
     # View Bounty
+    # TODO: The 2 URLs below issue_details_new2 and issue_details_new3 will not be used any more (we should not create such
+    # links any more), and can be removed in the future. We are keeping these for now to avoid breaking the
+    # existing links that users might have saved already.
     url(
         r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)',
         dashboard.views.bounty_details,
@@ -453,6 +482,7 @@ urlpatterns = [
         name='issue_details_new2'
     ),
     re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
+    re_path(r'^issue/(?P<bounty_id>\d+)', dashboard.views.bounty_details, name='issue_details_new4'),
     re_path(r'^issue/(?P<invitecode>.*)', dashboard.views.bounty_invite_url, name='unique_bounty_invite'),
 
     # Tips
@@ -512,6 +542,7 @@ urlpatterns = [
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
+    re_path(r'^sync/validate_org_url/?', dashboard.helpers.validate_org_url, name='helpers_validate_org_url'),
 
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
@@ -697,6 +728,8 @@ urlpatterns = [
         retail.emails.tribe_hackathon_prizes,
         name='tribe_hackathon_prizes'
     ),
+    path('_administration/email/export_data', retail.emails.export_data, name='export_data'),
+    path('_administration/email/export_data_failed', retail.emails.export_data_failed, name='export_data_failed'),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
@@ -740,6 +773,7 @@ urlpatterns = [
         retail.emails.grant_match_distribution_final_txn,
         name='clr_match_claim'
     ),
+    re_path(r'^_administration/export_grants_ethelo', dashboard.views.export_grants_ethelo, name='export_grants_ethelo'),
 
     # docs
     re_path(r'^_administration/docs/', include('django.contrib.admindocs.urls')),
@@ -748,7 +782,6 @@ urlpatterns = [
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
-    re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
     re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
@@ -770,9 +803,9 @@ urlpatterns = [
     url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
 
     # quadratic lands
-    path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
-    re_path(r'^quadraticlands/?', include('quadraticlands.urls', namespace='ql_catchall_')),
-    re_path(r'^quadraticland/?', include('quadraticlands.urls', namespace='ql_catchall')),
+    path('quadraticlands/', redirect_view),
+    re_path(r'^quadraticlands/?', redirect_view),
+    re_path(r'^quadraticland/?', redirect_view),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
@@ -830,7 +863,7 @@ urlpatterns += [
         name='profile_min'
     ),
     re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+[-]?)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),

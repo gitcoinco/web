@@ -1,6 +1,7 @@
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const eventWalletReady = new Event('walletReady', {bubbles: true});
+const eventWalletDisconnect = new Event('walletDisconnect', {bubbles: true});
 const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
 if (!Object.hasOwnProperty.call(window, 'web3')) {
@@ -26,9 +27,6 @@ function initWallet() {
   const isProd = url.host == 'gitcoin.co' && url.protocol == 'https:';
   const formaticKey = isProd ? document.contxt['fortmatic_live_key'] : document.contxt['fortmatic_test_key'];
   const providerOptions = {
-    authereum: {
-      'package': Authereum
-    },
     fortmatic: {
       'package': Fortmatic,
       options: {
@@ -44,7 +42,8 @@ function initWallet() {
     portis: {
       'package': Portis,
       options: {
-        id: 'b2345081-a47e-413a-941f-33fd645d39b3'
+        id: 'b2345081-a47e-413a-941f-33fd645d39b3',
+        network: 'mainnet'
       }
     }
   };
@@ -95,7 +94,9 @@ async function fetchAccountData(provider) {
   }
   await web3.eth.net.getId().then(id => {
     networkId = id;
-    networkName = getDataChains(id, 'chainId')[0] && getDataChains(id, 'chainId')[0].network;
+    const chainInfo = getDataChains(id, 'chainId')[0];
+
+    networkName = chainInfo && (chainInfo.network || chainInfo.name);
   });
   // web3.currentProvider.chainId
   // networkName = await web3.eth.net.getNetworkType();
@@ -112,9 +113,11 @@ async function fetchAccountData(provider) {
   // Load chain information over an HTTP API
   // const chainData = await EvmChains.getChain(chainId);
 
-  document.querySelector('.network-name').textContent = networkName;
-  document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
-  document.querySelector('.wallet-network').classList.add(networkName.split(' ').join('-'));
+  if (networkName) {
+    document.querySelector('.network-name').textContent = networkName;
+    document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
+    document.querySelector('.wallet-network').classList.add(networkName.split(' ').join('-'));
+  }
 
   document.querySelector('#wallet-btn').innerText = 'Change Wallet';
 
@@ -231,6 +234,49 @@ function displayProvider() {
   createImg(image);
 }
 
+async function switchChain(id) {
+  const web3 = new Web3(provider);
+  const providerName = window.Web3Modal.getInjectedProviderName();
+  const chainInfo = getDataChains(Number(id), 'chainId')[0];
+  const chainId = Web3.utils.numberToHex(chainInfo.chainId);
+
+  try {
+    await web3.currentProvider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId }]
+    });
+  } catch (switchError) {
+    // This error code indicates that the chain has not been added to MetaMask
+    if (switchError.code === 4902) {
+
+      try {
+        await web3.currentProvider.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId,
+            rpcUrls: chainInfo.rpc,
+            chainName: chainInfo.name,
+            nativeCurrency: chainInfo.nativeCurrency,
+            blockExplorerUrls: chainInfo.explorers && chainInfo.explorers.map(e => e.url)
+          }]
+        });
+      } catch (addError) {
+        if (addError.code === 4001) {
+          throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
+        } else {
+          console.error(addError);
+        }
+      }
+    } else if (switchError.code === 4001) {
+      throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
+    } else if (switchError.code === -32002) {
+      throw new Error(`Please respond to a pending ${providerName} request.`);
+    } else {
+      console.error(switchError);
+    }
+  }
+}
+
 async function onConnect() {
 
   // Setting this null forces to show the dialogue every time
@@ -286,6 +332,8 @@ async function onDisconnect() {
   document.querySelector('#wallet-btn').innerText = 'Connect Wallet';
   document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
   cleanUpWalletData();
+
+  document.dispatchEvent(eventWalletDisconnect);
 
   // Set the UI back to the initial state
   // document.querySelector("#prepare").style.display = "block";
@@ -511,7 +559,6 @@ async function getAllowance(address, tokenAddress) {
   let tokensContract = new web3.eth.Contract(minABI, tokenAddress);
 
   allowance = tokensContract.methods.allowance(selectedAccount, address).call({from: selectedAccount});
-  console.log(await allowance);
   return await allowance;
 }
 

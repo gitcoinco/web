@@ -22,9 +22,22 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
     {% endbundle %}
   </head>
+  <!-- Datadog logging setup for the trust bonus tab-->
+  <script type="text/javascript" src="{% static "v2/js/lib/datadog-logs-v4.js" %}"></script>
+  <script>
+      window.DD_LOGS && DD_LOGS.init({
+          clientToken: '{{DATADOG_TOKEN}}',
+          site: 'datadoghq.eu',
+          forwardErrorsToLogs: true,
+          sampleRate: 100,
+          service: `trust-bonus`,
+      });
+  </script>
+  <!-- END: Datadog logging setup for the trust bonus tab-->
   <body class="interior {{ active }} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
+
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'home/nav.html' %}
       {% if not hidden %}
@@ -108,16 +121,31 @@
         {% if tab == 'trust' %}
           <script>
             document.services = {{ services|safe }};
-            document.roadmap = {{ roadmap|safe }};
-            document.coming_soon = {{ coming_soon|safe }};
+            document.iam_issuer = "{{ iam_issuer }}";
+            document.ceramic_url = "{{ ceramic_url }}";
+            document.challenge = {{ challenge|safe }};
             document.round_start_date = {{ round_start_date }};
             document.round_end_date = {{ round_end_date }};
+            document.is_passport_connected = {% if is_passport_connected %}{{ is_passport_connected }}{% else %}0{% endif %};
+            document.trust_bonus = {% if passport_trust_bonus %}{{ passport_trust_bonus }}{% else %}0{% endif %};
+            document.trust_bonus_status = {% if passport_trust_bonus_status %}"{{ passport_trust_bonus_status }}"{% else %}null{% endif %};
+            document.trust_bonus_last_updated = {% if passport_trust_bonus_last_updated %}"{{ passport_trust_bonus_last_updated }}"{% else %}null{% endif %};
+            document.passport_trust_bonus_stamp_validation = {% if passport_trust_bonus_stamp_validation %}{{ passport_trust_bonus_stamp_validation|safe }}{% else %}null{% endif %};
+            document.passport = {% if passport %}{{ passport|safe }}{% else %}null{% endif %};
+            document.passport_did = {% if passport_did %}{{ passport_did|safe }}{% else %}null{% endif %};
+            
           </script>
           {% bundle merge_js file profile-trust %}
             <script src="{% static "v2/js/parseMonthDay.js" %}"></script>
             <script src="{% static "v2/js/why-this-matters-modal.js" %}"></script>
-            <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
           {% endbundle %}
+          {% if use_passport_trust_bonus %}
+            <script src="{% static "v2/js/passport/didkit.bundle.js" %}"></script>
+            <script src="{% static "v2/js/passport/reader.bundle.js" %}"></script>
+            <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
+          {% else %}
+            <script src="{% static "v2/js/pages/profile-c-trust.js" %}"></script>
+          {% endif %}
         {% endif %}
         <script src="/dynamic/js/tokens_dynamic.js"></script>
         <script src="{% static "v2/js/tokens.js" %}"></script>
@@ -138,7 +166,7 @@
         {% endif %}
       </script>
 
-      {% bundle merge_js file jitsi %}
+      {% bundle merge_js file profile_jitsi %}
         <script src="external_api.min.js" base-dir="/node_modules/lib-jitsi-meet-dist/dist"></script>
       {% endbundle %}
 

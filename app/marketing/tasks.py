@@ -1,19 +1,36 @@
+import csv
+import io
+import os
+
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.utils import timezone
 
 import marketing.stats as stats
 from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
+from marketing.common.earnings import export_earnings, send_csv, send_download_failure_email
+from marketing.common.utils import allowed_to_send_email
 from marketing.mails import new_bounty_daily as new_bounty_daily_email
 from marketing.mails import weekly_roundup as weekly_roundup_email
 from marketing.models import EmailSubscriber
-from marketing.utils import should_suppress_notification_email
 
 logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
 rate_limit = '300000/s' if settings.FLUSH_QUEUE or settings.MARKETING_FLUSH_QUEUE else settings.MARKETING_QUEUE_RATE_LIMIT
+
+@app.shared_task(bind=True)
+def send_earnings_csv(self, user_pk, export_type):
+    user = User.objects.get(pk=user_pk)
+    data = export_earnings(export_type, user.profile)
+    try:
+        send_csv(data=data, user_profile=user.profile)
+    except:
+        send_download_failure_email(profile)
+
 
 @app.shared_task(bind=True, rate_limit=rate_limit, soft_time_limit=600, time_limit=660, max_retries=1)
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
@@ -33,10 +50,11 @@ def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
     # actually do the task
     es = EmailSubscriber.objects.get(pk=email_subscriber_id)
 
-    if should_suppress_notification_email(es.email, 'new_bounty_notifications'):
+    if allowed_to_send_email(es.email, 'new_bounty_notifications'):
         return
 
     new_bounty_daily_email(es)
+
 
 @app.shared_task(bind=True, rate_limit=rate_limit)
 def weekly_roundup(self, to_email, retry: bool = True) -> None:

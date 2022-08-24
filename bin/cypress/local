@@ -1,0 +1,9 @@
+#! /bin/bash
+set -eou pipefail
+
+source bin/cypress/vars.sh
+
+node_modules/.bin/cypress install
+node_modules/.bin/cypress run \
+  --browser chrome \
+  --config video=false

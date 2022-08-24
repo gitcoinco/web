@@ -45,13 +45,13 @@ if [ "$DISABLE_PROVISION" != "on" ] && [ ! -f /provisioned ] || [ "$FORCE_PROVIS
 then
     echo "First run - Provisioning the local development environment..."
     if [ "$DISABLE_INITIAL_CACHETABLE" != "on" ]; then
-        python3 manage.py createcachetable
+        python3.7 manage.py createcachetable
     fi
 
     # Build assets using bundle and webpack
     if [ "$DISABLE_WEBPACK_ASSETS" != "on" ]; then
         yarn install --non-interactive --frozen-lockfile --network-timeout 100000 --verbose
-        python3 manage.py bundle
+        python3.7 manage.py bundle
         if [ "$ENV" == "prod" ];
         then
             yarn run build
@@ -62,24 +62,26 @@ then
     fi
 
     if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
-        python3 manage.py collectstatic --noinput -i other &
+        python3.7 manage.py collectstatic --noinput -i other &
     fi
 
     if [ "$DISABLE_INITIAL_MIGRATE" != "on" ]; then
-        python3 manage.py migrate
+        python3.7 manage.py migrate
     fi
 
     if [ "$DISABLE_INITIAL_LOADDATA" != "on" ]; then
 
-        python3 manage.py loaddata app/fixtures/oauth_application.json
-        python3 manage.py loaddata app/fixtures/users.json
-        python3 manage.py loaddata app/fixtures/economy.json
-        python3 manage.py loaddata app/fixtures/profiles.json
-        python3 manage.py loaddata app/fixtures/kudos.json
-        python3 manage.py loaddata app/fixtures/grants.json
-        python3 manage.py loaddata app/fixtures/dashboard.json
-        python3 manage.py loaddata app/fixtures/avatar.json
-        python3 manage.py loaddata app/fixtures/marketing.json
+        python3.7 manage.py loaddata app/fixtures/oauth_application.json
+        python3.7 manage.py loaddata app/fixtures/users.json
+        python3.7 manage.py loaddata app/fixtures/economy.json
+        python3.7 manage.py loaddata app/fixtures/profiles.json
+        python3.7 manage.py loaddata app/fixtures/kudos.json
+        python3.7 manage.py loaddata app/fixtures/grants.json
+        python3.7 manage.py loaddata app/fixtures/dashboard.json
+        python3.7 manage.py loaddata app/fixtures/avatar.json
+        python3.7 manage.py loaddata app/fixtures/marketing.json
+        python3.7 manage.py loaddata app/grants/fixtures/grant_types.json
+
 
     fi
     date >> /provisioned
@@ -87,12 +89,12 @@ then
 else
     # Build assets using bundle and webpack
     if [ "$DISABLE_WEBPACK_ASSETS" != "on" ] && [ "$ENV" != "prod" ]; then
-        python3 manage.py bundle && yarn run webpack &
+        python3.7 manage.py bundle && yarn run webpack &
     fi
 fi
 
 if [ "$FORCE_GET_PRICES" = "on" ]; then
-    python3 manage.py get_prices
+    python3.7 manage.py get_prices
 fi
 
 if [ "$KUDOS_LOCAL_SYNC" = "on" ]; then
@@ -100,4 +102,4 @@ if [ "$KUDOS_LOCAL_SYNC" = "on" ]; then
     bash /code/scripts/sync_kudos_local.bash &
 fi
 
-exec python3 manage.py $GC_WEB_OPTS
+exec python3.7 manage.py $GC_WEB_OPTS

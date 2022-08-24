@@ -25,7 +25,7 @@ ethurl = "https://etherscan.io/tx/"
 user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
 headers = {'User-Agent': user_agent}
 
- 
+
 # ERC20 / ERC721 tokens
 # Transfer(address,address,uint256)
 # Deposit(address, uint256)
@@ -43,8 +43,6 @@ check_contract = lambda token_address, abi : w3.eth.contract(token_address, abi=
 check_event_transfer =  lambda contract_address, search, txid : w3.eth.filter({ "address": contract_address, "topics": [search, txid]})
 get_decimals = lambda contract : int(contract.functions.decimals().call())
 
-# BulkCheckout parameters
-bulk_checkout_address = "0x7d655c57f71464B6f83811C55D84009Cd9f5221C" # same address on mainnet and rinkeby
 bulk_checkout_abi = '[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":true,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"address","name":"dest","type":"address"},{"indexed":true,"internalType":"address","name":"donor","type":"address"}],"name":"DonationSent","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":true,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"address","name":"dest","type":"address"}],"name":"TokenWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address payable","name":"dest","type":"address"}],"internalType":"struct BulkCheckout.Donation[]","name":"_donations","type":"tuple[]"}],"name":"donate","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"_dest","type":"address"}],"name":"withdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"address","name":"_dest","type":"address"}],"name":"withdrawToken","outputs":[],"stateMutability":"nonpayable","type":"function"}]'
 
 def getReplacedTX(tx):
@@ -84,26 +82,44 @@ def transaction_status(transaction, txid):
         maybeprint(89, e)
 
 
-def get_token(token_symbol, network):
+def get_token(token_symbol, network, chain='std'):
     """
-    For a given token symbol and amount, returns the token's details. For ETH, we change the 
-    token address to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE since that's the address
-    BulkCheckout uses to represent ETH (default here is the zero address)
+    For a given token symbol and amount, returns the token's details.
+    For mainnet checkout in ETH, we change the token address to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
+    For polygon checkout in MATIC, we change the token address to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
+    since that's the address BulkCheckout uses to represent ETH (default here is the zero address)
     """
-    token = Token.objects.filter(network=network, symbol=token_symbol, approved=True).first().to_dict
-    if token_symbol == 'ETH':
+
+    network_id = 1
+
+    if chain == 'polygon':
+        if network == 'mainnet':
+            network_id = 137
+        else:
+            network_id = 80001
+
+    token = Token.objects.filter(
+        network=network, network_id=network_id, symbol=token_symbol, approved=True).first().to_dict
+
+    if (
+        (token_symbol == 'ETH' and chain == 'std') or
+        (token_symbol == 'MATIC' and chain == 'polygon')
+    ):
         token['addr'] = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+
     return token
 
-def parse_token_amount(token_symbol, amount, network):
+
+def parse_token_amount(token_symbol, amount, network, chain='std'):
     """
     For a given token symbol and amount, returns the integer version in "wei", i.e. the integer
     form based on the token's number of decimals
     """
-    token = get_token(token_symbol, network)
+    token = get_token(token_symbol, network, chain)
     decimals = token['decimals']
     parsed_amount = int(amount * 10 ** decimals)
     return parsed_amount
+
 
 def check_for_replaced_tx(tx_hash, network, datetime=None, chain='std'):
     """
@@ -144,8 +160,10 @@ def grants_transaction_validator(contribution, w3, chain='std'):
 
     if network == 'mainnet' and chain == 'polygon':
         bulk_checkout_address = '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
-    elif network == 'testnet':
+    elif network == 'testnet' and chain == 'polygon':
         bulk_checkout_address = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973'
+    else:
+        bulk_checkout_address = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C'
 
     # Get bulk checkout contract instance
     bulk_checkout_contract = w3.eth.contract(address=bulk_checkout_address, abi=bulk_checkout_abi)
@@ -183,8 +201,8 @@ def grants_transaction_validator(contribution, w3, chain='std'):
     # If transaction was successful, continue to validate it
     if status == 'success':
         # Transaction was successful so we know it cleared
-        response['tx_cleared'] = True 
-        response['split_tx_confirmed'] = True 
+        response['tx_cleared'] = True
+        response['split_tx_confirmed'] = True
 
         # Get the receipt to parse parameters
         receipt = w3.eth.getTransactionReceipt(tx_hash)
@@ -206,19 +224,14 @@ def grants_transaction_validator(contribution, w3, chain='std'):
         # Parse out the transfer details we are looking to find in the event logs
         token_symbol = contribution.normalized_data['token_symbol']
         expected_recipient = contribution.normalized_data['admin_address'].lower()
-        expected_token = get_token(token_symbol, network)['addr'].lower() # we compare by token address
-
-        # If amount_per_period_minus_gas_price is very close to zero, this is an automatic Gitcoin
-        # contribution so we use a different field to get the expected value
-        if contribution.subscription.amount_per_period_minus_gas_price < 0.000000001:
-            amount_to_use = contribution.subscription.amount_per_period 
-        else:
-            amount_to_use = contribution.subscription.amount_per_period_minus_gas_price
+        expected_token = get_token(token_symbol, network, chain)['addr'].lower() # we compare by token address
+        amount_to_use = contribution.subscription.amount_per_period
 
         expected_amount = parse_token_amount(
             token_symbol=token_symbol,
             amount=amount_to_use,
-            network=network
+            network=network,
+            chain=chain
         )
         transfer_tolerance = 0.05 # use a 5% tolerance when checking amounts to account for floating point error
         expected_amount_min = int(expected_amount * (1 - transfer_tolerance))
@@ -231,6 +244,29 @@ def grants_transaction_validator(contribution, w3, chain='std'):
 
             transfer_amount = event['args']['amount']
             is_correct_amount = transfer_amount >= expected_amount_min and transfer_amount <= expected_amount_max
+
+            # if is_correct_recipient:
+            #     print('==========================')
+            #     print(f"subscription {contribution.subscription.amount_per_period_minus_gas_price}")
+            #     print(f"contribution.subscription.amount_per_period  {contribution.subscription.amount_per_period }")
+            #     print(f"contribution.subscription.amount_per_period_minus_gas_price { contribution.subscription.amount_per_period_minus_gas_price}")
+            #     print(f"paid to gitcoin  {float(contribution.subscription.amount_per_period) - float(contribution.subscription.amount_per_period_minus_gas_price) } ")
+
+            #     print(f"tx_hash: {tx_hash}")
+            #     print(f"amount_to_use: {amount_to_use}")
+            #     print(f"expected_amount: {expected_amount}")
+            #     print(f"Expected amount range: {expected_amount_min} - {expected_amount_max}")
+            #     print(f"transfer_amount : {transfer_amount}")
+            #     print(f"is_correct_amount: {is_correct_amount}")
+
+            #     print(f"expected_token: {expected_token}")
+            #     print(f"token from event: {event['args']['token'].lower()}")
+            #     print(f"is_correct_token: {is_correct_token}")
+
+            #     print(f"expected_recipient: {expected_recipient}")
+            #     print(f"recipient from event: {event['args']['dest'].lower()}")
+            #     print(f"is_correct_recipient: {is_correct_recipient}")
+            #     print('==========================')
 
             if is_correct_recipient and is_correct_token and is_correct_amount:
                 # We found the event log corresponding to the contribution parameters

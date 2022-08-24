@@ -33,7 +33,7 @@ def grant_collection_age_score(oldest, current):
     currentAge = today - current.replace(tzinfo=None)
     # subtract one from ratio between current and oldest so that newest have higher chance of moving to the top
     ageScore = 1 - (currentAge / oldest)
-    return int(ageScore * 5000)
+    return int(ageScore * 500)
 
 def grant_meta_data_score(grants):
     score = 0
@@ -41,14 +41,13 @@ def grant_meta_data_score(grants):
 
         # if grant has github url increase score by 1%
         if grant.github_project_url is not None:
-            score += 5000
+            score += 100
 
         # Increase score by 1% for each grant that has a twitter verification
         if grant.twitter_verified:
-            score += 1000
+            score += 100
 
     return score
-
         
 
 class Command(BaseCommand):
@@ -58,17 +57,23 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         oldest_creation = GrantCollection.objects.earliest()
         days_since_oldest_created = today - oldest_creation.created_on.replace(tzinfo=None)
+        collections = GrantCollection.objects.filter(hidden=False)
+        total = collections.count()
 
-        for gc in GrantCollection.objects.filter(hidden=False):
-            shuffle_rank = random.randint(0,99999)
+
+        # create and update the shuffle rank
+        for key, gc in enumerate(collections):
+            shuffle_rank = random.randint(0,999999)
 
             age_score = grant_collection_age_score(days_since_oldest_created, gc.created_on)
             shuffle_rank += age_score
 
             meta_data_score = grant_meta_data_score(gc.grants.all())
             shuffle_rank += meta_data_score
+
+
+            # save the new shuffle_rank
             gc.shuffle_rank = shuffle_rank
-            
             gc.save()
 
         print('done')

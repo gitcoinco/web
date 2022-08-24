@@ -153,7 +153,7 @@ def coingecko(source, tokens):
 
     for token in tokens:
 
-        if not token.symbol or not token.conversion_rate_id:
+        if not token.symbol or not token.conversion_rate_id or token.conversion_rate_id not in response:
             print(f'error: {token} is missing symbol /conversion_rate_id. skipping fetching conversion rate.')
             continue
 
@@ -161,29 +161,29 @@ def coingecko(source, tokens):
         conversion_rate_id = token.conversion_rate_id
         conversion_rates = response.get(conversion_rate_id)
 
-        token.conversion_rate_id
+        print(conversion_rate_id)
+        if conversion_rates:
+            # token -> ETH
+            to_amount = conversion_rates.get('eth')
+            ConversionRate.objects.create(
+                from_amount=1,
+                to_amount=to_amount,
+                source=source,
+                from_currency=from_currency,
+                to_currency='ETH'
+            )
+            print(f'Coingecko: {from_currency} => ETH : {to_amount}')
 
-        # token -> ETH
-        to_amount = conversion_rates.get('eth')
-        ConversionRate.objects.create(
-            from_amount=1,
-            to_amount=to_amount,
-            source=source,
-            from_currency=from_currency,
-            to_currency='ETH'
-        )
-        print(f'Coingecko: {from_currency} => ETH : {to_amount}')
-
-        # token -> USDT
-        to_amount = conversion_rates.get('usd')
-        ConversionRate.objects.create(
-            from_amount=1,
-            to_amount=to_amount,
-            source=source,
-            from_currency=from_currency,
-            to_currency='USDT'
-        )
-        print(f'Coingecko: {from_currency} => USD : {to_amount}')
+            # token -> USDT
+            to_amount = conversion_rates.get('usd')
+            ConversionRate.objects.create(
+                from_amount=1,
+                to_amount=to_amount,
+                source=source,
+                from_currency=from_currency,
+                to_currency='USDT'
+            )
+            print(f'Coingecko: {from_currency} => USD : {to_amount}')
 
     # ConversionRate.objects.filter(source=source, created_on__lt=now).delete()
     # print(f'Deleted old coingecko conversion rates')

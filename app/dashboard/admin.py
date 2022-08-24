@@ -31,8 +31,8 @@ from .models import (
     Activity, ActivityIndex, Answer, BlockedIP, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment,
     BountyInvites, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry,
     FundRequest, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
-    Investigation, LabsResearch, MediaFile, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile,
-    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
+    Investigation, LabsResearch, MediaFile, ObjectView, Option, Passport, PassportStamp, Poll, PollMedia, PortfolioItem,
+    Profile, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
     TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
 )
 
@@ -50,6 +50,14 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
         'fulfiller_address', 'fulfiller_metadata', 'fulfiller_github_url'
     ]
     ordering = ['-id']
+
+    def response_change(self, request, obj):
+        from dashboard.utils import sync_payout
+
+        if "_update_txn_status" in request.POST:
+            sync_payout(obj)
+            self.message_user(request, f"Updated status of the txn from chain")
+            return redirect(obj.admin_url)
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -368,10 +376,10 @@ class TipAdmin(admin.ModelAdmin):
 
 # Register your models here.
 class BountyAdmin(admin.ModelAdmin):
-    raw_id_fields = ['interested', 'coupon_code', 'org', 'event', 'bounty_owner_profile', 'bounty_reserved_for_user']
+    raw_id_fields = ['interested', 'coupon_code', 'org', 'event', 'bounty_owner_profile', 'bounty_reserved_for_user', 'owners']
     ordering = ['-id']
 
-    search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
+    search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name', 'custom_title', 'custom_description']
     list_display = ['pk', 'img', 'bounty_state', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
@@ -663,6 +671,20 @@ class MediaFileAdmin(admin.ModelAdmin):
     list_display = ['id', 'file', 'filename']
 
 
+class PassportStampAdmin(admin.ModelAdmin):
+    list_display = ['user', 'stamp_id', 'stamp_provider']
+    raw_id_fields = ['user', 'passport']
+    search_fields = [
+        'user__id', 'user__username', 'stamp_id', 'stamp_provider'
+    ]
+
+class PassportAdmin(admin.ModelAdmin):
+    list_display = ['user', 'did']
+    raw_id_fields = ['user']
+    search_fields = [
+        'user__id', 'user__username', 'did'
+    ]
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -708,3 +730,5 @@ admin.site.register(Answer, AnswersAdmin)
 admin.site.register(PollMedia, PollMediaAdmin)
 admin.site.register(ProfileVerification, ProfileVerificationAdmin)
 admin.site.register(MediaFile, MediaFileAdmin)
+admin.site.register(PassportStamp, PassportStampAdmin)
+admin.site.register(Passport, PassportAdmin)

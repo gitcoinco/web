@@ -7,39 +7,24 @@ assignees: ''
 
 ---
 
-<!--
-Hello Gitcoiner!
+**Overview**
+Details, details, details
 
-Please use the template below for bugs found within Gitcoin.
-If it is general support you need, reach out to us on [Discord](https://discord.gg/gitcoin)
+**Steps To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-Provide a general summary of the issue in the title above and use relevant fields below to define the problem.
-
--->
-
-**Describe the bug**
-<!-- A clear and concise description of what the bug is. -->
-
-**To Reproduce**
-<!-- Steps to reproduce the behavior. -->
+**Observed  behavior**
+A clear and concise description of what the observed behavior of the system.
 
 **Expected behavior**
-<!-- A clear and concise description of what you expected to happen. -->
+A clear and concise description of what you expected the system to do.
 
 **Screenshots**
-<!-- If applicable, add screenshots to help explain your problem.) -->
-
-**Desktop (please complete the following information):**
-
-- OS:
-- Browser:
-- Browser Version:
-
-**Smartphone (please complete the following information):**
-
-- Device:
-- OS:
-- Browser:
-- Version:
+If applicable, add screenshots to help explain your problem.
 
 **Additional context**
+Add any other context about the problem here that will assist in triaging the bug. I.e. Browser information, unique identifiers, etc.

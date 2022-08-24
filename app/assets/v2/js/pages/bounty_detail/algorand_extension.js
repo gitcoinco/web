@@ -31,7 +31,7 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
         modal.closeModal();
         return;
       }
-      
+
       // step3: check if enough balance is present
       const balance = await AlgoSigner.algod({
         ledger: NETWORK,
@@ -41,7 +41,7 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
       if (token_name == 'ALGO') {
         // ALGO token
         if (Number(balance.amount) <= amount * 10 ** vm.decimals) {
-          _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
+          _alert({ message: `Insufficient balance in address ${from_address}` }, 'danger');
           modal.closeModal();
           return;
         }
@@ -71,12 +71,12 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
         });
 
         if (has_enough_asset_balance) {
-          _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
+          _alert({ message: `Insufficient balance in address ${from_address}` }, 'danger');
           modal.closeModal();
           return;
         }
       }
-      
+
 
       // step4: get txnParams
       const txParams = await AlgoSigner.algod({

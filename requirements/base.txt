@@ -1,5 +1,5 @@
 bs4
-ccxt
+ccxt==1.72.98
 cryptocompare==0.6
 cryptography==2.3
 celery==4.4.0
@@ -44,6 +44,8 @@ google-api-python-client==1.7.3
 django-environ==0.4.5
 eth-utils==1.4.1
 jsondiff==1.1.1
+Jinja2==3.0.3
+markupsafe==2.0.1
 social-auth-app-django==5.0.0
 django-ipware==2.0.2
 geoip2==2.8.0
@@ -118,3 +120,4 @@ docutils==0.17.1
 unidecode==1.2.0
 drf-flex-fields==0.9.1
 pandas
+django-svg-image-form-field==1.0.1

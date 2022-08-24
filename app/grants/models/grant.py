@@ -18,10 +18,72 @@ from grants.utils import get_upload_filename, is_grant_team_member
 from townsquare.models import Favorite
 from web3 import Web3
 
+from .clr_match import CLRMatch
 from .contribution import Contribution
 from .grant_clr_calculation import GrantCLRCalculation
 from .grant_collection import GrantCollection
 from .subscription import Subscription
+
+
+class GrantPayout(SuperModel):
+    PAYOUT_STATUS = [
+        ('pending', 'pending'),
+        ('ready', 'ready'),
+        ('expired', 'expired'),
+        ('funding_withdrawn', 'funding_withdrawn')
+    ]
+    NETWORKS = [
+        ('mainnet', 'mainnet'),
+        ('rinkeby', 'rinkeby'),
+        # ('polygon', 'polygon'),
+        # ('mumbai', 'mumbai'),
+    ]
+
+    name = models.CharField(
+        max_length=25,
+        help_text=_('Display Name for Payout')
+    )
+    contract_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('Payout Contract from which funds would be claimed')
+    )
+    network = models.CharField(
+        max_length=15,
+        default='mainnet',
+        choices=NETWORKS,
+        help_text=_('Network where contract is deployed')
+    )
+    token = models.ForeignKey(
+        'economy.Token',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Token in which amount should be paid out')
+    )
+    conversion_rate = models.FloatField(
+        default=1.0,
+        help_text=_('token to USD conversion rate')
+    )
+    conversion_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text=_('date on which conversion_rate was set')
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=PAYOUT_STATUS,
+        default='pending'
+    )
+    funding_withdrawal_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text=_('When was funding in Matching Contract withdrawn?')
+    )
+
+    def __str__(self):
+        return f"{self.name} Payout"
 
 
 class GrantCLR(SuperModel):
@@ -72,6 +134,11 @@ class GrantCLR(SuperModel):
         default=dict,
         null=True, blank=True,
         help_text="Grants allowed in this CLR round"
+    )
+    grant_excludes = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grants excluded in this CLR round"
     )
     subscription_filters = JSONField(
         default=dict,
@@ -148,6 +215,14 @@ class GrantCLR(SuperModel):
         help_text=_("text which appears below banner")
     )
 
+    grant_payout = models.ForeignKey(
+        'grants.GrantPayout',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='grant_clrs',
+        help_text=_('Grant Payout')
+    )
 
     def __str__(self):
         return f"pk:{self.pk}, round_num: {self.round_num}"
@@ -175,6 +250,8 @@ class GrantCLR(SuperModel):
             grants = grants.filter(pk__in=grant_ids)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
+        if self.grant_excludes:
+            grants = grants.exclude(**self.grant_excludes)
         if self.subscription_filters:
             grants = grants.filter(**self.subscription_filters)
 
@@ -182,11 +259,9 @@ class GrantCLR(SuperModel):
 
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
-        for obj in self.clr_calculations.filter(grant=grant, latest=True):
-            obj.active = False
-            obj.latest = False
-            obj.save()
-
+        # update matching records
+        self.clr_calculations.filter(grant=grant, latest=True).update(active=False, latest=False)
+        # create the new record
         GrantCLRCalculation.objects.create(
             grantclr=self,
             grant=grant,
@@ -234,6 +309,10 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
         indexes = (GinIndex(fields=["vector_column"]),)
+        index_together = [
+            ["last_update", "network", "active", "hidden"],
+            ["last_update", "network", "active", "hidden", "weighted_shuffle"],
+        ]
 
 
     REGIONS = [
@@ -364,6 +443,13 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The algorand wallet address where subscription funds will be sent.'),
     )
+    cosmos_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The cosmos wallet address where subscription funds will be sent.'),
+    )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
@@ -443,7 +529,7 @@ class Grant(SuperModel):
     )
     admin_profile = models.ForeignKey(
         'dashboard.Profile',
-        related_name='grant_admin',
+        related_name='grants',
         on_delete=models.CASCADE,
         help_text=_('The Grant administrator\'s profile.'),
         null=True,
@@ -495,9 +581,12 @@ class Grant(SuperModel):
         help_text=_('The last grant admin update date'),
         null=True,
         blank=True,
+        db_index=True,
     )
     categories = models.ManyToManyField('GrantCategory', blank=True) # TODO: REMOVE
-    tags = models.ManyToManyField('GrantTag', blank=True)
+    tags = models.ManyToManyField('GrantTag', blank=True, related_name='tags')
+    tags_requested = models.ManyToManyField('GrantTag', blank=True, related_name='tags_requested')
+    tag_eligibility_reason = models.TextField(default='', blank=True, help_text=_('Eligibility Tag Reasoning'))
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
@@ -603,6 +692,8 @@ class Grant(SuperModel):
             tenants.append('RSK')
         if self.algorand_payout_address and self.algorand_payout_address != '0x0':
             tenants.append('ALGORAND')
+        if self.cosmos_payout_address and self.cosmos_payout_address != '0x0':
+            tenants.append('COSMOS')
 
         return tenants
 
@@ -823,6 +914,7 @@ class Grant(SuperModel):
     def contract(self):
         """Return grants contract."""
         from dashboard.utils import get_web3
+
         web3 = get_web3(self.network)
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
@@ -854,22 +946,33 @@ class Grant(SuperModel):
             'harmony_payout_address': self.harmony_payout_address,
             'rsk_payout_address': self.rsk_payout_address,
             'algorand_payout_address': self.algorand_payout_address,
+            'cosmos_payout_address': self.cosmos_payout_address,
             'is_on_team': is_grant_team_member(self, user.profile) if user and user.is_authenticated else False,
         }
 
-    def repr(self, user, build_absolute_uri):
-        team_members = serializers.serialize('json', self.team_members.all(),
-                            fields=['handle', 'url', 'profile__lazy_avatar_url']
-                        )
+    def repr(self, user, build_absolute_uri, is_detail = True):
+        from dashboard.utils import get_web3
+
         grant_type = None
         if self.grant_type:
             grant_type = serializers.serialize('json', [self.grant_type], fields=['name', 'label'])
 
-        grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name'])
-
         active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 
-        return {
+        team_members = serializers.serialize('json', self.team_members.all(),
+                        fields=['handle', 'url', 'profile__lazy_avatar_url']
+                    )
+
+        web3 = get_web3(self.network)
+        is_contract_address = False
+        if self.admin_address != '0x0':
+            try:
+                code = web3.eth.getCode(web3.eth.toChecksumAddress(self.admin_address))
+                is_contract_address = True if code != b'' else False
+            except:
+                is_contract_address = False
+
+        result = {
                 'id': self.id,
                 'active': self.active,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
@@ -883,12 +986,14 @@ class Grant(SuperModel):
                 'weighted_risk_score': self.weighted_risk_score,
                 'is_clr_active': self.is_clr_active,
                 'clr_round_num': self.clr_round_num,
+                'is_contract_address': is_contract_address,
                 'admin_profile': {
                     'url': self.admin_profile.url,
                     'handle': self.admin_profile.handle,
                     'avatar_url': self.admin_profile.lazy_avatar_url
                 },
                 'favorite': self.favorite(user) if user.is_authenticated else False,
+                'team_members': json.loads(team_members),
                 'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
                 'clr_prediction_curve': self.clr_prediction_curve,
                 'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
@@ -913,14 +1018,13 @@ class Grant(SuperModel):
                 'binance_payout_address': self.binance_payout_address,
                 'rsk_payout_address': self.rsk_payout_address,
                 'algorand_payout_address': self.algorand_payout_address,
+                'cosmos_payout_address': self.cosmos_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
                 'tenants': self.tenants,
-                'team_members': json.loads(team_members),
                 'metadata': self.metadata,
                 'grant_type': json.loads(grant_type) if grant_type else None,
-                'grant_tags': json.loads(grant_tags),
                 'twitter_handle_1': self.twitter_handle_1,
                 'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,
@@ -931,8 +1035,29 @@ class Grant(SuperModel):
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None,
                 'has_external_funding': self.has_external_funding,
                 'active_round_names': active_round_names,
-                'is_idle': self.is_idle
+                'is_idle': self.is_idle,
+                'is_hidden': self.hidden
             }
+
+        if is_detail:
+            clr_matches = CLRMatch.objects.filter(grant=self)
+
+            grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name', 'is_eligibility_tag'])
+
+            # has funds which have already been claimed
+            has_claim_history = clr_matches.exclude(claim_tx__isnull=True).exclude(claim_tx='').exists()
+
+            # has claims in pending / ready state
+            has_funds_to_be_claimed = clr_matches.filter(claim_tx__isnull=True).exists()
+            has_claims_in_review = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='pending').exists()
+            has_pending_claim = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='ready').exists()
+
+            result['has_pending_claim'] = has_pending_claim
+            result['has_claims_in_review'] = has_claims_in_review
+            result['has_claim_history'] = has_claim_history
+            result['grant_tags'] = json.loads(grant_tags)
+
+        return result
 
     def favorite(self, user):
         return Favorite.objects.filter(user=user, grant=self).exists()

@@ -1,26 +1,25 @@
-describe('Grants Explorer page', () => {
-  before(() => {
-    cy.setupMetamask();
+describe('Grants Explorer page', { tags: ['no-run'] }, () => {
+
+  beforeEach(() => {
+    cy.acceptCookies();
   });
-  
+
   afterEach(() => {
     cy.logout();
   });
-  
-  after(() => {
-    cy.clearWindows();
-  });
-  
+
   describe('grants explorer sort menu', () => {
     it('contains the proper sort options', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
         .should('contain', 'Discover')
+        .should('contain', 'Current Round')
+        .should('contain', 'All-Time')
         .should('contain', 'Weighted Shuffle')
         .should('contain', 'Trending')
         .should('contain', 'Undiscovered Gems')
@@ -29,19 +28,37 @@ describe('Grants Explorer page', () => {
         .should('contain', 'Oldest')
         .should('contain', 'A to Z')
         .should('contain', 'Z to A')
-        .should('contain', 'Current Round')
-        .should('contain', 'Highest Amount Raised')
-        .should('contain', 'Highest Contributor Count')
-        .should('contain', 'All-Time');
-      cy.get('.vs__dropdown-menu').find('#vs3__option-13').should('contain', 'Highest Amount Raised'); // need to be more specific to test two elements with same name
-      cy.get('.vs__dropdown-menu').find('#vs3__option-14').should('contain', 'Highest Contributor Count');
+        .should('contain', 'Highest Match Amount');
+
+      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Amount Raised")').should('have.length', 2);
+      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Contributor Count")').should('have.length', 2);
+    });
+
+    it('does not contain Most Relevant option by default', () => {
+      cy.impersonateUser();
+
+      cy.visit('grants/explorer');
+
+      cy.get('.vselect-clean').click();
+      cy.get('.vs__dropdown-menu').should('not.contain', 'Most Relevant');
+    });
+
+    it('contains Most Relevant option when user performs keyword search', () => {
+      cy.impersonateUser();
+
+      cy.visit('grants/explorer');
+
+      cy.get('[placeholder="Search..."]').click().type('Test');
+
+      cy.get('.vselect-clean').click();
+      cy.get('.vs__dropdown-menu').should('contain', 'Most Relevant');
     });
 
     it('divides the sort options into category names with disabled labels', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.contains('Discover').parent().should('have.class', 'vs__dropdown-option--disabled');
@@ -53,7 +70,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -66,7 +83,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateStaffUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -79,7 +96,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateStaffUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       // Options in Discover category
@@ -124,6 +141,11 @@ describe('Grants Explorer page', () => {
       // Options in Current Round category
       cy.get('.vselect-clean').click();
 
+      cy.get('.vs__dropdown-menu').contains('Highest Match Amount').click();
+      cy.url().should('contain', 'sort_option=-clr_prediction_curve__0__1');
+
+      cy.get('.vselect-clean').click();
+
       cy.get('.vs__dropdown-menu').contains('Highest Amount Raised').click();
       cy.url().should('contain', 'sort_option=-amount_received_in_round');
 
@@ -135,12 +157,12 @@ describe('Grants Explorer page', () => {
       // Options in All-Time category
       cy.get('.vselect-clean').click();
 
-      cy.get('.vs__dropdown-menu').find('#vs3__option-13').contains('Highest Amount Raised').click(); // Need to be more specific here because the same options exist above
+      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Amount Raised")').last().click();
       cy.url().should('contain', 'sort_option=-amount_received');
 
       cy.get('.vselect-clean').click();
 
-      cy.get('.vs__dropdown-menu').find('#vs3__option-14').contains('Highest Contributor Count').click();
+      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Contributor Count")').last().click();
       cy.url().should('contain', 'sort_option=-contributor_count');
 
       // Admin options
@@ -155,5 +177,62 @@ describe('Grants Explorer page', () => {
       cy.url().should('contain', 'sort_option=-sybil_score');
     });
   });
+
+  describe('grants explorer filters', () => {
+    it('contains the proper filter options', () => {
+      cy.createActiveGrantRound();
+
+      cy.impersonateUser();
+
+      cy.visit('grants/explorer');
+
+      cy.contains('Grant Round').click();
+
+      cy.get('.dropdown-menu').should('contain', 'Test Grant CLR');
+    });
+  });
+
+  describe('selecting a grant', () => {
+    it('opens the grant in a new browser tab', () => {
+      cy.createGrantSubmission().then((response) => {
+        const grantUrl = response.body.url;
+
+        cy.approveGrant(grantUrl);
+        cy.impersonateUser();
+
+        cy.visit('grants/explorer');
+
+        cy.contains('Test Grant Submission')
+          .should('have.attr', 'target', '_blank')
+          .should('have.attr', 'rel', 'noopener noreferrer')
+          .then(link => {
+            cy.request(link.prop('href')).its('status').should('eq', 200);
+          });
+      });
+    });
+  });
+
+  describe('displaying idle and inactive grants', () => {
+    it('indicates that grant is inactive', () => {
+      cy.createGrantSubmission().then((response) => {
+        const grant_id = response.body.url.match(/(\d+)/);
+
+        cy.visit('grants/explorer/?page=1&limit=12&me=true&sort_option=weighted_shuffle&collection_id=false&network=mainnet&state=all&profile=false&sub_round_slug=false&collections_page=1&grant_regions=&grant_types=&grant_tags=&tenants=&idle=true&featured=true&round_type=false&hidden=true&tab=grants');
+
+        const grantCard = cy.get(`#grant-${grant_id[0]}`).should('have.class', 'idle-or-hidden');
+      });
+    });
+    it('should not indicate that grant is inactive', () => {
+      cy.createGrantSubmission().then((response) => {
+        const grantUrl = response.body.url;
+
+        cy.approveGrant(grantUrl);
+        const grant_id = grantUrl.match(/(\d+)/);
+
+        cy.visit('grants/explorer/?page=1&limit=12&me=true&sort_option=weighted_shuffle&collection_id=false&network=mainnet&state=all&profile=false&sub_round_slug=false&collections_page=1&grant_regions=&grant_types=&grant_tags=&tenants=&idle=true&featured=true&round_type=false&hidden=true&tab=grants');
+
+        const grantCard = cy.get(`#grant-${grant_id[0]}`).should('not.have.class', 'idle-or-hidden');
+      });
+    });
+  });
 });
-  

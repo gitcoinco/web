@@ -5,6 +5,7 @@ from decimal import Decimal
 from io import StringIO
 
 from django.conf import settings
+from django.core.management import call_command
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -13,8 +14,9 @@ from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
+from grants.ingest import handle_zksync_ingestion
 from grants.models import Grant, GrantCLR, GrantCollection, Subscription
-from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion
+from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion, toggle_user_sybil
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
 )
@@ -114,7 +116,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     print(lineno(), round(time.time(), 2))
     from search.models import SearchResult
-    if instance.pk:
+    if instance.pk and instance.active and not instance.hidden:
         SearchResult.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='grants', model='grant'),
             source_id=instance.pk,
@@ -207,6 +209,9 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
             # https://gitcoincore.slack.com/archives/C01FQV4FX4J/p1607980714026400
             if not settings.DEBUG:
                 subscription.network = 'mainnet'
+            else:
+                # Truncate the field length as the max length in DB is 8 at this time
+                subscription.network = "undef"
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.comments = package.get('comment', '')
@@ -332,11 +337,11 @@ def recalc_clr(self, grant_id, grant_clr, retry: bool = True) -> None:
             clr_round=clr_round,
             network=network,
             only_grant_pk=grant_id,
-            what='slim'
+            what='full'
         )
     elif grant_id:
         obj = Grant.objects.get(pk=grant_id)
-
+        obj.calc_clr_round()
         for clr_round in obj.in_active_clrs.all():
             network = 'mainnet'
             predict_clr(
@@ -345,7 +350,7 @@ def recalc_clr(self, grant_id, grant_clr, retry: bool = True) -> None:
                 clr_round=clr_round,
                 network=network,
                 only_grant_pk=obj.pk,
-                what='slim'
+                what='full'
             )
 
 
@@ -364,16 +369,6 @@ def process_predict_clr(self, save_to_db, from_date, clr_round, network, what) -
     )
 
     print(f"finished CLR estimates for {clr_round.round_num} {clr_round.sub_round_slug}")
-
-    # TOTAL GRANT
-    # grants = Grant.objects.filter(network=network, hidden=False, active=True, link_to_new_grant=None)
-    # grants = grants.filter(**clr_round.grant_filters)
-
-    # total_clr_distributed = 0
-    # for grant in grants:
-    #     total_clr_distributed += grant.clr_prediction_curve[0][1]
-
-    # print(f'Total CLR allocated for {clr_round.round_num} - {total_clr_distributed}')
 
 
 @app.shared_task(bind=True, max_retries=3)
@@ -456,4 +451,19 @@ def process_bsci_sybil_csv(self, file_name, csv):
     csv = StringIO(csv.read().decode('utf-8'))
 
     # run bsci script
-    bsci_script(csv)
+    (sybil_users, non_sybil_users) = bsci_script(csv)
+    toggle_user_sybil(sybil_users, non_sybil_users)
+
+
+@app.shared_task
+def sync_clr_match_payouts(network='mainnet', contract_address='0x0'):
+    call_command('sync_clr_match_payouts', f'-n {network}', f'-c {contract_address}')
+
+
+@app.shared_task(bind=True, max_retries=3)
+def handle_zksync_ingestion_task(self, profile_id, network, identifier, do_write):
+    try:
+        profile = Profile.objects.get(pk=profile_id)
+        handle_zksync_ingestion(profile, network, identifier, do_write)
+    except Exception as e:
+        print(e)

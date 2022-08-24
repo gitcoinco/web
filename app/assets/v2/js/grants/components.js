@@ -72,6 +72,7 @@ Vue.component('grant-card', {
 
       if (response.action === 'follow') {
         this.grant.favorite = true;
+        this.$emit('dismiss-favorite-alert');
       } else {
         this.grant.favorite = false;
       }
@@ -85,10 +86,38 @@ Vue.component('grant-card', {
 
       vm.$set(vm.grant, 'isInCart', true);
       CartData.addToCart(response.grant);
+      gtag('event', 'add_to_cart', {
+        // value, currency are set when checking out, but required
+        currency: 'USD',
+        value: 0,
+        items: [
+          {
+            item_id: vm.grant.id,
+            item_name: vm.grant.title,
+            item_category: vm.grant.active_round_names.toString(),
+            item_brand: vm.grant?.admin_profile?.handle,
+            quantity: 1
+          }
+        ]
+      });
     },
     removeFromCart: function() {
       let vm = this;
 
+      gtag('event', 'remove_from_cart', {
+        // value, currency are set when checking out, but required
+        value: 0,
+        currency: 'USD',
+        items: [
+          {
+            item_id: vm.grant.id,
+            item_name: vm.grant.title,
+            item_category: vm.grant.active_round_names.toString(),
+            item_brand: vm.grant?.admin_profile?.handle,
+            quantity: 1
+          }
+        ]
+      });
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
     },
@@ -126,6 +155,21 @@ Vue.component('grant-card', {
     }
   },
   computed: {
+    inactiveGrant() {
+      return this.grant.is_hidden || this.grant.is_idle;
+    },
+    inactiveGrantCopy() {
+      if (this.grant.is_hidden) {
+        return 'This grant is inactive because it is in review or deactivated.';
+      }
+      return this.grant.is_idle && "This grant is hidden from the explorer because it hasn't been updated for more than 3 months. Update your grant to make it visible.";
+    },
+    inactiveGrantHeader() {
+      if (this.grant.is_hidden) {
+        return 'Hidden from Explorer';
+      }
+      return this.grant.is_idle && 'Inactive';
+    },
     has_collections() {
       return this.collections.length;
     },
@@ -199,6 +243,9 @@ Vue.component('grant-collection', {
     },
     getGrantTitle(index) {
       return `${this.collection.cache?.grants[index]?.title}`;
+    },
+    getGrantUrl(index) {
+      return `${this.collection.cache?.grants[index]?.url}`;
     }
   }
 });

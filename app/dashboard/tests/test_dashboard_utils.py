@@ -59,10 +59,6 @@ class DashboardUtilsTest(TestCase):
         assert getBountyContract('mainnet').address == "0x2af47a65da8CD66729b4209C22017d6A5C2d2400"
 
     @staticmethod
-    def test_get_bounty():
-        assert get_bounty(100, 'rinkeby')['contract_deadline'] == 1515699751
-
-    @staticmethod
     def test_get_ordinal_repr():
         """Test the dashboard utility get_ordinal_repr."""
         assert get_ordinal_repr(1) == '1st'

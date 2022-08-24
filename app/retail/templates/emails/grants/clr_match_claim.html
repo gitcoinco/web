@@ -85,14 +85,20 @@ along with this program. If not, see
   <h1 style="text-transform: none; font-weight: normal; margin-top: 1.5em;">
     Claim Your Gitcoin Grants Round {{ round_number }} Matching Fund
   </h1>
-  <p style="font-size: 14px;">
-    Hi @{{ profile_handle }},<br><br>
 
-    Congratulations on a successful Gitcoin Grants Round {{ round_number }}!  Your grant has received a matching fund of
+  <p>
+    Hi @{{ profile_handle }},
   </p>
+  <p>
+    Congratulations on a successful Gitcoin Grants Round {{ round_number }}!
+    <br>
+    Your grant has received a matching fund of
+  </p>
+
   <p style="font-weight: bold; font-size: 24px; color: #11BC92; line-height: 1px;">
-    ${{ rounded_amount|floatformat:2|intcomma }}
+    {{ rounded_amount|floatformat:2|intcomma }} {{ token_symbol }}
   </p>
+
   <hr style="margin-left: 0; margin-top: 40px;">
   <div style="display: inline-block; margin-top: 1.5em; margin-bottom: 2em; text-align: center;">
     <div class="grant-logo">
@@ -105,13 +111,30 @@ along with this program. If not, see
     </div>
   </div>
   <hr style="margin-left: 0; margin-bottom: 2.5em;">
+
+  <p style="font-weight: bold; font-size: 18px; margin-top: 35px;">Clawback Policy</p>
   <p style="font-size: 14px;">
-    We have introduced a new <a href="https://gitcoin.co/blog/gitcoin-grants-round-11-governance-brief/">clawback period</a> where the matching funds will be returned to the matching pool at the start of the next Grants Round. Please claim your matching funds by <span style="color: #11BC92;">{{ claim_end_date }}</span>. 
+    <span style="font-weight: bold;">*Action required*: </span>
+    Make sure to claim your GR13 funds by June 30th. Any funds not claimed prior to June 30th will be returned to the matching pool on July 1st.
   </p>
+
+  <hr style="margin-left: 0; margin-bottom: 2.5em;">
+
   <a href="{{ grant.url }}?{{ utm_tracking }}" class="button large" style="display: inline-block; max-width: 6em; width: 70%">
     Claim Funds
   </a>
   <p style="color: #000000; line-height: 24px; margin-top: 40px;"><strong>What's Next?</strong></p>
+  <div style="font-size: 14px; margin-top: 24px;">
+    <a href="https://forms.gle/hd6oFUP6zxjmJPTJA">
+      <strong style="color: #6F3FF5; line-height: 21px;">
+       Help Gitcoin
+      </strong><br>
+    </a>
+    <span style="line-height: 24.5px;">
+      We love helping get funds to awesome grants like yours and we want to keep improving our product. But we need your feedback to help.<br>
+      We’d really appreciate it if you took a moment to answer our short survey (seriously it’ll take you 2 min max).
+    </span>
+  </div>
   <div style="font-size: 14px; margin-top: 24px;">
     <a href="{{ grant_url }}">
       <strong style="color: #6F3FF5; line-height: 21px;">
@@ -127,22 +150,6 @@ along with this program. If not, see
       </strong><br>
     </a>
     <span style="line-height: 24.5px;">Join fellow buidlers in the ecosystem and grow together.</span>
-  </div>
-  <div style="font-size: 14px; margin-top: 24px;">
-    <a href="https://store.gitcoin.co">
-      <strong style="color: #6F3FF5; line-height: 21px;">
-        Grab some cool swag.
-      </strong><br>
-    </a>
-    <span style="line-height: 24.5px;">Get 45% off Gitcoin schwag with code GR{{ round_number }}_GRANTEE</span> - Expires the end of October.
-  </div>
-  <div style="font-size: 14px; margin-top: 24px;">
-    <a href="https://github.com/gitcoinco/web/issues/9574">
-      <strong style="color: #6F3FF5; line-height: 21px;">
-        Let us know your thoughts.
-      </strong><br>
-    </a>
-    <span style="line-height: 24.5px;">Comment on GitHub with your thoughts on the Grants round.</span>
   </div>
 </div>
 

@@ -26,6 +26,7 @@ import json
 import logging
 import random
 import re
+import string
 import time
 import urllib.parse
 import uuid
@@ -41,6 +42,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.serializers import serialize
 from django.db.models import Count, Q
 from django.db.utils import IntegrityError
 from django.forms import URLField
@@ -75,12 +77,13 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from cacheops import invalidate_obj
+from dashboard import ethelo
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
-from dashboard.tasks import increment_view_count, update_trust_bonus
+from dashboard.tasks import calculate_trust_bonus, increment_view_count, update_trust_bonus
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
     get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
@@ -89,7 +92,7 @@ from economy.utils import ConversionRateNotFoundError, convert_amount, convert_t
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address
 from git.utils import get_auth_url, get_issue_details, get_url_dict, get_user, is_github_token_valid, search_users
-from grants.utils import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata, is_valid_eip_1271_signature
 from kudos.models import Token
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp
@@ -100,9 +103,10 @@ from marketing.mails import (
     wall_post_email,
 )
 from marketing.models import Keyword
+from mautic_logging.models import MauticLog
 from oauth2_provider.decorators import protected_resource
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
-from perftools.models import JSONStore
+from perftools.models import JSONStore, StaticJsonEnv
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from requests_oauthlib import OAuth2Session
@@ -124,12 +128,16 @@ from .helpers import (
 from .models import (
     Activity, ActivityIndex, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, Coupon,
     Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest,
-    LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView,
-    Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
+    LabsResearch, MediaFile, Option, Passport, PassportStamp, Poll, PortfolioItem, Profile, ProfileSerializer,
+    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction,
+    UserVerificationModel,
 )
 from .notifications import maybe_market_to_email, maybe_market_to_github
+from .passport_reader import CERAMIC_URL, SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER
 from .poh_utils import is_registered_on_poh
-from .router import HackathonEventSerializer, TribesSerializer
+from .router import HackathonEventSerializer
+from .router import ProfileSerializer as SimpleProfileSerializer
+from .router import TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
@@ -143,6 +151,11 @@ confirm_time_minutes_target = 4
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
+# pass a challenge statement to authorize use of Passport
+passport_challenge = {
+    'statement': "I authorize Gitcoin.co to read and calculate a score based on the content of my Gitcoin Passport.\n\nnonce:",
+    'nonce': False
+}
 
 @protected_resource()
 def oauth_connect(request, *args, **kwargs):
@@ -1143,9 +1156,8 @@ def users_fetch(request):
                 profile_json['looking_team_members'] = registration.looking_team_members
                 profile_json['looking_project'] = registration.looking_project
 
-                activity_indexes = ActivityIndex.objects.filter(key=f'profile:{user.pk}').values_list('activity__pk', flat=True)
                 activity = Activity.objects.filter(
-                    pk__in=list(activity_indexes),
+                    activities_index__key=f'profile:{user.pk}',
                     hackathonevent_id=hackathon_id,
                     activity_type='hackathon_new_hacker',
                 )
@@ -1166,8 +1178,8 @@ def users_fetch(request):
         if user.is_org:
             profile_dict = user.__dict__
             profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
-            sum_eth = profile_dict.get('as_dict').get('sum_eth_on_repos')
-            profile_json['sum_eth_on_repos'] = round(sum_eth if sum_eth is not None else 0, 2)
+            sum_eth = profile_dict.get('as_dict').get('sum_usd_on_repos')
+            profile_json['sum_usd_on_repos'] = round(sum_eth if sum_eth is not None else 0, 2)
             profile_json['tribe_description'] = user.tribe_description
             profile_json['rank_org'] = user.rank_org
         else:
@@ -1943,13 +1955,13 @@ def bounty_invite_url(request, invitecode):
             bounty_invite.bounty.add(bounty)
             bounty_invite.inviter.add(inviter)
             bounty_invite.invitee.add(request.user)
-        return redirect('/funding/details/?url=' + bounty.github_url)
+        return redirect(bounty.get_canonical_url())
     except Exception as e:
         logger.debug(e)
         raise Http404
 
 
-def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
+def bounty_details(request, ghuser=None, ghrepo=None, ghissue=None, stdbounties_id=None, bounty_id=None):
     """Display the bounty details.
 
     Args:
@@ -1973,7 +1985,12 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         _access_token = request.session.get('access_token')
 
     try:
-        if ghissue:
+        if bounty_id:
+            # The bounties should be referenced by their ID, as they do not always need to be source on github
+            bounties = Bounty.objects.current().filter(pk=bounty_id)
+            issue_url = None
+        elif ghissue:
+            # Fallback for using old URL types to access bounties
             issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue
             bounties = Bounty.objects.current().filter(github_url=issue_url.lower())
             if not bounties.exists():
@@ -1988,6 +2005,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
     params = {
         'issueURL': issue_url,
+        'bounty_id': bounty_id if bounty_id else 'null',
         'title': _('Issue Details'),
         'card_title': _('Funded Issue Details | Gitcoin'),
         'avatar_url': static('v2/images/helmet.png'),
@@ -2001,7 +2019,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
     bounty = None
 
-    if issue_url:
+    # issue_url will be None for custom bounties
+    if issue_url or bounty_id:
         try:
             if stdbounties_id is not None and stdbounties_id == "0":
                 new_id = Bounty.objects.current().filter(github_url__iexact=issue_url).first().standard_bounties_id
@@ -2302,8 +2321,12 @@ def profile_activity(request, handle):
         raise Http404
 
     date = timezone.now() - timezone.timedelta(days=365)
-    profile_activity_indexes = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
-    activities = list(Activity.objects.filter(pk__in=list(profile_activity_indexes),hidden=False).order_by('-created_on').values_list('created_on', flat=True))
+    activities = list(
+        Activity.objects.filter(
+            activities_index__key=f'profile:{profile.pk}',
+            hidden=False
+        ).order_by('-created_on').values_list('created_on', flat=True)
+    )
     activities += list(profile.actions.filter(created_on__gt=date).values_list('created_on', flat=True))
     response = {}
     prev_date = timezone.now()
@@ -2701,8 +2724,11 @@ def get_profile_tab(request, profile, tab, prev_context):
                 return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
 
             else:
-                profile_activity_indexes = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
-                all_activities = Activity.objects.filter(pk__in=list(profile_activity_indexes),hidden=False).order_by('-created_on')
+                all_activities = Activity.objects.filter(
+                    activities_index__key=f'profile:{profile.pk}',
+                    hidden=False
+                ).order_by('-created_on')
+
                 paginator = Paginator(
                     profile_filter_activities(all_activities, activity_type, activity_tabs), 10
                 )
@@ -2811,14 +2837,14 @@ def get_profile_tab(request, profile, tab, prev_context):
                 except IntegrityError:
                     messages.error(request, 'Portfolio Already Exists.')
         if pk:
-            # delete portfolio item
-            if not request.user.is_authenticated or request.user.profile.pk != profile.pk:
-                messages.error(request, 'Not Authorized')
-                return
             pi = PortfolioItem.objects.filter(pk=pk).first()
             if pi:
-                pi.delete()
-                messages.info(request, 'Portfolio Item has been deleted.')
+                # delete portfolio item
+                if request.user.is_authenticated and request.user.profile.pk == pi.profile.pk or request.user.is_staff:
+                    pi.delete()
+                    messages.info(request, 'Portfolio Item has been deleted.')
+                else:
+                    messages.error(request, 'Not Authorized')
     elif tab == 'earnings':
         context['earnings'] = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
     elif tab == 'spent':
@@ -2853,41 +2879,11 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
+        # puts Gitcoin Passport behind a feature flag
+        usePassport = StaticJsonEnv.objects.filter(key='GITCOIN_PASSPORT')
 
-        idena = {}
-        idena['is_connected'] = profile.is_idena_connected
-        # always pass in the urls so that we can easily switch state client side
-        idena['login_url'] = idena_callback_url(request, profile)
-        idena['logout_url'] = reverse('logout_idena', args=[profile.handle])
-        idena['check_status_url'] = reverse('recheck_idena_status', args=[profile.handle])
-        # construct verified state
-        if profile.is_idena_connected:
-            idena['address'] = profile.idena_address
-            idena['status'] = profile.idena_status
-            idena['is_verified'] = profile.is_idena_verified
-            if not idena['is_verified']:
-                idena['next_validation'] = str(localtime(next_validation_time()))
-
-
-        # states:
-        #0. not_connected - start state, user has no brightid_uuid
-        #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
-        #2. not_verified - connected, but not verified
-        #3. verified - connected, and verified
-        brightid = {}
-        brightid['status'] = 'not_connected'
-        brightid['uuid'] = profile.brightid_uuid
-        if profile.brightid_uuid:
-            brightid['status'] = 'unknown'
-        if profile.is_brightid_verified:
-            brightid['status'] = 'verified'
-        if request.GET.get('pull_bright_id_status'):
-            brightid['status'] = get_brightid_status(profile.brightid_uuid)
-
-        try:
-            brightid['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
-        except JSONStore.DoesNotExist:
-            brightid['upcoming_calls'] = []
+        # check if we should be displaying Passport or trust_bonus
+        context['use_passport_trust_bonus'] = usePassport.count() > 0 and usePassport[0].data.get('active', False)
 
         # QF round info
         clr_rounds_metadata = get_clr_rounds_metadata()
@@ -2897,122 +2893,290 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['round_end_date'] = calendar.timegm(clr_rounds_metadata['round_end_date'].utctimetuple())
         context['show_round_banner'] = clr_rounds_metadata['show_round_banner']
 
-        # detail available services
-        services = [
-            {
-                'ref': 'poh',
-                'name': 'Proof of Humanity',
-                'icon_path': static('v2/images/project_logos/poh-min.svg'),
-                'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
-                'match_percent': 50,
-                'is_verified': profile.is_poh_verified
-            }, {
-                'ref': 'qd',
-                'name': 'Quadratic Diplomacy',
-                'icon_path': static('v2/images/quadraticlands/mission/diplomacy.svg'),
-                'desc': 'Stake your GTC on your frens, and earn sybil resistence by doing so!',
-                'match_percent': 20,
-                'is_verified': profile.players.exists(),
-                'disable_disconnect': True,
-                'alt_is_verified_btn': {
-                    'text': 'Explore',
-                    'type': 'btn-outline-primary',
-                    'location': reverse('quadraticlands:mission_diplomacy')
+        # Passport Trust Bonus or original Trust Bonus
+        if context['use_passport_trust_bonus']:
+            # check if their is already a Passport associated for the user
+            context['is_passport_connected'] = json.dumps(bool(profile.passport_trust_bonus))
+
+            # gets passport_trust_bonus || trust_bonus
+            context['trust_bonus'] = profile.final_trust_bonus
+            # this score will be displayed on first load if the passport is connected
+            context['passport_trust_bonus'] = profile.passport_trust_bonus
+            context['passport_trust_bonus_status'] = profile.passport_trust_bonus_status
+            context['passport_trust_bonus_last_updated'] = profile.passport_trust_bonus_last_updated.isoformat() if profile.passport_trust_bonus_last_updated else None
+            context['passport_trust_bonus_stamp_validation'] = json.dumps(profile.passport_trust_bonus_stamp_validation) if profile.passport_trust_bonus_stamp_validation is not None else None
+
+            # dump the full passport into the context
+            try:
+                db_passport = Passport.objects.get(user=profile.user)
+                context['passport'] = json.dumps(db_passport.passport)
+                context['passport_did'] = json.dumps(db_passport.did)
+            except Passport.DoesNotExist:
+                context['passport'] = 'null'
+                context['passport_did'] = 'null'
+
+            # pass services as JSON in the context
+            context['services'] = json.dumps(SCORER_SERVICE_WEIGHTS)
+
+            # place the issuer into context
+            context['iam_issuer'] = TRUSTED_IAM_ISSUER
+            # pass the ceramic_url to the frontend
+            context['ceramic_url'] = CERAMIC_URL
+
+            # create a copy of the passport_challenge dict
+            challenge = passport_challenge.copy()
+            # use session challenge or generate a new one
+            challenge['nonce'] = request.session.get('passport_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
+
+            # pass challenge dict as JSON in the context
+            context['challenge'] = json.dumps(challenge)
+
+            # store into session
+            request.session['passport_challenge'] = challenge['nonce']
+        else:
+            idena = {}
+            idena['is_connected'] = profile.is_idena_connected
+            # always pass in the urls so that we can easily switch state client side
+            idena['login_url'] = idena_callback_url(request, profile)
+            idena['logout_url'] = reverse('logout_idena', args=[profile.handle])
+            idena['check_status_url'] = reverse('recheck_idena_status', args=[profile.handle])
+            # construct verified state
+            if profile.is_idena_connected:
+                idena['address'] = profile.idena_address
+                idena['status'] = profile.idena_status
+                idena['is_verified'] = profile.is_idena_verified
+                if not idena['is_verified']:
+                    idena['next_validation'] = str(localtime(next_validation_time()))
+
+            # states:
+            #0. not_connected - start state, user has no brightid_uuid
+            #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
+            #2. not_verified - connected, but not verified
+            #3. verified - connected, and verified
+            brightid = {}
+            brightid['status'] = 'not_connected'
+            brightid['uuid'] = profile.brightid_uuid
+            if profile.brightid_uuid:
+                brightid['status'] = 'unknown'
+            if profile.is_brightid_verified:
+                brightid['status'] = 'verified'
+            if request.GET.get('pull_bright_id_status'):
+                brightid['status'] = get_brightid_status(profile.brightid_uuid)
+
+            try:
+                brightid['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
+            except JSONStore.DoesNotExist:
+                brightid['upcoming_calls'] = []
+
+            # detail available services
+            services = [
+                {
+                    'ref': 'poh',
+                    'name': 'Proof of Humanity',
+                    'icon_path': static('v2/images/project_logos/poh-min.svg'),
+                    'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
+                    'match_percent': 50,
+                    'is_verified': profile.is_poh_verified
+                }, {
+                    'ref': 'brightid',
+                    'name': 'BrightID',
+                    'icon_path': static('v2/images/project_logos/brightid.png'),
+                    'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
+                    'match_percent': 50,
+                    'is_verified': brightid['status'] == 'verified',
+                    'status': "Awaiting Verification" if brightid['status'] == 'not_verified' else None,
+                    '_status': brightid['status'],
+                    'uuid': str(brightid['uuid']),
+                    'upcoming_calls': brightid['upcoming_calls']
+                }, {
+                    'ref': 'idena',
+                    'name': 'Idena',
+                    'icon_path': 'https://robohash.org/%s' % idena['address'] if idena['is_connected'] else static('v2/images/project_logos/idena.svg'),
+                    'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
+                    'match_percent': 50,
+                    'is_connected': idena['is_connected'],
+                    'is_verified': idena['is_connected'] and idena['is_verified'],
+                    'status': idena['status'] if idena['is_connected'] and not idena['is_verified'] else None,
+                    '_status': idena['status'] if idena['is_connected'] else None,
+                    'address': idena['address'] if idena['is_connected'] else None,
+                    'login_url': idena['login_url'],
+                    'logout_url': idena['logout_url'],
+                    'check_status_url': idena['check_status_url'],
+                    'next_validation': idena['next_validation'] if idena['is_connected'] and not idena['is_verified'] else None,
+                }, {
+                    'ref': 'poap',
+                    'name': 'POAP',
+                    'icon_path': static('v2/images/project_logos/poap.svg'),
+                    'desc': 'POAP is a proof-of-attendance protocol. Get verified by attending a POAP party.',
+                    'match_percent': 25,
+                    'is_verified': profile.is_poap_verified
+                }, {
+                    'ref': 'ens',
+                    'name': 'ENS',
+                    'icon_path': static('v2/images/project_logos/ens.svg'),
+                    'desc': 'Get verified through the Ethereum Naming Service.',
+                    'match_percent': 25,
+                    'is_verified': profile.is_ens_verified
+                }, {
+                    'ref': 'sms',
+                    'name': 'SMS',
+                    'icon_class': 'fa fa-mobile-alt fa-3x',
+                    'desc': 'Get verified through text from your phone.',
+                    'match_percent': 15,
+                    'is_verified': profile.sms_verification
+                }, {
+                    'ref': 'google',
+                    'name': 'Google',
+                    'icon_path': static('v2/images/project_logos/google.png'),
+                    'desc': 'Get verified by connecting to your Google account.',
+                    'match_percent': 15,
+                    'is_verified': profile.is_google_verified
+                }, {
+                    'ref': 'twitter',
+                    'name': 'Twitter',
+                    'icon_style': {
+                        'color': 'rgb(0, 172, 237)'
+                    },
+                    'icon_class': 'fab fa-twitter fa-3x',
+                    'desc': 'Get verified by connecting your Twitter account.',
+                    'match_percent': 15,
+                    'is_verified': profile.is_twitter_verified,
+                    'verify_tweet_text': verify_text_for_tweet(profile.handle)
+                }, {
+                    'ref': 'facebook',
+                    'name': 'Facebook',
+                    'icon_style': {
+                        'color': 'rgb(24, 119, 242)'
+                    },
+                    'icon_class': 'fab fa-facebook fa-3x',
+                    'desc': 'Get verified by connecting your Facebook account.',
+                    'match_percent': 15,
+                    'is_verified': profile.is_facebook_verified
                 }
-            }, {
-                'ref': 'brightid',
-                'name': 'BrightID',
-                'icon_path': static('v2/images/project_logos/brightid.png'),
-                'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
-                'match_percent': 50,
-                'is_verified': brightid['status'] == 'verified',
-                'status': "Awaiting Verification" if brightid['status'] == 'not_verified' else None,
-                '_status': brightid['status'],
-                'uuid': str(brightid['uuid']),
-                'upcoming_calls': brightid['upcoming_calls']
-            }, {
-                'ref': 'idena',
-                'name': 'Idena',
-                'icon_path': 'https://robohash.org/%s' % idena['address'] if idena['is_connected'] else static('v2/images/project_logos/idena.svg'),
-                'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
-                'match_percent': 50,
-                'is_connected': idena['is_connected'],
-                'is_verified': idena['is_connected'] and idena['is_verified'],
-                'status': idena['status'] if idena['is_connected'] and not idena['is_verified'] else None,
-                '_status': idena['status'] if idena['is_connected'] else None,
-                'address': idena['address'] if idena['is_connected'] else None,
-                'login_url': idena['login_url'],
-                'logout_url': idena['logout_url'],
-                'check_status_url': idena['check_status_url'],
-                'next_validation': idena['next_validation'] if idena['is_connected'] and not idena['is_verified'] else None,
-            }, {
-                'ref': 'poap',
-                'name': 'POAP',
-                'icon_path': static('v2/images/project_logos/poap.svg'),
-                'desc': 'POAP is a proof-of-attendance protocol. Get verified by attending a POAP party.',
-                'match_percent': 25,
-                'is_verified': profile.is_poap_verified
-            }, {
-                'ref': 'ens',
-                'name': 'ENS',
-                'icon_path': static('v2/images/project_logos/ens.svg'),
-                'desc': 'Get verified through the Ethereum Naming Service.',
-                'match_percent': 25,
-                'is_verified': profile.is_ens_verified
-            }, {
-                'ref': 'sms',
-                'name': 'SMS',
-                'icon_class': 'fa fa-mobile-alt fa-3x',
-                'desc': 'Get verified through text from your phone.',
-                'match_percent': 15,
-                'is_verified': profile.sms_verification
-            }, {
-                'ref': 'google',
-                'name': 'Google',
-                'icon_path': static('v2/images/project_logos/google.png'),
-                'desc': 'Get verified by connecting to your Google account.',
-                'match_percent': 15,
-                'is_verified': profile.is_google_verified
-            }, {
-                'ref': 'twitter',
-                'name': 'Twitter',
-                'icon_style': {
-                    'color': 'rgb(0, 172, 237)'
-                },
-                'icon_class': 'fab fa-twitter fa-3x',
-                'desc': 'Get verified by connecting your Twitter account.',
-                'match_percent': 15,
-                'is_verified': profile.is_twitter_verified,
-                'verify_tweet_text': verify_text_for_tweet(profile.handle)
-            }, {
-                'ref': 'facebook',
-                'name': 'Facebook',
-                'icon_style': {
-                    'color': 'rgb(24, 119, 242)'
-                },
-                'icon_class': 'fab fa-facebook fa-3x',
-                'desc': 'Get verified by connecting your Facebook account.',
-                'match_percent': 15,
-                'is_verified': profile.is_facebook_verified
-            }
-        ]
+            ]
 
-        # TODO: REMOVE
-        is_staff = request.user.is_staff if request.user else False
-        if not is_staff:
-            del services[1]
+            # pass as JSON in the context
+            context['services'] = json.dumps(services)
 
-        # pass as JSON in the context
-        context['services'] = json.dumps(services)
-        # Tentatively Coming Soon
-        context['coming_soon'] = json.dumps(['Duniter'])
-        # Tentatively On the Roadmap
-        context['roadmap'] = json.dumps(['Upala', 'PASS', 'Equality Protocol', 'Zero Knowledge KYC', 'Activity on Gitcoin'])
+            # Tentatively Coming Soon
+            context['coming_soon'] = json.dumps(['Duniter'])
+            # Tentatively On the Roadmap
+            context['roadmap'] = json.dumps(['Upala', 'PASS', 'Equality Protocol', 'Zero Knowledge KYC', 'Activity on Gitcoin'])
 
     else:
         raise Http404
     return context
 
+
+@login_required
+@require_POST
+def check_passport_stamps(request, handle):
+    stamps = {}
+
+    user = request.user
+
+    # pull from post data
+    hashes = request.POST.getlist('stamp_hashes[]', [])
+
+    # check if the stamp has been allocated to a different user
+    for stamp_id in hashes:
+        duplicate_stamp_ids = PassportStamp.objects.exclude(user=user).filter(stamp_id=stamp_id)
+        stamps[stamp_id] = len(duplicate_stamp_ids) == 0
+
+    return JsonResponse({
+        'checks': stamps
+    })
+
+
+@login_required
+@require_GET
+def get_passport_trust_bonus(request, handle):
+    user = request.user
+    profile = user.profile
+    did = None
+    try:
+        db_passport = Passport.objects.get(user_id=user.id)
+        did = db_passport.did
+    except Passport.DoesNotExist:
+        # This should not occur
+        raise
+
+    return JsonResponse({
+        "passport_did": did,
+        "passport_trust_bonus": profile.passport_trust_bonus,
+        "passport_trust_bonus_status": profile.passport_trust_bonus_status,
+        "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated,
+        "passport_trust_bonus_stamp_validation": profile.passport_trust_bonus_stamp_validation
+    })
+
+@require_GET
+def passport(request):
+    url = 'https://gitcoin.notion.site/gitcoin/Your-digital-citizenship-pass-in-a-decentralized-society-541ce3929afc4f9cb1cdc4c44db12c68'
+    return redirect(url)
+    
+
+
+@login_required
+@require_POST
+def unlink_passport(request, handle):
+    user = request.user
+    profile = user.profile
+
+    # Reset the passport information
+    profile.passport_trust_bonus = 0.5
+    profile.passport_trust_bonus_status = "saved"
+    profile.passport_trust_bonus_last_updated = timezone.now()
+    profile.passport_trust_bonus_stamp_validation = []
+    profile.save()
+
+    try:
+        db_passport = Passport.objects.get(user_id=user.id)
+        db_passport.delete()
+    except Passport.DoesNotExist:
+        pass
+
+    # return a 200 response to signal that unlinking was successful has been called
+    return JsonResponse({'ok': True})
+
+
+@login_required
+@require_POST
+def verify_passport(request, handle):
+    user = request.user
+    profile = user.profile
+
+    # pull from post data
+    address = request.POST.get('eth_address')
+    signature = request.POST.get('signature')
+    did = request.POST.get('did')
+    # recreate challenge string
+    challenge_string = f"{passport_challenge['statement']} {request.session['passport_challenge']}"
+    # check for valid sig
+    message_hash = defunct_hash_message(text=challenge_string)
+    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+    sig_is_valid = address.lower() == signer.lower()
+
+    logger.info("Verify Passport - %s == %s", address, did)
+
+    # invalid sig error
+    if not sig_is_valid:
+        return JsonResponse({
+            'error': 'Bad signature',
+        })
+
+    # record that a pending update is in-progress...
+    profile.passport_trust_bonus_status = "pending_celery"
+    profile.passport_trust_bonus_last_updated = timezone.now()
+    profile.save()
+
+    # TODO: reset challenge?
+    # request.session['passport_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
+
+    # enqueue the validation and saving procedure
+    calculate_trust_bonus.delay(request.user.id, did, address)
+
+    # return a 200 response to signal that calculate_trust_bonus has been called
+    return JsonResponse({'ok': True})
 
 def get_profile_by_idena_token(token):
     handle = get_handle_by_idena_token(token)
@@ -3254,28 +3418,41 @@ def verify_user_twitter(request, handle):
                 'msg': msg
             })
 
-        last_tweet = api.user_timeline(screen_name=twitter_handle, count=1, tweet_mode="extended",
-                                       include_rts=False, exclude_replies=False)[0]
+        verification_tweet = None
+        last_10_tweets = api.user_timeline(screen_name=twitter_handle, count=10, tweet_mode="extended",
+                                       include_rts=False, exclude_replies=False)
+        for tweet in last_10_tweets:
+            if tweet.full_text.startswith("I am verifying my identity as"):
+                verification_tweet = tweet
+                break
+
     except tweepy.TweepError as e:
         logger.error(f"error: verify_user_twitter TweepError {e}")
         return JsonResponse({
             'ok': False,
-            'msg': f'Sorry, we couldn\'t get the last tweet from @{twitter_handle}'
+            'msg': f'Sorry, we couldn\'t get the verification tweet from @{twitter_handle}'
         })
     except IndexError as e:
         logger.error(f"error: verify_user_twitter IndexError {e}")
         return JsonResponse({
             'ok': False,
-            'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
+            'msg': 'Sorry, we couldn\'t retrieve the verification tweet from your timeline'
         })
 
-    if last_tweet.retweeted or 'RT @' in last_tweet.full_text:
+
+    if not verification_tweet:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Sorry, we couldn\'t retrieve the verification tweet from your timeline'
+        })
+
+    if verification_tweet.retweeted or 'RT @' in verification_tweet.full_text:
         return JsonResponse({
             'ok': False,
             'msg': f'We get a retweet from your last status, at this moment we don\'t supported retweets.'
         })
 
-    full_text = html.unescape(last_tweet.full_text)
+    full_text = html.unescape(verification_tweet.full_text)
     expected_msg = verify_text_for_tweet(handle)
 
     # Twitter replaces the URL with a shortened version, which is what it returns
@@ -3896,6 +4073,8 @@ def profile(request, handle, tab=None):
 
     context = {}
     context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
+    context['DATADOG_TOKEN'] = settings.DATADOG_TOKEN
+
     # get this user
     try:
         if not handle and not request.user.is_authenticated:
@@ -3975,7 +4154,7 @@ def profile(request, handle, tab=None):
             network = get_default_network()
             orgs_bounties = profile.get_orgs_bounties(network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
-            context['sum_eth_on_repos'] = profile.get_eth_sum(bounties=orgs_bounties)
+            context['sum_usd_on_repos'] = profile.get_sum(bounties=orgs_bounties, currency='usd')
             context['works_with_org'] = profile.as_dict.get('works_with_org', [])
             context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
             what = f'tribe:{profile.handle}'
@@ -4164,12 +4343,14 @@ def sync_web3(request):
                     if new_bounty:
                         url = new_bounty.url
                         try:
-                            fund_ables = Activity.objects.filter(activity_type='status_update',
-                                                                 bounty=None,
-                                                                 metadata__fund_able=True,
-                                                                 metadata__resource__contains={
-                                                                     'provider': issue_url
-                                                                 })
+                            fund_ables = Activity.objects.filter(
+                                activity_type='status_update',
+                                bounty=None,
+                                metadata__fund_able=True,
+                                metadata__resource__contains={
+                                    'provider': issue_url
+                                }
+                            )
                             if fund_ables.exists():
                                 comment = f'New Bounty created {new_bounty.get_absolute_url()}'
                                 activity = fund_ables.first()
@@ -4306,6 +4487,9 @@ def new_hackathon_bounty(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
+    if hackathon_event.is_expired():
+        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
@@ -4405,7 +4589,20 @@ def change_bounty(request, bounty_id):
         'reserved_for_user_handle',
         'is_featured',
         'admin_override_suspend_auto_approval',
-        'keywords'
+        'keywords',
+        'contact_details',
+        'bounty_source',
+        'acceptance_criteria',
+        'resources',
+        'github_url',
+        'funding_organisation',
+        'network',
+        'metadata',
+        'peg_to_usd',
+        'expires_date',
+        'payout_date',
+        'never_expires',
+        'custom_issue_description'
     ]
 
     if request.body:
@@ -4431,8 +4628,10 @@ def change_bounty(request, bounty_id):
         bounty_changed = False
         new_reservation = False
         for key in keys:
+            value = params.get(key, None)
             value = params.get(key, 0)
-            if value != 0:
+            # Explicitly allow the value False to get into the if path
+            if value is False or value != 0:
                 if key == 'featuring_date':
                     value = timezone.make_aware(
                         timezone.datetime.fromtimestamp(int(value)),
@@ -4440,6 +4639,20 @@ def change_bounty(request, bounty_id):
 
                 if key == 'bounty_categories':
                     value = value.split(',')
+                elif key == "payout_date":
+                    value = 9999999999 if value == 0 else value
+                    value = timezone.make_aware(
+                        timezone.datetime.fromtimestamp(value),
+                        timezone=UTC
+                    )
+                elif key == "expires_date":
+                    value = 9999999999 if value == 0 else value
+                    value = timezone.make_aware(
+                        timezone.datetime.fromtimestamp(value),
+                        timezone=UTC
+                    )
+
+
                 old_value = getattr(bounty, key)
 
                 if value != old_value:
@@ -4450,6 +4663,17 @@ def change_bounty(request, bounty_id):
                     bounty_changed = True
                     if key == 'reserved_for_user_handle' and value:
                         new_reservation = True
+
+
+        owners = params.get('owners', [])
+        old_owners = [o.id for o in bounty.owners.all()]
+
+        if owners != old_owners:
+            bounty.owners.clear()
+            for owner_id in owners:
+                bounty.owners.add(Profile.objects.get(pk=owner_id))
+            bounty_changed = True
+
 
         bounty_increased = False
         if not bounty.is_bounties_network:
@@ -4511,6 +4735,14 @@ def change_bounty(request, bounty_id):
     result = {}
     for key in keys:
         result[key] = getattr(bounty, key)
+
+    result['expires_date'] = bounty.expires_date.timestamp() if bounty.expires_date else None
+    result['payout_date'] = bounty.payout_date.timestamp() if bounty.payout_date else None
+    result['value_true'] = str(bounty.value_true)
+    result['value_true_usd'] = str(bounty.value_true_usd)
+    result['owners'] = SimpleProfileSerializer(bounty.owners.all(), many=True, read_only=True).data
+    result['bounty_reserved_for_user'] = SimpleProfileSerializer(bounty.bounty_reserved_for_user, read_only=True).data
+
     del result['featuring_date']
 
     params = {
@@ -4522,7 +4754,9 @@ def change_bounty(request, bounty_id):
         'token_address': bounty.token_address,
         'amount': bounty.get_value_true,
         'estimated_hours': bounty.estimated_hours,
-        'network': bounty.network
+        'network': bounty.network,
+        'subscriptions': request.user.profile.active_subscriptions,
+        'hackathon': bounty.event,
     }
 
     return TemplateResponse(request, 'bounty/change.html', params)
@@ -6048,12 +6282,14 @@ def create_bounty_v1(request):
         return JsonResponse(response)
 
     github_url = request.POST.get("github_url", None)
-    if Bounty.objects.filter(github_url=github_url, network=network).exists():
-        response = {
-            'status': 303,
-            'message': 'bounty already exists for this github issue'
-        }
-        return JsonResponse(response)
+    bounty_source = request.POST.get("bounty_source", None)
+    if bounty_source == 'github':
+        if Bounty.objects.filter(github_url=github_url, network=network).exists():
+            response = {
+                'status': 303,
+                'message': 'bounty already exists for this github issue'
+            }
+            return JsonResponse(response)
 
     bounty = Bounty()
 
@@ -6091,21 +6327,27 @@ def create_bounty_v1(request):
     bounty.raw_data = request.POST.get("raw_data", {})      # ETC-TODO: REMOVE ?
     bounty.web3_type = request.POST.get("web3_type", '')
     bounty.value_true = request.POST.get("amount", 0)
+    bounty.value_true_usd = request.POST.get("amount_usd", 0)
+    bounty.peg_to_usd = request.POST.get("peg_to_usd", 0) == 'true'
+    bounty.never_expires = request.POST.get("never_expires", 0) == 'true'
+
     bounty.bounty_owner_address = request.POST.get("bounty_owner_address", 0)
+
+    bounty.bounty_source = bounty_source
+    bounty.acceptance_criteria = request.POST.get("acceptance_criteria", "")
+    bounty.resources = request.POST.get("resources", "")
+    bounty.custom_issue_description = request.POST.get("custom_issue_description", "")
+
+    contact_details = request.POST.get("contact_details", "")
+    if contact_details:
+        bounty.contact_details = json.loads(contact_details)
+
+    owners = request.POST.get("owners", "")
 
     current_time = timezone.now()
 
     bounty.web3_created = current_time
     bounty.last_remarketed = current_time
-
-    try:
-        bounty.token_value_in_usdt = convert_token_to_usdt(bounty.token_name)
-        bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
-        bounty.value_in_usdt_now = bounty.value_in_usdt
-        bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
-
-    except ConversionRateNotFoundError as e:
-        logger.debug(e)
 
     # bounty expiry date
     expires_date = int(request.POST.get("expires_date", 9999999999))
@@ -6114,12 +6356,21 @@ def create_bounty_v1(request):
         timezone=UTC
     )
 
+    # bounty payout date
+    payout_date = int(request.POST.get("payout_date", 9999999999))
+    bounty.payout_date = timezone.make_aware(
+        timezone.datetime.fromtimestamp(payout_date),
+        timezone=UTC
+    )
+
+
     # bounty github data
-    try:
-        kwargs = get_url_dict(bounty.github_url)
-        bounty.github_issue_details = get_issue_details(**kwargs)
-    except Exception as e:
-        logger.error(e)
+    if bounty.github_url:
+        try:
+            kwargs = get_url_dict(bounty.github_url)
+            bounty.github_issue_details = get_issue_details(**kwargs)
+        except Exception as e:
+            logger.error(e)
 
     # bounty is featured bounty
     bounty.is_featured = request.POST.get("is_featured", False)
@@ -6163,6 +6414,11 @@ def create_bounty_v1(request):
         logger.error(e)
 
     bounty.save()
+
+    # Now that bounty has an ID save the m2m fields
+    if owners:
+        for owner_id in json.loads(owners):
+            bounty.owners.add(Profile.objects.get(pk=owner_id))
 
     # save again so we have the primary key set and now we can set the
     # standard_bounties_id
@@ -6342,15 +6598,26 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext'] and not fulfiller_address:
+    elif (
+        payout_type
+        in [
+            "qr",
+            "polkadot_ext",
+            "harmony_ext",
+            "binance_ext",
+            "rsk_ext",
+            "xinfin_ext",
+            "nervos_ext",
+            "algorand_ext",
+            "sia_ext",
+            "tezos_ext",
+            "casper_ext",
+            "cosmos_ext",
+        ]
+        and not fulfiller_address
+    ):
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
-
-    event_name = 'work_submitted'
-    record_bounty_activity(bounty, user, event_name)
-    maybe_market_to_email(bounty, event_name)
-    profile_pairs = build_profile_pairs(bounty)
-    maybe_market_to_github(bounty, event_name, profile_pairs)
 
     if bounty.bounty_state != 'work_submitted':
         bounty.bounty_state = 'work_submitted'
@@ -6390,6 +6657,14 @@ def fulfill_bounty_v1(request):
 
     if project:
         project.save()
+
+    # The helpers to send out notifications, comments, etc ... should
+    # be called after all is saved in DB. Otherwise some messages might be incomplete.
+    event_name = 'work_submitted'
+    record_bounty_activity(bounty, user, event_name)
+    maybe_market_to_email(bounty, event_name)
+    profile_pairs = build_profile_pairs(bounty)
+    maybe_market_to_github(bounty, event_name, profile_pairs)
 
     response = {
         'status': 204,
@@ -6452,15 +6727,51 @@ def payout_bounty_v1(request, fulfillment_id):
     is_funder = bounty.is_funder(user.username.lower()) if user else False
 
     if not is_funder:
-        response['message'] = 'error: payout is bounty funder operation'
-        return JsonResponse(response)
+        is_owner = False
+
+        if user:
+            owners = [profile.handle for profile in bounty.owners.all()]
+            handle = user.username.lower().lstrip('@')
+            for owner_handler in owners:
+                is_owner = handle == owner_handler.lower().lstrip('@')
+                if is_owner:
+                    break
+
+        if not is_owner:
+            response['message'] = 'error: payout is bounty funder operation'
+            return JsonResponse(response)
 
     payout_type = request.POST.get('payout_type')
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / manual'
+
+    if (
+        payout_type
+        not in [
+            'fiat',
+            'qr',
+            'web3_modal',
+            'polkadot_ext',
+            'harmony_ext' ,
+            'binance_ext',
+            'rsk_ext',
+            'xinfin_ext',
+            'nervos_ext',
+            'algorand_ext',
+            'sia_ext',
+            'tezos_ext',
+            'casper_ext',
+            'cosmos_ext',
+            'manual'
+        ]
+    ):
+        response['message'] = (
+            'error: parameter payout_type must be fiat / qr / web_modal / '
+            'polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / '
+            'nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / '
+            'cosmos_ext / manual'
+        )
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6526,7 +6837,24 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext']:
+    elif (
+        payout_type
+        in [
+            'qr',
+            'web3_modal',
+            'polkadot_ext',
+            'harmony_ext',
+            'binance_ext',
+            'rsk_ext',
+            'xinfin_ext',
+            'nervos_ext',
+            'algorand_ext',
+            'sia_ext',
+            'tezos_ext',
+            'casper_ext',
+            'cosmos_ext'
+        ]
+    ):
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6550,6 +6878,9 @@ def reverse_proxy_rpc_v1(request, tenant):
     if tenant.upper() == 'CASPER':
         # casper
         url = 'http://3.142.224.108:7777/rpc'
+    elif tenant.upper() == 'COSMOS':
+        # cosmos
+        url = 'https://rpc.cosmos.network'
     else:
         return JsonResponse({'error': 'invalid tenant'}, status=400)
 
@@ -6843,6 +7174,8 @@ def validate_verification(request, handle):
             pv = ProfileVerification.objects.get(pk=int(pv_id))
             pv.success = True
             pv.save()
+
+            update_trust_bonus(profile.pk)
 
             return JsonResponse({
                     'success': True,
@@ -7146,13 +7479,19 @@ def verify_user_poh(request, handle):
             'msg': 'Empty signature or Ethereum address',
         })
 
+    web3 = get_web3('mainnet')
     message_hash = defunct_hash_message(text="verify_poh_registration")
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     if eth_address != signer:
-        return JsonResponse({
-            'ok': False,
-            'msg': 'Invalid signature',
-        })
+        # recoverHash() will fail if the address is a smart contract wallet. Check for EIP-1271 compliance
+        if is_valid_eip_1271_signature(web3, web3.toChecksumAddress(eth_address), message_hash, signature):
+            # We got a valid EIP-1271 signature from eth_address, so we can trust it.
+            signer = eth_address
+        else:
+            return JsonResponse({
+                'ok': False,
+                'msg': 'Invalid signature',
+            })
 
     if Profile.objects.filter(poh_handle=signer).exists():
         return JsonResponse({
@@ -7160,7 +7499,6 @@ def verify_user_poh(request, handle):
             'msg': 'Ethereum address is already registered.',
         })
 
-    web3 = get_web3('mainnet')
     if not is_registered_on_poh(web3, signer):
         return JsonResponse({
             'ok': False,
@@ -7256,9 +7594,19 @@ def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
     if payload:
         body_unicode = payload.decode('utf-8')
         payload = json.loads(body_unicode)
-        response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+        http_response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload))
     else:
-        response = getattr(requests, method.lower())(url=url, headers=headers, params=params).json()
+        http_response = getattr(requests, method.lower())(url=url, headers=headers, params=params)
+
+    response = http_response.json()
+
+
+    # Temporary logging of Mautic interaction in order to prepare for a move over from Mautic to Hubspot.
+    try:
+        log = MauticLog(method=method, endpoint=endpoint, payload=payload, params=params, status_code=http_response.status_code)
+        log.save()
+    except Exception:
+        pass
 
     return response
 
@@ -7291,3 +7639,22 @@ def mautic_profile_save(request):
         },
         status=200
     )
+
+@staff_member_required
+def export_grants_ethelo(request):
+    if not (request.GET.get('download_json')):
+        return TemplateResponse(request, 'export_grants_ethelo.html')
+
+    start_grant = int(request.GET.get('start_grant_number'))
+    end_grant = request.GET.get('end_grant_number')
+    end_grant = int(end_grant) if len(end_grant) > 0 else None
+    inactive_only = bool(request.GET.get('inactive_only'))
+    flagged_only = bool(request.GET.get('flagged_only'))
+
+    grants_dict = ethelo.get_grants_from_database(start_grant, end_grant, inactive_only, flagged_only)
+
+    json_str = json.dumps(grants_dict)
+    response = HttpResponse(json_str, content_type='application/json')
+    response['Content-Disposition'] = f'attachment; filename={ethelo.EXPORT_FILENAME}'
+
+    return response

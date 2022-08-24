@@ -20,7 +20,6 @@ from kudos.models import Token
 from marketing.mails import comment_email, mention_email, new_action_request, tip_comment_awarded_email
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
-from retail.views import get_specific_activities
 
 from .models import (
     Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, PinnedPost,

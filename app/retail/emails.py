@@ -36,9 +36,8 @@ import cssutils
 import premailer
 from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
+from marketing.common.utils import get_or_save_email_subscriber
 from marketing.models import LeaderboardRank
-from marketing.utils import get_or_save_email_subscriber
-from perftools.models import StaticJsonEnv
 from retail.utils import build_utm_tracking, strip_double_chars, strip_html
 
 logger = logging.getLogger(__name__)
@@ -65,6 +64,8 @@ TRANSACTIONAL_EMAILS = [
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
         _('Only after you posted a bounty which is going to expire')
     ),
+    ('export_data', _('Export Data Emails'), _('Only when you have exported contribution or spending data')),
+    ('export_data_failed', _('Export Data Failed Emails'), _('Only when you have tried to export contribution or spending data but the process has failed.')),
     ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured')),
     ('comment', _('Comment Emails'), _('Only when you are sent a comment')),
     ('wall_post', _('Wall Post Emails'), _('Only when someone writes on your wall')),
@@ -90,6 +91,24 @@ def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
+
+
+def render_export_data_email(user_profile):
+    params = {'profile': user_profile}
+    response_html = premailer_transform(render_to_string("emails/export_data.html", params))
+    response_txt = render_to_string("emails/export_data.txt", params)
+    subject = _("Your Gitcoin CSV Download")
+
+    return response_html, response_txt, subject
+
+
+def render_export_data_email_failed(user_profile):
+    params = {'profile': user_profile}
+    response_html = premailer_transform(render_to_string("emails/export_data_failed.html", params))
+    response_txt = render_to_string("emails/export_data_failed.txt", params)
+    subject = _("Your CSV Download Has Failed")
+
+    return response_html, response_txt, subject
 
 
 def render_featured_funded_bounty(bounty):
@@ -121,6 +140,8 @@ def render_new_contributions_email(grant):
     hours_ago = 12
     network = get_default_network()
     contributions = grant.contributions.filter(
+        success=True,
+        tx_cleared=True,
         created_on__gt=timezone.now() - timezone.timedelta(hours=hours_ago),
         subscription__network=network
     )
@@ -149,11 +170,12 @@ def render_new_contributions_email(grant):
         'show_polygon_amount': False if amount_raised_polygon < 1 else True,
         'num_of_contributors': num_of_contributors,
         'media_url': settings.MEDIA_URL,
+        'contributions': contributions,
         'utm_tracking': build_utm_tracking('new_contributions'),
     }
     response_html = premailer_transform(render_to_string("emails/grants/new_contributions.html", params))
     response_txt = render_to_string("emails/grants/new_contributions.txt", params)
-    subject = _("You have new Grant contributions!")
+    subject = f"You have {contributions.count()} new Grant contributions worth ${round(amount_raised, 2)}!"
 
     if amount_raised < 1:
         # trigger to prevent email sending for negligible amounts
@@ -164,16 +186,23 @@ def render_new_contributions_email(grant):
 
 def render_thank_you_for_supporting_email(grants_with_subscription):
     totals = {}
+    total_match_amount = 0
+    match_token = 'DAI'
     for gws in grants_with_subscription:
         key = gws['subscription'].token_symbol
-        val = gws['subscription'].amount_per_period
+        val = float(gws['subscription'].amount_per_period)
         if key not in totals.keys():
             totals[key] = 0
-        totals[key] += val
+        totals[key] += float(val)
+        match_amount = float(gws.normalized_data['match_amount_when_contributed'])
+        total_match_amount += match_amount if match_amount else float(gws['subscription'].match_amount)
+        match_token = gws['subscription'].match_amount_token
 
     params = {
         'grants_with_subscription': grants_with_subscription,
         "totals": totals,
+        'total_match_amount': total_match_amount,
+        'match_token': match_token,
         'utm_tracking': build_utm_tracking('thank_you_for_supporting_email'),
     }
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
@@ -492,18 +521,13 @@ def render_funder_payout_reminder(**kwargs):
 
 
 def render_grant_match_distribution_final_txn(match):
-    CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
-    claim_end_date = CLR_ROUND_DATA.get('claim_end_date')
-
-    # timezones are in UTC (format example: 2021-06-16:15.00.00)
-    claim_end_date = datetime.datetime.strptime(claim_end_date, '%Y-%m-%d:%H.%M.%S')
     params = {
         'round_number': match.round_number,
-        'rounded_amount': round(match.amount, 2),
+        'token_symbol': match.token.symbol,
+        'rounded_amount': round(match.token_amount, 2),
         'profile_handle': match.grant.admin_profile.handle,
         'grant_url': f'https://gitcoin.co{match.grant.get_absolute_url()}',
         'grant': match.grant,
-        'claim_end_date': claim_end_date,
         'utm_tracking': build_utm_tracking('clr_match_claim'),
     }
     response_html = premailer_transform(render_to_string("emails/grants/clr_match_claim.html", params))
@@ -693,13 +717,13 @@ def get_notification_count(profile, days_ago, from_date):
 def email_to_profile(to_email):
     from dashboard.models import Profile
     try:
-        profile = Profile.objects.filter(email__iexact=to_email).last()
+        profile = Profile.objects.filter(email_index=to_email.lower()).last()
     except Profile.DoesNotExist:
         pass
     return profile
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, hackathons=(), latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0, featured_bounties=[]):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, hackathons=(), from_date=date.today(), days_ago=7, chats_count=0, featured_bounties=[]):
     from dateutil.parser import parse
     from marketing.views import email_announcements, trending_avatar
 
@@ -742,7 +766,6 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'quest_of_the_day': quest_of_the_day,
         'current_hackathons': current_hackathons,
         'upcoming_hackathons': upcoming_hackathons,
-        'activities': latest_activities,
         'notifications_count': notifications_count,
         'chats_count': chats_count,
     }
@@ -764,7 +787,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
     subscriber = get_or_save_email_subscriber(to_email, 'internal')
     from dashboard.models import Profile
     from inbox.models import Notification
-    profile = Profile.objects.filter(email__iexact=to_email).last()
+    profile = Profile.objects.filter(email_index=to_email.lower()).last()
 
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_ago)
@@ -789,7 +812,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
 def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     from dashboard.models import Profile
-    prof = Profile.objects.filter(email__iexact=to_email).last()
+    prof = Profile.objects.filter(email_index=to_email.lower()).last()
     bounties = prof.bounties.all()
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_back)
@@ -1426,6 +1449,25 @@ def render_new_bounty_roundup(to_email):
 
 # DJANGO REQUESTS
 
+@staff_member_required
+def export_data(request):
+    from dashboard.models import Profile
+
+    handle = request.GET.get('handle')
+    profile = Profile.objects.filter(handle=handle).first()
+
+    response_html, _, _ = render_export_data_email(profile)
+    return HttpResponse(response_html)
+
+def export_data_failed(request):
+    from dashboard.models import Profile
+
+    handle = request.GET.get('handle')
+    profile = Profile.objects.filter(handle=handle).first()
+
+    response_html, _, _ = render_export_data_email_failed(profile)
+    return HttpResponse(response_html)
+
 
 @staff_member_required
 def weekly_recap(request):
@@ -1517,10 +1559,9 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons, latest_activities
+    from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), latest_activities=latest_activities(request.user), chats_count=7)
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), chats_count=7)
     return HttpResponse(response_html)
 
 
@@ -1589,7 +1630,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    from marketing.utils import handle_bounty_feedback
+    from marketing.common.utils import handle_bounty_feedback
 
     bounty = Bounty.objects.current().filter(idx_status='done').last()
 
@@ -1644,7 +1685,7 @@ def no_applicant_reminder(request):
 @staff_member_required
 def grant_match_distribution_final_txn(request):
     from grants.models import CLRMatch
-    match = CLRMatch.objects.first()
+    match = CLRMatch.objects.last()
     response_html, _ = render_grant_match_distribution_final_txn(match)
     return HttpResponse(response_html)
 
@@ -1706,7 +1747,7 @@ def roundup(request):
 
 @staff_member_required
 def quarterly_roundup(request):
-    from marketing.utils import get_platform_wide_stats
+    from marketing.common.utils import get_platform_wide_stats
     from dashboard.models import Profile
     platform_wide_stats = get_platform_wide_stats()
     email = settings.CONTACT_EMAIL
@@ -1789,7 +1830,7 @@ def start_work_applicant_expired(request):
 @staff_member_required
 def tribe_hackathon_prizes(request):
     from dashboard.models import HackathonEvent, Bounty
-    from marketing.utils import generate_hackathon_email_intro
+    from marketing.common.utils import generate_hackathon_email_intro
 
     hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
 

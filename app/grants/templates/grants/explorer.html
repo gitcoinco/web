@@ -19,12 +19,13 @@ along with this program. If not, see
 <head>
   {% include 'shared/head.html' with slim=1 %}
   {% include 'shared/cards_pic.html' %}
-  {% bundle css file grants %}
+  {% bundle css file grants_explorer %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/card.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/collection.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gc-utilities.scss" %} />
   {% endbundle %}
   <style>
 
@@ -59,6 +60,8 @@ along with this program. If not, see
   <style class="page-styles">
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
   </style>
+  {% include './analytics_manager.html' %}
+
 
 </head>
 
@@ -105,6 +108,10 @@ along with this program. If not, see
 
                   <!-- CLR ROUND FILTERS -->
                   <b-dropdown v-if="round_types.length" ref="grantFlitersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2 btn-gc-black text-white" no-caret no-flip v-if="grant_types.length">
+                    <div class="d-md-none d-flex align-items-center">
+                      <b-dropdown-header><strong class="text-body">Browse Match Rounds</strong></b-dropdown-header>
+                    </div>
+                    <hr class="d-md-none m-0">
                     <template #button-content>
                       <span class="pr-1">
                         Grant Round <span class="text-capitalize" v-if="params.round_type" class="">: [[ params.round_type ]]</span><span v-if="currentCLR?.display_text" class=""> - [[ currentCLR?.display_text ]]</span>
@@ -117,27 +124,31 @@ along with this program. If not, see
                         <template v-for="(round_type, key) in round_types">
                           <div
                             class="d-flex text-capitalize cursor-pointer bg-violet-nav-item"
-                            @click.stop="selectRoundType(round_type)"
+                            @click.stop="isSelectedRoundType(round_type, key) && !closed ? closed = true : selectRoundType(round_type)"
                           >
-                            <div :class="`w-100 h-100 line-clamp-1 line-height-4 text-grey-500 px-2 py-1 ${ (params.round_type && params.round_type == round_type) || (!params.round_type && key == 0) ? 'bg-violet-nav' : '' }`">
+                            <div :class="`d-flex justify-content-between align-items-center w-100 h-100 line-clamp-1 line-height-4 text-grey-500 px-4 py-2 ${ isSelectedRoundType(round_type, key) ? 'bg-violet-nav' : '' }`">
                               [[ round_type ]]
+                              <i :class="`d-md-none ${ isSelectedRoundType(round_type, key) && !closed ? 'fas fa-chevron-up' : 'fas fa-chevron-down' }`"></i>
                             </div>
                           </div>
+                          <hr class="d-md-none m-0">
                           <div class="d-block d-md-none" v-for="clr in active_rounds[round_type]">
                             <div
-                              :class="`pl-3 line-clamp-1 line-height-4 px-2 py-1 text-grey-500 cursor-pointer bg-violet-nav-item ${ currentCLR?.sub_round_slug == clr.sub_round_slug && currentCLR?.round_num ==  clr.round_num ? 'bg-violet-nav' : '' }`"
+                              v-if="isSelectedRoundType(round_type, key) && !closed"
+                              :class="`pl-3 line-clamp-1 line-height-4 px-5 py-2 text-grey-500 cursor-pointer bg-violet-nav-item ${ isSelectedCLR(currentCLR?.sub_round_slug, currentCLR?.round_num, clr) ? 'bg-violet-nav' : '' }`"
                               @click.stop="changeQuery({page: 1, round_type: round_type, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})"
                             >
                               [[ clr.display_text ]]
                             </div>
+                            <hr class="d-md-none m-0" v-if="(params.round_type && params.round_type == round_type)">
                           </div>
                         </template>
                       </div>
                       <div class="d-none d-md-flex flex-basis-60 flex-column grant-round-selector-row overflow-auto">
                         <div v-for="(round_type, key) in round_types">
-                          <template v-for="clr in active_rounds[round_type]" v-if="(params.round_type && params.round_type == round_type) || (!params.round_type && key == 0)">
+                          <template v-for="clr in active_rounds[round_type]" v-if="isSelectedRoundType(round_type, key)">
                             <div
-                              :class="`line-clamp-1 line-height-4 px-2 py-1 text-grey-500 cursor-pointer bg-violet-nav-item ${ currentCLR?.sub_round_slug == clr.sub_round_slug && currentCLR?.round_num ==  clr.round_num ? 'bg-violet-nav' : '' }`"
+                              :class="`line-clamp-1 line-height-4 px-2 py-2 text-grey-500 cursor-pointer bg-violet-nav-item ${ isSelectedCLR(currentCLR?.sub_round_slug, currentCLR?.round_num, clr) ? 'bg-violet-nav' : '' }`"
                               @click.stop="changeQuery({page: 1, round_type: round_type, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})"
                             >
                               [[ clr.display_text ]]
@@ -214,11 +225,11 @@ along with this program. If not, see
                           My Shortcuts
                         </b-dropdown-header>
                         <b-form-checkbox @input="fetchGrants(1)" id="only_contributions" v-model="params.only_contributions" name="only_contributions">My Contributions</b-form-checkbox>
-                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve contributed to</b-dropdown-text>
+                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I've contributed to</b-dropdown-text>
                         <b-form-checkbox @input="fetchGrants(1)" id="me" v-model="params.me" name="me"> My Grants</b-form-checkbox>
-                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve created</b-dropdown-text>
-                        <b-form-checkbox @input="fetchGrants(1)" id="following" v-model="params.following" name="following"> Following</b-form-checkbox>
-                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve followed</b-dropdown-text>
+                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I've created</b-dropdown-text>
+                        <b-form-checkbox @input="fetchGrants(1)" id="following" v-model="params.following" name="following"> Favorite Grants</b-form-checkbox>
+                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I've starred</b-dropdown-text>
                       </div>
                     </b-dropdown-form>
                   </b-dropdown>
@@ -229,12 +240,12 @@ along with this program. If not, see
                 </div>
 
                 <!-- SEARCH BAR AND CART -->
-                <div class="flex-basis-md-25 flex-nowrap d-flex bg-white mb-2 mb-md-0" :class="{'position-md-absolute w-100': searchVisible}">
-                  <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
+                <div class="flex-basis-md-25 flex-nowrap d-flex bg-white mb-2 mb-md-0 position-relative" :class="{'flex-basis-md-60': searchVisible}">
+                  <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"></button>
                   <i
-                    class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300"
+                    class="far fa-fw fa-search font-smaller-3 text-grey-300 position-absolute"
                     :class="{'pt-2 pt-md-0': searchVisible}"
-                    :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
+                    :style="(searchVisible ? 'top: 10px; margin-left: 5px;left: 30px;' : 'top: 10px; margin-left: 5px;')"
                   ></i>
                   <input
                     class="form-control form-control-sm rounded-pill pl-4"
@@ -242,7 +253,7 @@ along with this program. If not, see
                     type="search"
                     v-model="params.keyword"
                     @focus="searchVisible=true"
-                    @blur="searchVisible=false"
+                    @blur="searchVisible = params.keyword.length ? true : false"
                     @input="params.sort_option = '', delayedChangeQuery()"
                     @keyup.enter="changeQuery({page: 1})"/>
                   <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
@@ -347,10 +358,32 @@ along with this program. If not, see
                 <template v-else>
                   <!-- Grant Cards -->
                   <div v-if="grants && grants.length" class="infinite-container row" >
-                    <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+                    <div
+                      v-for="(grant, id) in grants"
+                      :id="`grant-${grant.id}`"
+                      :class="{'col-md-6 col-xl-4': view == 'grid', 'idle-or-hidden': idleOrHiddenGrants(grant)}"
+                      class="col-12 mb-4 infinite-item grant-card" 
+                    >
                       <a class="text-decoration-none" :href="grant.details_url">
                         {% include 'grants/components/card.html' %}
                       </a>
+                      <b-alert
+                        :show="dismissFavoriteAlertCountDown"
+                        dismissible
+                        variant="primary"
+                        @dismissed="dismissFavoriteAlertCountDown = 0"
+                        class="border border-primary alert-fixed-top mr-md-4 mr-0"
+                      >
+                        <div class="row">
+                          <div class="col-auto col-md-7">
+                            <i class="fas fa-star mr-2"></i>
+                            <span class="text-black">Added to Favorites</span>
+                          </div>
+                          <div class="col-auto col-md-5 text-nowrap text-right">
+                            <a href="{% url 'grants:grants_explorer' %}?following=true&idle=true">View Favorites</a>
+                          </div>
+                        </div>
+                      </b-alert>
                     </div>
                   </div>
 
@@ -393,10 +426,10 @@ along with this program. If not, see
               <div class="row">
                 <div class="col-12 col-md-8">
                   <h3 class="my-3">Explore grants curated by the community</h3>
-                  <p class="font-smaller-1 text-grey-400">Discover grants handpicked by the people you know, or create your own collection and share your favorite grants to the community.</p>
+                  <p class="font-smaller-1 text-grey-400">Discover grants handpicked by community members, or create your own collection and share your favorite grants to the community.</p>
                   <b-button
                     class="mt-4 mt-lg-0 w-100 w-md-auto"
-                    variant="outline-primary"
+                    variant="primary"
                     @click="() => openCreateCollectionModal(true)"
                   >
                     Create a Collection
@@ -584,9 +617,14 @@ along with this program. If not, see
                 </a>
               </div>
 
+              <template v-if="showLoadingCollections">
+                <div class="d-flex flex-column justify-content-center">
+                  <img class="d-block w-25 mx-auto" src="/static/v2/images/loading_v2.gif">
+                </div>
+              </template>
               {% include 'grants/shared/landing_grants.html' with container_class='container p-0' %}
             </b-tab>
-            <template v-slot:tabs-end>
+            <template v-slot:tabs-end v-if="tabIndex === 0">
               <li role="presentation" class="flex-fill nav-item text-right">
                 <a href="{% url 'grants:new' %}" class="btn btn-primary">{% trans 'Create a Grant' %}</a>
               </li>
@@ -598,7 +636,7 @@ along with this program. If not, see
           {% include 'shared/delete_collection_modal.html' %}
 
           <div class="my-5">
-            <a href="{% url 'grants:grants_explorer' %}?tab=collections"><i class="fas fa-chevron-left mr-2"></i> back to Collections</a>
+            <a href="{% url 'grants:grants_explorer' %}?tab=collections"><i class="fas fa-chevron-left mr-2"></i> Back to Collections</a>
           </div>
 
           <div class="row">
@@ -625,72 +663,77 @@ along with this program. If not, see
             </div>
             <div class="col-12 col-md-auto m-auto text-right">
               <template v-if="!editingCollection">
-                <button @click.stop="addCollectionToCart(params.collection_id)" class="btn btn-primary mb-2 ml-auto">
+                <button v-if="numGrants > 0" @click.stop="addCollectionToCart(params.collection_id)" class="btn btn-primary mb-2 ml-auto">
                   Add all to Cart
                 </button>
-                <button class="btn btn-outline-primary  mb-2 ml-auto" @click="shareCollection()">
-                  Share
-                  <i class="fas fa-share-alt font-caption mr-2"></i>
-                </button>
-                <b-dropdown ref="collectionMoreOptionsDropdown" menu-class="shadow-sm p-0 mt-1" variant="outline-primary" toggle-class="mb-2" right text="Right align" no-caret no-flip>
+                <b-dropdown menu-class="shadow-sm p-0 mt-1" variant="outline-primary" toggle-class="mb-2" right text="Right align" no-caret no-flip>
+                  <template #button-content>
+                    Share
+                    <i class="fas fa-share-alt font-caption mr-2"></i>
+                  </template>
+                  <b-dropdown-form>
+                    <div class="submenu-option p-2 cursor-pointer" @click.stop="tweetCollection()">
+                      <i class="fab fa-twitter px-2"></i>
+                      Tweet
+                    </div>
+                    <div class="submenu-option p-2 cursor-pointer" @click.stop="shareCollection()">
+                      <i class="fas fa-external-link-alt px-2"></i>
+                      Copy link
+                    </div>
+                    <div class="submenu-option d-none"></div>
+                  </b-dropdown-form>
+                </b-dropdown>
+                <b-dropdown ref="collectionMoreOptionsDropdown" v-if="collection_owner == handle" menu-class="shadow-sm p-0 mt-1" variant="outline-primary" toggle-class="mb-2" right text="Right align" no-caret no-flip>
                   <template #button-content>
                     ...
                   </template>
                   <b-dropdown-form>
-                    <template v-if="collection_owner == handle">
-                      <div class="submenu-option p-2 cursor-pointer" @click.stop="editCollection()">
-                        <i class="fa fa-pencil-alt px-2"></i>
-                        Edit Collection
-                      </div>
-                      <div class="submenu-option p-2 cursor-pointer text-danger" @click.stop="deleteCollection()">
-                        <i class="fas fa-trash px-2"></i>
-                        Delete Collection
-                      </div>
-                      <div class="submenu-option d-none"></div>
-                    </template>
-                    <template v-else>
-                      <div class="submenu-option p-2 cursor-pointer" @click.stop="tweetCollection()">
-                        <i class="fab fa-twitter px-2"></i>
-                        Tweet
-                      </div>
-                      <div class="submenu-option p-2 cursor-pointer" @click.stop="shareCollection()">
-                        <i class="fas fa-external-link-alt px-2"></i>
-                        Copy link
-                      </div>
-                      <div class="submenu-option d-none"></div>
-                    </template>
+                    <div class="submenu-option p-2 cursor-pointer" @click.stop="editCollection()">
+                      <i class="fa fa-pencil-alt px-2"></i>
+                      Edit Collection
+                    </div>
+                    <div class="submenu-option p-2 cursor-pointer text-danger" @click.stop="deleteCollection()">
+                      <i class="fas fa-trash px-2"></i>
+                      Delete Collection
+                    </div>
+                    <div class="submenu-option d-none"></div>                   
                   </b-dropdown-form>
                 </b-dropdown>
-
               </template>
               <template v-else>
                 <button class="btn btn-primary" @click.stop="saveEditCollection()">Save Changes</button>
               </template>
             </div>
           </div>
-
-          <template v-if="grants && grants.length">
-
-            {% include 'grants/shared/top-filters.html' %}
-
-            <div class="d-flex" v-if="grantsHasPrev">
-              <button class="btn btn-outline-gc-grey btn-sm mb-2" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
-            </div>
-
-            <div class="infinite-container row">
-              <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
-                <a class="text-decoration-none" :href="grant.details_url">
-                  {% include 'grants/components/card.html' %}
-                </a>
-              </div>
+          <template v-if="showLoading">
+            <div class="d-flex flex-column justify-content-center">
+              <img class="d-block w-25 mx-auto" src="/static/v2/images/loading_v2.gif">
             </div>
           </template>
+          <template v-else>
+            <template v-if="grants && grants.length">
+              {% include 'grants/shared/top-filters.html' %}
+
+              <div class="d-flex" v-if="grantsHasPrev">
+                <button class="btn btn-outline-gc-grey btn-sm mb-2" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
+              </div>
+
+              <div class="infinite-container row">
+                <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+                  <a class="text-decoration-none" :href="grant.details_url">
+                    {% include 'grants/components/card.html' %}
+                  </a>
+                </div>
+              </div>
+            </template>
+          </template>
+
 
           <template v-else-if="collection_owner == handle">
             <div class="text-center">
               <img src="{% static "v2/images/grants/empty-collection.svg" %}">
               <p class="font-subheader text text-grey-400 pt-5">
-                {% trans "Your collection is empty. Let’s add grants to your collection! " %}
+                {% trans "Your collection is empty. Let's add grants to your collection! " %}
               </p>
             </div>
             <div class="col-12 pt-4 pb-2 mx-auto text-center">
@@ -703,7 +746,7 @@ along with this program. If not, see
           <template v-else>
             <div class="col-12 mb-3 mx-auto col-md-6 text-center">
               <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
-              <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+              <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you're looking for." %}</h1>
               <p class="font-subheader text">
                 {% trans "We couldn't match with any grants on Gitcoin." %}</br>
                 {% trans "Please try another search term or browse for a grant." %}
@@ -795,17 +838,16 @@ along with this program. If not, see
     document.collections = JSON.parse(document.getElementById('collections-object').textContent);
     document.activePage = "{{ active }}";
 
-    {% if clr_round %}
-      document.clr_round_pk = "{{clr_round.pk}}";
-      document.round_num = "{{clr_round.round_num}}";
-      document.sub_round_slug = "{{clr_round.sub_round_slug}}";
-      document.customer_name = "{{clr_round.customer_name}}";
+    {% if round_num and sub_round_slug and customer_name %}
+      document.round_num = "{{round_num}}";
+      document.sub_round_slug = "{{sub_round_slug}}";
+      document.customer_name = "{{customer_name}}";
     {% else %}
-      delete document.round_num;
-      delete document.customer_name;
-      delete document.clr_round_pk;
-      delete document.sub_round_slug;
+      document.round_num = 0;
+      document.customer_name = false;
+      document.sub_round_slug = false;
     {% endif %}
+
     let base_style = {
         bg: '/static/v2/images/bg/{{styles.bg}}',
         size: "{{styles.bg_size}}",

@@ -1,6 +1,6 @@
 from django.db import connection
 
-from grants.models import Contribution, Grant, GrantCollection
+from grants.models import Contribution, GrantCollection
 from townsquare.models import SquelchProfile
 
 
@@ -17,6 +17,7 @@ def fetch_grants(clr_round, network='mainnet'):
     '''
 
     grant_filters = clr_round.grant_filters
+    grant_excludes = clr_round.grant_excludes
     collection_filters = clr_round.collection_filters
 
     grants = clr_round.grants.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
@@ -28,6 +29,9 @@ def fetch_grants(clr_round, network='mainnet'):
         # Collection Filters
         grant_ids = GrantCollection.objects.filter(**collection_filters).values_list('grants', flat=True)
         grants = grants.filter(pk__in=grant_ids)
+
+    if grant_excludes:
+        grants = grants.exclude(**grant_excludes)
 
     return grants
 
@@ -46,9 +50,7 @@ def fetch_contributions(clr_round, network='mainnet'):
 
     clr_start_date = clr_round.start_date
     clr_end_date = clr_round.end_date
-    grant_filters = clr_round.grant_filters
     subscription_filters = clr_round.subscription_filters
-    collection_filters = clr_round.collection_filters
 
     contributions = Contribution.objects.prefetch_related('subscription', 'profile_for_clr').filter(
         match=True,
@@ -104,6 +106,7 @@ def fetch_summed_contributions(grants, clr_round, network='mainnet'):
             grants_contribution.profile_for_clr_id as user_id,
             SUM(grants_contribution.amount_per_period_usdt * {float(multiplier)}),
             MAX(dashboard_profile.trust_bonus)::FLOAT as trust_bonus
+            MAX(dashboard_profile.dpopp_trust_bonus)::FLOAT as dpopp_trust_bonus
         FROM grants_contribution
         INNER JOIN dashboard_profile ON (grants_contribution.profile_for_clr_id = dashboard_profile.id)
         INNER JOIN grants_subscription ON (grants_contribution.subscription_id = grants_subscription.id)
@@ -144,7 +147,10 @@ def fetch_summed_contributions(grants, clr_round, network='mainnet'):
         for _row in cursor.fetchall():
             if not curr_agg.get(_row[0]):
                 curr_agg[_row[0]] = {}
-            trust_dict[_row[1]] = _row[3]
+            # Use dpopp_trust_bonus is available or trust_bonus otherwise
+            # _row[3] -> trust_bonus use this if dpopp_trust_bonus is null
+            # _row[4] -> dpopp_trust_bonus
+            trust_dict[_row[1]] = _row[4] if _row[4] else _row[3]   
             curr_agg[_row[0]][_row[1]] = _row[2]
 
     return curr_agg, trust_dict

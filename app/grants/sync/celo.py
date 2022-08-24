@@ -23,10 +23,11 @@ def find_txn_on_celo_explorer(contribution):
 
     if blockscout_response['message'] and blockscout_response['result']:
         for txn in blockscout_response['result']:
+            txn_amount = float(int(txn['value']) / 10 ** int(txn['tokenDecimal']))
             if (
                 txn['from'] == from_address.lower() and
                 txn['to'] == to_address.lower() and
-                int(txn['value']) / 10 ** int(txn['tokenDecimal']) == amount and
+                txn_amount == float(amount) and
                 is_txn_done_recently(txn['timeStamp']) and
                 not txn_already_used(txn['hash'], token_symbol)
             ):
@@ -56,7 +57,6 @@ def get_celo_txn_status(txnid):
         return response
 
     return None
-
 
 
 def sync_celo_payout(contribution):

@@ -22,10 +22,14 @@
 }
 
 .gc-search-box.dropdown-menu {
-  width: 520px;
+  width: 540px;
   background-color: #ffffff;
   border-radius: 4px;
   top: 2.3rem;
+}
+
+.gc-search-box.dropdown-menu.show {
+  display: table;
 }
 
 .gc-search-box input[type=text] {
@@ -62,6 +66,10 @@
 
 .gc-search-result__description {
   color: #666666;
+}
+
+.gc-search-more-results {
+  z-index: 2;
 }
 
 .gc-search__avatar {
