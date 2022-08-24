@@ -3,7 +3,7 @@ name: Build & deploy to production
 on:
   # run it during push to branch
   push:
-    branches: [ infra_as_code_production ]
+    branches: [ "stable" ]
 
 jobs:
   build-and-test:
