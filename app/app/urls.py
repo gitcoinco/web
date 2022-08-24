@@ -35,6 +35,7 @@ import dashboard.tip_views
 import dashboard.views
 import dataviz.d3_views
 import dataviz.views
+import email_preference.views
 import gitcoinbot.views
 import healthcheck.views
 import kudos.views
@@ -300,6 +301,7 @@ urlpatterns = [
     url(r'^api/v1/file_upload/', dashboard.views.file_upload, name='file_upload'),
     url(r'^api/v1/mautic/(?P<endpoint>.*)', dashboard.views.mautic_api, name='mautic_api'),
     url(r'^api/v1/mautic_profile_save/', dashboard.views.mautic_profile_save, name='mautic_profile_save'),
+    url(r'^api/v1/email_preference_log/', email_preference.views.email_preference_log, name='email_preference_log'),
 
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),

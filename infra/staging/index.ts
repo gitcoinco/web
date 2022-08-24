@@ -335,6 +335,27 @@ const httpsListener = target.createListener("web-listener", {
     certificateArn: certificateValidation.certificateArn
 }); 
 
+const staticBucket = new aws.lb.ListenerRule("static", {
+    listenerArn: httpsListener.listener.arn,
+    priority: 100,
+    actions: [{
+        type: "redirect",
+        redirect: {
+            host: "s.gitcoin.co",
+            port: "443",
+            protocol: "HTTPS",
+            statusCode: "HTTP_301",
+        },
+    }],
+    conditions: [
+        {
+            pathPattern: {
+                values: ["/static/*"],
+            },
+        },
+    ],
+});
+
 // Create a DNS record for the load balancer
 const www = new aws.route53.Record("www", {
     zoneId: route53Zone,
@@ -668,6 +689,10 @@ let environment = [
     {
         name: "BUNDLE_USE_CHECKSUM",
         value: "false",
+    },
+    {
+        name: "MEDIA_URL",
+        value: "https://dpc6bywmosi9y.cloudfront.net/"
     }
 
 ];
@@ -706,6 +731,34 @@ const service = new awsx.ecs.FargateService("app", {
     },
 });
 
+const celery = new awsx.ecs.FargateService("celery", {
+    cluster,
+    desiredCount: 2,
+    taskDefinitionArgs: {
+        containers: {
+            celery: {
+                image: "gitcoin/web:0b8eae8cd2",
+                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+            celeryHighPriority: {
+                image: "gitcoin/web:0b8eae8cd2",
+                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+        },
+    },
+});
 const ecsTarget = new aws.appautoscaling.Target("autoscaling_target", {
     maxCapacity: 10,
     minCapacity: 1,
