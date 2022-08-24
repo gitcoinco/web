@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 
 from grants.models import Grant, GrantTag
 
+
 class Command(BaseCommand):
 
     help = 'updates all approved grants to include the main-round tag'
