@@ -1,10 +1,12 @@
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
-const eventWalletReady = new Event('walletReady', {bubbles: true});
-const eventWalletDisconnect = new Event('walletDisconnect', {bubbles: true});
-const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
+const eventWalletReady = new Event("walletReady", { bubbles: true });
+const eventWalletDisconnect = new Event("walletDisconnect", { bubbles: true });
+const eventDataWalletReady = new Event("dataWalletReady", { bubbles: true });
 
-if (!Object.hasOwnProperty.call(window, 'web3')) {
+const Web3 = require("web3");
+
+if (!Object.hasOwnProperty.call(window, "web3")) {
   window.web3 = null;
 }
 let web3Modal;
