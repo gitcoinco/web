@@ -3,29 +3,25 @@ import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
 // The following vars ar not alloed to be undefined, hence the `${...}` magic
-export const dbUsername = `${process.env["DB_USER"]}`;
-export const dbPassword = pulumi.secret(`${process.env["DB_PASSWORD"]}`);
-export const dbName = `${process.env["DB_NAME"]}`;
+let dbUsername = `${process.env["DB_USER"]}`;
+let dbPassword = pulumi.secret(`${process.env["DB_PASSWORD"]}`);
+let dbName = `${process.env["DB_NAME"]}`;
 
-export const githubApiUser = `${process.env["GITHUB_API_USER"]}`;
-export const githubApiToken = pulumi.secret(`${process.env["GITHUB_API_TOKEN"]}`);
-export const githubClientId = `${process.env["GITHUB_CLIENT_ID"]}`;
-export const githubClientSecret = pulumi.secret(`${process.env["GITHUB_CLIENT_SECRET"]}`);
-export const githubAppName = `${process.env["GITHUB_APP_NAME"]}`;
+let githubApiUser = `${process.env["GITHUB_API_USER"]}`;
+let githubApiToken = pulumi.secret(`${process.env["GITHUB_API_TOKEN"]}`);
+let githubClientId = `${process.env["GITHUB_CLIENT_ID"]}`;
+let githubClientSecret = pulumi.secret(`${process.env["GITHUB_CLIENT_SECRET"]}`);
+let githubAppName = `${process.env["GITHUB_APP_NAME"]}`;
+let datadogKey = `${process.env["DATADOG_KEY"]}`
+let tempDatabase = `${process.env["TEMP_DATABASE"]}`
 
+let route53Zone = `${process.env["ROUTE_53_ZONE"]}`;
+let domain = `${process.env["DOMAIN"]}`;
+let baseUrl = `http://${domain}/`;
+
+let sentryDSN = `${process.env["SENTRY_DSN"]}`;
 
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
-
-
-export const vpcID = `${process.env["REVIEW_ENV_VPC_ID"]}`;
-export const privateSubnet1ID = `${process.env["REVIEW_ENV_PRIVATE_SUBNET_1"]}`;
-export const privateSubnet2ID = `${process.env["REVIEW_ENV_PRIVATE_SUBNET_2"]}`;
-export const publicSubnet1ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_1"]}`;
-export const publicSubnet2ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_2"]}`;
-
-export const route53ZoneID = `${process.env["REVIEW_ENV_ROUTE53_ZONE_ID"]}`;
-export const domain = `${process.env["REVIEW_ENV_DOMAIN"]}`;
-export const environmentName = `${process.env["REVIEW_ENV_NAME"]}`;
 
 
 //////////////////////////////////////////////////////////////
@@ -33,18 +29,18 @@ export const environmentName = `${process.env["REVIEW_ENV_NAME"]}`;
 //  - user for logging
 //////////////////////////////////////////////////////////////
 
-const usrLogger = new aws.iam.User(`gitcoin-review-${environmentName}-usrLogger`, {
+const usrLogger = new aws.iam.User("usrLogger", {
     path: "/review/",
 });
 
-const usrLoggerAccessKey = new aws.iam.AccessKey(`gitcoin-review-${environmentName}-usrLoggerAccessKey`, { user: usrLogger.name });
+const usrLoggerAccessKey = new aws.iam.AccessKey("usrLoggerAccessKey", { user: usrLogger.name });
 
 export const usrLoggerKey = usrLoggerAccessKey.id;
 export const usrLoggerSecret = usrLoggerAccessKey.secret;
 
 
 // See https://pypi.org/project/watchtower/ for the polciy required
-const test_attach = new aws.iam.PolicyAttachment(`gitcoin-review-${environmentName}-CloudWatchPolicy`, {
+const test_attach = new aws.iam.PolicyAttachment("CloudWatchPolicyAttach", {
     users: [usrLogger.name],
     roles: [],
     groups: [],
@@ -57,24 +53,8 @@ const test_attach = new aws.iam.PolicyAttachment(`gitcoin-review-${environmentNa
 // Check policy recomendation here: https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#iam-policy
 //////////////////////////////////////////////////////////////
 
-const staticAssetsBucket = new aws.s3.Bucket(`gitcoin-review-${environmentName}`, {
+const staticAssetsBucket = new aws.s3.Bucket("bucket", {
     acl: "public-read",
-
-    corsRules: [{
-        allowedHeaders: [
-            "Authorization"
-        ],
-        allowedMethods: [
-            "GET",
-            "HEAD"
-        ],
-        allowedOrigins: [
-            "*"
-        ],
-        exposeHeaders: [
-            "Access-Control-Allow-Origin"
-        ]
-    }],
     website: {
         indexDocument: "index.html",
     },
@@ -102,7 +82,7 @@ const staticAssetsBucketPolicyDocument = aws.iam.getPolicyDocumentOutput({
     }],
 });
 
-const staticAssetsBucketPolicy = new aws.s3.BucketPolicy(`gitcoin-review-${environmentName}`, {
+const staticAssetsBucketPolicy = new aws.s3.BucketPolicy("staticAssetsBucketPolicy", {
     bucket: staticAssetsBucket.id,
     policy: staticAssetsBucketPolicyDocument.apply(staticAssetsBucketPolicyDocument => staticAssetsBucketPolicyDocument.json),
 });
@@ -184,39 +164,39 @@ const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
     },
 });
 
-// export const bucketName = staticAssetsBucket.id;
-// export const bucketArn = staticAssetsBucket.arn;
-// export const bucketWebURL1 = staticAssetsBucket.website;
-// export const bucketWebURL1Domain = staticAssetsBucket.websiteDomain;
-// export const bucketWebURL1Endpoint = staticAssetsBucket.websiteEndpoint;
-// export const bucketWebURL = pulumi.interpolate`https://${staticAssetsBucket.websiteEndpoint}/`;
-
 export const bucketName = staticAssetsBucket.id;
 export const bucketArn = staticAssetsBucket.arn;
-export const bucketWebURL = pulumi.interpolate`https://${staticAssetsBucket.bucketRegionalDomainName}/`;
-// export const bucketWebURL = "https://gitcoin-review-10618-c00aa99.s3.us-west-2.amazonaws.com/";
+export const bucketWebURL = pulumi.interpolate`http://${staticAssetsBucket.websiteEndpoint}/`;
 
 //////////////////////////////////////////////////////////////
-// Load VPC for review environments
+// Set up VPC
 //////////////////////////////////////////////////////////////
 
-const vpc = awsx.ec2.Vpc.fromExistingIds(`gitcoin-review`, {
-    vpcId: vpcID,
-    privateSubnetIds: [privateSubnet1ID, privateSubnet2ID],
-    publicSubnetIds: [publicSubnet1ID, publicSubnet2ID]
+const vpc = new awsx.ec2.Vpc("gitcoin", {
+    subnets: [
+        { type: "public", },
+        { type: "private", mapPublicIpOnLaunch: true },
+    ],
 });
 
+export const vpcID = vpc.id;
 export const vpcPrivateSubnetIds = vpc.privateSubnetIds;
+export const vpcPublicSubnetIds = vpc.publicSubnetIds;
+
+
+export const vpcPublicSubnet1 = vpcPublicSubnetIds.then((subnets) => {
+    return subnets[0];
+});
 
 
 //////////////////////////////////////////////////////////////
 // Set up RDS instance
 //////////////////////////////////////////////////////////////
-let dbSubnetGroup = new aws.rds.SubnetGroup(`gitcoin-review-${environmentName}`, {
+let dbSubnetGroup = new aws.rds.SubnetGroup("rds-subnet-group", {
     subnetIds: vpcPrivateSubnetIds
 });
 
-const db_secgrp = new aws.ec2.SecurityGroup(`gitcoin-review-${environmentName}`, {
+const db_secgrp = new aws.ec2.SecurityGroup("db_secgrp", {
     description: "Security Group for DB",
     vpcId: vpc.id,
     ingress: [
@@ -231,11 +211,11 @@ const db_secgrp = new aws.ec2.SecurityGroup(`gitcoin-review-${environmentName}`,
 });
 
 // TODO: enable delete protection for the DB
-const postgresql = new aws.rds.Instance(`gitcoin-review-${environmentName}`, {
-    allocatedStorage: 10,
+const postgresql = new aws.rds.Instance("gitcoin-database", {
+    allocatedStorage: 200,
     engine: "postgres",
     // engineVersion: "5.7",
-    instanceClass: "db.t3.micro",
+    instanceClass: "db.t3.medium",
     name: dbName,
     password: dbPassword,
     username: dbUsername,
@@ -253,7 +233,7 @@ export const rdsId = postgresql.id
 // Set up Redis
 //////////////////////////////////////////////////////////////
 
-const redisSubnetGroup = new aws.elasticache.SubnetGroup(`gitcoin-review-${environmentName}`, {
+const redisSubnetGroup = new aws.elasticache.SubnetGroup("gitcoin-cache-subnet-group", {
     subnetIds: vpcPrivateSubnetIds
 });
 
@@ -271,7 +251,7 @@ const secgrp_redis = new aws.ec2.SecurityGroup("secgrp_redis", {
     }],
 });
 
-const redis = new aws.elasticache.Cluster(`gitcoin-review-${environmentName}`, {
+const redis = new aws.elasticache.Cluster("gitcoin-cache", {
     engine: "redis",
     engineVersion: "4.0.10",
     nodeType: "cache.t2.micro",
@@ -287,70 +267,98 @@ export const redisConnectionUrl = pulumi.interpolate`rediscache://${redisPrimary
 export const redisCacheOpsConnectionUrl = pulumi.interpolate`redis://${redisPrimaryNode.address}:${redisPrimaryNode.port}/0`
 
 //////////////////////////////////////////////////////////////
-// Generate an SSL certificate
+// Set up ALB and ECS cluster
 //////////////////////////////////////////////////////////////
-const certificate = new aws.acm.Certificate(`gitcoin-review-${environmentName}`, {
+
+const cluster = new awsx.ecs.Cluster("gitcoin", { vpc });
+// export const clusterInstance = cluster;
+export const clusterId = cluster.id;
+
+// Generate an SSL certificate
+const certificate = new aws.acm.Certificate("cert", {
     domainName: domain,
     tags: {
-        Environment: "staging",
+      Environment: "staging",
     },
     validationMethod: "DNS",
-});
+  });
 
-const certificateValidationDomain = new aws.route53.Record(`gitcoin-review-${environmentName}`, {
+const certificateValidationDomain = new aws.route53.Record(`${domain}-validation`, {
     name: certificate.domainValidationOptions[0].resourceRecordName,
-    zoneId: route53ZoneID,
+    zoneId: route53Zone,
     type: certificate.domainValidationOptions[0].resourceRecordType,
     records: [certificate.domainValidationOptions[0].resourceRecordValue],
     ttl: 600,
 });
 
-const certificateValidation = new aws.acm.CertificateValidation(`gitcoin-review-${environmentName}`, {
+const certificateValidation = new aws.acm.CertificateValidation("certificateValidation", {
     certificateArn: certificate.arn,
     validationRecordFqdns: [certificateValidationDomain.fqdn],
-});
+  });
 
-
-//////////////////////////////////////////////////////////////
-// Set up ALB and ECS cluster
-//////////////////////////////////////////////////////////////
-const cluster = new awsx.ecs.Cluster(`gitcoin-review-${environmentName}`, { vpc });
-// export const clusterInstance = cluster;
-export const clusterId = cluster.id;
+// Create the listener for the application
+// const listener = new awsx.lb.ApplicationListener("app", { 
+//     port: 443, 
+//     protocol: "HTTPS",
+//     vpc: cluster.vpc, 
+//     certificateArn: certificateValidation.certificateArn,
+    
+// });
 
 // Creates an ALB associated with our custom VPC.
 const alb = new awsx.lb.ApplicationLoadBalancer(
-    `gitcoin-review-${environmentName}`, { vpc }
-);
+    `gitcoin-service`, { vpc }
+  );
 
 // Listen to HTTP traffic on port 80 and redirect to 443
-const httpListener = alb.createListener(`gitcoin-review-${environmentName}`, {
+const httpListener = alb.createListener("web-listener", {
     port: 80,
     protocol: "HTTP",
     defaultAction: {
         type: "redirect",
         redirect: {
-            protocol: "HTTPS",
-            port: "443",
-            statusCode: "HTTP_301",
+        protocol: "HTTPS",
+        port: "443",
+        statusCode: "HTTP_301",
         },
     },
 });
 
 // Target group with the port of the Docker image
 const target = alb.createTargetGroup(
-    `gitcoin-review-${environmentName}`, { vpc, port: 80 }
+    "web-target", { vpc, port: 80 }
 );
 
 // Listen to traffic on port 443 & route it through the target group
-const httpsListener = target.createListener(`gitcoin-review-${environmentName}`, {
+const httpsListener = target.createListener("web-listener", {
     port: 443,
     certificateArn: certificateValidation.certificateArn
+}); 
+
+const staticBucket = new aws.lb.ListenerRule("static", {
+    listenerArn: httpsListener.listener.arn,
+    priority: 100,
+    actions: [{
+        type: "redirect",
+        redirect: {
+            host: "s.gitcoin.co",
+            port: "443",
+            protocol: "HTTPS",
+            statusCode: "HTTP_301",
+        },
+    }],
+    conditions: [
+        {
+            pathPattern: {
+                values: ["/static/*"],
+            },
+        },
+    ],
 });
 
 // Create a DNS record for the load balancer
 const www = new aws.route53.Record("www", {
-    zoneId: route53ZoneID,
+    zoneId: route53Zone,
     name: domain,
     type: "A",
     aliases: [{
@@ -413,7 +421,11 @@ let environment = [
     },
     {
         name: "BASE_URL",
-        value: "http://127.0.0.1:8000/"
+        value: baseUrl
+    },
+    {
+        name: "SENTRY_DSN",
+        value: sentryDSN
     },
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -646,21 +658,30 @@ let environment = [
         name: "AWS_DEFAULT_REGION",
         value: "us-west-2"          // TODO: configure this
     },
+
     {
         name: "AWS_STORAGE_BUCKET_NAME",
         value: bucketName
     },
     {
         name: "STATIC_HOST",
-        value: bucketWebURL
+        value: "https://dpc6bywmosi9y.cloudfront.net/" // Need to swap to read from resource, but just making sure this works
+    },
+    {
+        name: "AWS_S3_CUSTOM_DOMAIN",
+        value: "https://dpc6bywmosi9y.cloudfront.net/" // Need to swap to read from resource, but just making sure this works
     },
     {
         name: "STATIC_URL",
         value: "static/"
     },
+    {
+        name: "MEDIAFILES_LOCATION",
+        value: "" // empty on purpose
+    },
     // This is used for prod: STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
     // STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
-    // Going with this for the time being:  django.contrib.staticfiles.storage.StaticFilesStorage
+    // Going with this for the time being:  django.contrib.staticfiles.storage.StaticFilesStorage 
     {
         name: "STATICFILES_STORAGE",
         value: "django.contrib.staticfiles.storage.StaticFilesStorage"
@@ -671,12 +692,12 @@ let environment = [
     },
     {
         name: "MEDIA_URL",
-        value: bucketWebURL
+        value: "https://dpc6bywmosi9y.cloudfront.net/"
     }
 
 ];
 
-const task = new awsx.ecs.FargateTaskDefinition(`gitcoin-review-${environmentName}`, {
+const task = new awsx.ecs.FargateTaskDefinition("task", {
     containers: {
         web: {
             image: dockerGtcWebImage,
@@ -688,34 +709,79 @@ const task = new awsx.ecs.FargateTaskDefinition(`gitcoin-review-${environmentNam
             dependsOn: [],
             links: []
         },
-        celery: {
-            image: "gitcoin/web:0b8eae8cd2",
-            command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"],
-            memory: 4096,
-            cpu: 2000,
-            portMappings: [],
-            environment: environment,
-            dependsOn: [],
-            links: []
-        },
-        celeryHighPriority: {
-            image: "gitcoin/web:0b8eae8cd2",
-            command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
-            memory: 4096,
-            cpu: 2000,
-            portMappings: [],
-            environment: environment,
-            dependsOn: [],
-            links: []
-        }
     },
 });
 
 
 export const taskDefinition = task.taskDefinition.id;
 
-const secgrp = new aws.ec2.SecurityGroup(`gitcoin-review-${environmentName}-task`, {
-    description: "gitcoin-ecs-task",
+const service = new awsx.ecs.FargateService("app", {
+    cluster,
+    desiredCount: 2,
+    taskDefinitionArgs: {
+        containers: {
+            web: {
+                image: dockerGtcWebImage,
+                memory: 4096,
+                portMappings: [httpsListener],
+                environment: environment,
+                links: []
+            },
+        },
+    },
+});
+
+const celery = new awsx.ecs.FargateService("celery", {
+    cluster,
+    desiredCount: 2,
+    taskDefinitionArgs: {
+        containers: {
+            celery: {
+                image: "gitcoin/web:0b8eae8cd2",
+                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+            celeryHighPriority: {
+                image: "gitcoin/web:0b8eae8cd2",
+                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+        },
+    },
+});
+
+const ecsTarget = new aws.appautoscaling.Target("autoscaling_target", {
+    maxCapacity: 10,
+    minCapacity: 1,
+    resourceId: pulumi.interpolate`service/${cluster.cluster.name}/${service.service.name}`,
+    scalableDimension: "ecs:service:DesiredCount",
+    serviceNamespace: "ecs",
+});
+
+// Export the URL so we can easily access it.
+// export const frontendURL = pulumi.interpolate`http://${listener.endpoint.hostname}/`;
+// export const frontend = listener.endpoint
+
+
+
+//////////////////////////////////////////////////////////////
+// Set up EC2 instance 
+//      - it is intended to be used for troubleshooting
+//////////////////////////////////////////////////////////////
+
+// Create a new security group that permits SSH and web access.
+const secgrp = new aws.ec2.SecurityGroup("secgrp", {
+    description: "gitcoin",
     vpcId: vpc.id,
     ingress: [
         { protocol: "tcp", fromPort: 22, toPort: 22, cidrBlocks: ["0.0.0.0/0"] },
@@ -729,37 +795,71 @@ const secgrp = new aws.ec2.SecurityGroup(`gitcoin-review-${environmentName}-task
     }],
 });
 
-export const securityGroupForTaskDefinition = secgrp.id;
+export const securityGroupsForEc2 = secgrp.id;
 
-
-const service = new awsx.ecs.FargateService(`gitcoin-review-${environmentName}-app`, {
-    cluster,
-    desiredCount: 2,
-    assignPublicIp: false,
-    taskDefinitionArgs: {
-        containers: {
-            web: {
-                image: dockerGtcWebImage,
-                memory: 1024,
-                portMappings: [httpsListener],
-                environment: environment,
-                links: []
-            },
-            worker: {
-                image: dockerGtcWebImage,
-                memory: 1024,
-                environment: environment,
-                links: [],
-                command: ["python3.7", "manage.py", "celery"]
-            }
+const ubuntu = aws.ec2.getAmi({
+    mostRecent: true,
+    filters: [
+        {
+            name: "name",
+            values: ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"],
         },
-    },
+        {
+            name: "virtualization-type",
+            values: ["hvm"],
+        },
+    ],
+    owners: ["099720109477"],
 });
 
-// Export the URL so we can easily access it.
-export const frontendURL = pulumi.interpolate`http://${httpsListener.endpoint.hostname}/`;
-export const frontend = httpsListener.endpoint
+// Script to install docker in ec2 instance
+const ec2InitScript = `#!/bin/bash
 
+# Installing docker in ubuntu
+# Instructions taken from here: https://docs.docker.com/engine/install/ubuntu/
+
+mkdir /var/log/gitcoin
+echo $(date) "Starting installation of docker" >> /var/log/gitcoin/init.log
+apt-get remove docker docker-engine docker.io containerd runc
+
+apt-get update
+
+apt-get install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+    
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io
+mkdir /var/log/gitcoin
+echo $(date) "Finished installation of docker" >> /var/log/gitcoin/init.log
+
+`
+
+const web = new aws.ec2.Instance("Web", {
+    ami: ubuntu.then(ubuntu => ubuntu.id),
+    associatePublicIpAddress: true,
+    instanceType: "t3.medium",
+    subnetId: vpcPublicSubnet1.then(),
+
+    vpcSecurityGroupIds: [secgrp.id],
+    rootBlockDevice: {
+        volumeSize: 50
+    },
+    tags: {
+        Name: "Troubleshooting instance",
+    },
+    userData: ec2InitScript,
+});
+
+export const ec2PublicIp = web.publicIp;
 
 // Build and export the command to use the docker image of this specific deployment from an EC2 instance within the subnet
 export const dockerConnectCmd = pulumi.interpolate`docker run -it \
