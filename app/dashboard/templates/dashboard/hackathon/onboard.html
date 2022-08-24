@@ -142,7 +142,7 @@
                           >
                             <i class="fab fa-discord mr-1"></i>Join Discord
                           </a>
-                      {% endif %}        
+                      {% endif %}
                   {% endif %}
                   </div>
                 </div>
@@ -482,6 +482,30 @@
       const sendMtcEvent = (slug, cb) => {
         console.log(slug)
 
+        EmailPreferenceEvent.createEvent({
+          "alias": "hackathon",
+          "data": [
+            {
+              "name": "registration",
+              "attributes": {
+                "hackathon-slug": slug,
+                "hackathon-action": 'register',
+              }
+            }
+          ]
+        }, {
+          "alias": "products",
+          "data": [
+            {
+              "name": "product",
+              "attributes": {
+                "product": "hackathon",
+                'persona': 'hackathon-hunter',
+                'action': 'register'
+              }
+            }
+          ]
+        })
         MauticEvent.createEvent({
           "alias": "hackathon",
           "data": [
