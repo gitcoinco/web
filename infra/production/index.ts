@@ -12,7 +12,6 @@ let githubApiToken = pulumi.secret(`${process.env["GITHUB_API_TOKEN"]}`);
 let githubClientId = `${process.env["GITHUB_CLIENT_ID"]}`;
 let githubClientSecret = pulumi.secret(`${process.env["GITHUB_CLIENT_SECRET"]}`);
 let githubAppName = `${process.env["GITHUB_APP_NAME"]}`;
-let datadogKey = `${process.env["DATADOG_KEY"]}`
 let tempDatabase = `${process.env["TEMP_DATABASE"]}`
 
 let route53Zone = `${process.env["ROUTE_53_ZONE"]}`;
@@ -20,6 +19,12 @@ let domain = `${process.env["DOMAIN"]}`;
 let baseUrl = `http://${domain}/`;
 
 let sentryDSN = `${process.env["SENTRY_DSN"]}`;
+
+let databaseURL = `${process.env["DATABASE_URL"]}`
+let readReplica1 = `${process.env["READ_REPLICA_1_DATABASE_URL"]}`
+let readReplica2 = `${process.env["READ_REPLICA_2_DATABASE_URL"]}`
+let readReplica3 = `${process.env["READ_REPLICA_3_DATABASE_URL"]}`
+let readReplica4 = `${process.env["READ_REPLICA_4_DATABASE_URL"]}`
 
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
@@ -192,42 +197,42 @@ export const vpcPublicSubnet1 = vpcPublicSubnetIds.then((subnets) => {
 //////////////////////////////////////////////////////////////
 // Set up RDS instance
 //////////////////////////////////////////////////////////////
-let dbSubnetGroup = new aws.rds.SubnetGroup("rds-subnet-group", {
-    subnetIds: vpcPrivateSubnetIds
-});
+// let dbSubnetGroup = new aws.rds.SubnetGroup("rds-subnet-group", {
+//     subnetIds: vpcPrivateSubnetIds
+// });
 
-const db_secgrp = new aws.ec2.SecurityGroup("db_secgrp", {
-    description: "Security Group for DB",
-    vpcId: vpc.id,
-    ingress: [
-        { protocol: "tcp", fromPort: 5432, toPort: 5432, cidrBlocks: ["0.0.0.0/0"] },
-    ],
-    egress: [{
-        protocol: "-1",
-        fromPort: 0,
-        toPort: 0,
-        cidrBlocks: ["0.0.0.0/0"],
-    }],
-});
+// const db_secgrp = new aws.ec2.SecurityGroup("db_secgrp", {
+//     description: "Security Group for DB",
+//     vpcId: vpc.id,
+//     ingress: [
+//         { protocol: "tcp", fromPort: 5432, toPort: 5432, cidrBlocks: ["0.0.0.0/0"] },
+//     ],
+//     egress: [{
+//         protocol: "-1",
+//         fromPort: 0,
+//         toPort: 0,
+//         cidrBlocks: ["0.0.0.0/0"],
+//     }],
+// });
 
-// TODO: enable delete protection for the DB
-const postgresql = new aws.rds.Instance("gitcoin-database", {
-    allocatedStorage: 200,
-    engine: "postgres",
-    // engineVersion: "5.7",
-    instanceClass: "db.t3.medium",
-    name: dbName,
-    password: dbPassword,
-    username: dbUsername,
-    skipFinalSnapshot: true,
-    dbSubnetGroupName: dbSubnetGroup.id,
-    vpcSecurityGroupIds: [db_secgrp.id],
-});
+// // TODO: enable delete protection for the DB
+// const postgresql = new aws.rds.Instance("gitcoin-database", {
+//     allocatedStorage: 200,
+//     engine: "postgres",
+//     // engineVersion: "5.7",
+//     instanceClass: "db.t3.medium",
+//     name: dbName,
+//     password: dbPassword,
+//     username: dbUsername,
+//     skipFinalSnapshot: true,
+//     dbSubnetGroupName: dbSubnetGroup.id,
+//     vpcSecurityGroupIds: [db_secgrp.id],
+// });
 
-export const rdsEndpoint = postgresql.endpoint;
-export const rdsArn = postgresql.arn;
-export const rdsConnectionUrl = pulumi.interpolate`psql://${dbUsername}:${dbPassword}@${rdsEndpoint}/${dbName}`
-export const rdsId = postgresql.id
+// export const rdsEndpoint = postgresql.endpoint;
+// export const rdsArn = postgresql.arn;
+// export const rdsConnectionUrl = pulumi.interpolate`psql://${dbUsername}:${dbPassword}@${rdsEndpoint}/${dbName}`
+// export const rdsId = postgresql.id
 
 //////////////////////////////////////////////////////////////
 // Set up Redis
@@ -278,7 +283,7 @@ export const clusterId = cluster.id;
 const certificate = new aws.acm.Certificate("cert", {
     domainName: domain,
     tags: {
-      Environment: "staging",
+      Environment: "production",
     },
     validationMethod: "DNS",
   });
@@ -371,7 +376,7 @@ const www = new aws.route53.Record("www", {
 let environment = [
     {
         name: "ENV",
-        value: "test"
+        value: "prod"
     },
     // read me to understand this file:
     // https://github.com/gitcoinco/web/blob/master/docs/ENVIRONMENT_VARIABLES.md
@@ -397,24 +402,24 @@ let environment = [
     },
     {
         name: "DATABASE_URL",
-        value: tempDatabase
+        value: databaseURL
     },
-    // {
-    //     name: "READ_REPLICA_1_DATABASE_URL",
-    //     value: rdsConnectionUrl
-    // },
-    // {
-    //     name: "READ_REPLICA_2_DATABASE_URL",
-    //     value: rdsConnectionUrl
-    // },
-    // {
-    //     name: "READ_REPLICA_3_DATABASE_URL",
-    //     value: rdsConnectionUrl
-    // },
-    // {
-    //     name: "READ_REPLICA_4_DATABASE_URL",
-    //     value: rdsConnectionUrl
-    // },
+    {
+        name: "READ_REPLICA_1_DATABASE_URL",
+        value: databaseURL
+    },
+    {
+        name: "READ_REPLICA_2_DATABASE_URL",
+        value: databaseURL
+    },
+    {
+        name: "READ_REPLICA_3_DATABASE_URL",
+        value: databaseURL
+    },
+    {
+        name: "READ_REPLICA_4_DATABASE_URL",
+        value: databaseURL
+    },
     {
         name: "DEBUG",
         value: "on"
@@ -665,11 +670,11 @@ let environment = [
     },
     {
         name: "STATIC_HOST",
-        value: "https://dpc6bywmosi9y.cloudfront.net/" // Need to swap to read from resource, but just making sure this works
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     },
     {
         name: "AWS_S3_CUSTOM_DOMAIN",
-        value: "https://dpc6bywmosi9y.cloudfront.net/" // Need to swap to read from resource, but just making sure this works
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     },
     {
         name: "STATIC_URL",
@@ -692,7 +697,7 @@ let environment = [
     },
     {
         name: "MEDIA_URL",
-        value: "https://dpc6bywmosi9y.cloudfront.net/"
+        value: bucketWebURL
     }
 
 ];
@@ -712,12 +717,12 @@ const task = new awsx.ecs.FargateTaskDefinition("task", {
     },
 });
 
-
 export const taskDefinition = task.taskDefinition.id;
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
     desiredCount: 2,
+    subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
             web: {
@@ -733,12 +738,13 @@ const service = new awsx.ecs.FargateService("app", {
 
 const celery = new awsx.ecs.FargateService("celery", {
     cluster,
-    desiredCount: 2,
+    desiredCount: 1,
+    subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
             celery: {
                 image: "gitcoin/web:0b8eae8cd2",
-                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"],
+                command: ["celery", "-A", "taskapp", "-n", "worker1", "worker", "-Q", "gitcoin_passport, celery"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
@@ -748,7 +754,7 @@ const celery = new awsx.ecs.FargateService("celery", {
             },
             celeryHighPriority: {
                 image: "gitcoin/web:0b8eae8cd2",
-                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+                command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
@@ -759,6 +765,7 @@ const celery = new awsx.ecs.FargateService("celery", {
         },
     },
 });
+
 const ecsTarget = new aws.appautoscaling.Target("autoscaling_target", {
     maxCapacity: 10,
     minCapacity: 1,
@@ -862,7 +869,7 @@ export const ec2PublicIp = web.publicIp;
 
 // Build and export the command to use the docker image of this specific deployment from an EC2 instance within the subnet
 export const dockerConnectCmd = pulumi.interpolate`docker run -it \
--e DATABASE_URL=${rdsConnectionUrl} \
+-e DATABASE_URL=${tempDatabase} \
 -e CACHEOPS_REDIS=${redisCacheOpsConnectionUrl} \
 -e REDIS_URL=${redisConnectionUrl} \
 -e STATIC_HOST=${bucketWebURL} \
