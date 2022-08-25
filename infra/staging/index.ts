@@ -397,7 +397,7 @@ let environment = [
     },
     {
         name: "DATABASE_URL",
-        value: rdsConnectionUrl
+        value: tempDatabase
     },
     // {
     //     name: "READ_REPLICA_1_DATABASE_URL",
