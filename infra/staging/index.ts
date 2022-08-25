@@ -718,6 +718,7 @@ export const taskDefinition = task.taskDefinition.id;
 const service = new awsx.ecs.FargateService("app", {
     cluster,
     desiredCount: 2,
+    enableExecuteCommand: true,
     taskDefinitionArgs: {
         containers: {
             web: {
