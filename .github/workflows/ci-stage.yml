@@ -94,26 +94,10 @@ jobs:
           yarn run stylelint
           (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
 
-      # - name: Run management commands
-      #   run: |
-      #     python app/manage.py migrate
-      #     python app/manage.py fetch_gas_prices
-
-      # - name: Run Python and UI tests
-      #   run: |
-      #     pytest -p no:ethereum -p no:warnings
-      #     bin/ci/cypress-run
-
-      # - name: Generate Markdown documentation and static docs page
-      #   run: pydocmd build
-
-      # - name: Deploy to Github Pages 🚀
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   if: github.ref == 'refs/heads/master'
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: _build/site
-      #     cname: docs.gitcoin.coind
+      - name: Run management commands
+        run: |
+          python app/manage.py migrate
+          python app/manage.py fetch_gas_prices
 
       - name: Compute some values
         id: compute
