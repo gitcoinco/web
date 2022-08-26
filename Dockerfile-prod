@@ -53,12 +53,17 @@ RUN yarn global add n
 RUN n stable
 
 COPY package.json /code/
-RUN cd /code && yarn install
+COPY webpack.config.js /code/
+
+
+RUN yarn install
 
 COPY app/app/ci.env /code/app/app/.env
 WORKDIR /code/app
 RUN BUNDLE_USE_CHECKSUM=false python3 manage.py bundle
+WORKDIR /code
 RUN yarn run build
+WORKDIR /code/app
 RUN python3 manage.py collectstatic --disable-collectfast --noinput
 
 ###################################################################################
