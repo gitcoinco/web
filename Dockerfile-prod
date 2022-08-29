@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Define packages to be installed
-ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip libmagic-dev build-essential python-dev libssl-dev python3-dev libsecp256k1-dev libsodium-dev python3-pip"
+ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip libmagic-dev build-essential python-dev libssl-dev python3.7-dev python3.7 libsecp256k1-dev libsodium-dev python3.7-distutils"
 ARG BUILD_DEPS="gcc g++ curl postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
 
 # Install general dependencies.
@@ -16,6 +16,9 @@ RUN apt-get update
 RUN apt-get install -y $PACKAGES
 RUN apt-get update --fix-missing
 RUN apt-get install -y $BUILD_DEPS --fix-missing
+
+RUN curl https://bootstrap.pypa.io/get-pip.py > /tmp/get-pip.py
+RUN python3.7 /tmp/get-pip.py
 
 # Move to /code dir and copy in working dir content
 WORKDIR /code
@@ -60,11 +63,11 @@ RUN yarn install
 
 COPY app/app/ci.env /code/app/app/.env
 WORKDIR /code/app
-RUN BUNDLE_USE_CHECKSUM=false python3 manage.py bundle
+RUN BUNDLE_USE_CHECKSUM=false python3.7 manage.py bundle
 WORKDIR /code
 RUN yarn run build
 WORKDIR /code/app
-RUN python3 manage.py collectstatic --disable-collectfast --noinput
+RUN python3.7 manage.py collectstatic --disable-collectfast --noinput
 
 ###################################################################################
 # Creating the final container
@@ -78,8 +81,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Define packages to be installed
 # ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip libmagic-dev build-essential python-dev libssl-dev python3-dev libsecp256k1-dev libsodium-dev python3-pip"
-ARG PACKAGES="git python3-pip libvips"
+ARG PACKAGES="git libvips python3.7-dev python3.7 libsecp256k1-dev libsodium-dev python3.7-distutils"
 # ARG BUILD_DEPS="gcc g++ curl postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
+ARG BUILD_DEPS="gcc g++ autoconf automake libtool make"
 
 # Install general dependencies.
 RUN apt-get update
@@ -87,8 +91,12 @@ RUN apt-get install -y software-properties-common
 RUN add-apt-repository universe
 RUN apt-get update
 RUN apt-get install -y $PACKAGES
-# RUN apt-get update --fix-missing
-# RUN apt-get install -y $BUILD_DEPS --fix-missing
+RUN apt-get update --fix-missing
+RUN apt-get install -y $BUILD_DEPS --fix-missing
+
+COPY --from=build /tmp/get-pip.py /tmp/get-pip.py
+RUN python3.7 /tmp/get-pip.py
+RUN rm /tmp/get-pip.py
 
 # Move to /code dir and copy in working dir content
 WORKDIR /code
