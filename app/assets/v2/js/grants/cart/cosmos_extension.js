@@ -24,7 +24,7 @@ const contributeWithCosmosExtension = async(grant, vm) => {
   });
 
   const from_address = (await client.signer.getAccounts())[0].address;
-
+    
   let atomBalance = (await client.getBalance(from_address, 'uatom')).amount;
 
   if (Number(atomBalance) < amount) {
@@ -71,19 +71,6 @@ const contributeWithCosmosExtension = async(grant, vm) => {
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
-          EmailPreferenceEvent.createEvent({
-            'alias': 'products',
-            'data': [
-              {
-                'name': 'product',
-                'attributes': {
-                  'product': 'grants',
-                  'persona': 'grants-contributor',
-                  'action': 'contribute'
-                }
-              }
-            ]
-          });
           MauticEvent.createEvent({
             'alias': 'products',
             'data': [

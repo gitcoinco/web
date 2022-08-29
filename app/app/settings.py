@@ -158,7 +158,6 @@ INSTALLED_APPS = [
     'passport',
     'quadraticlands',
     'mautic_logging',
-    'email_preference'
 ]
 
 MIDDLEWARE = [

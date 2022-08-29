@@ -133,19 +133,6 @@ Vue.mixin({
         response = await fetchData(url, 'POST', data, headers);
 
         if (response.status == 200) {
-          EmailPreferenceEvent.createEvent({
-            'alias': 'products',
-            'data': [
-              {
-                'name': 'product',
-                'attributes': {
-                  'product': 'grants',
-                  'persona': 'grants-pledger',
-                  'action': 'submit'
-                }
-              }
-            ]
-          });
           MauticEvent.createEvent({
             'alias': 'products',
             'data': [
