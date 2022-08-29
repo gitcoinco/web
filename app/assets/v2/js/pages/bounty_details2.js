@@ -90,7 +90,6 @@ Vue.mixin({
 
         }
 
-        EmailPreferenceEvent.createEvent(bountyEvent);
         MauticEvent.createEvent(bountyEvent);
         window.history.pushState({}, document.title, window.location.pathname);
 
@@ -811,7 +810,6 @@ Vue.mixin({
 
           }
 
-          EmailPreferenceEvent.createEvent(stopEvent);
           MauticEvent.createEvent(stopEvent);
 
           _alert(text, 'success');
@@ -917,7 +915,7 @@ Vue.mixin({
         case 'CKB': {
           const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
           const isNervosValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
-
+    
           if (!isNervosValid && !vm.bounty.bounty_owner_address.toLowerCase().startsWith('0x')) {
             hasError = true;
           }
@@ -1141,31 +1139,7 @@ var show_interest_modal = function() {
             submitProject(logo, data);
             modals.bootstrapModal('hide');
           });
-          EmailPreferenceEvent.createEvent({
-            'alias': 'hackathon',
-            'data': [
-              {
-                'name': 'interest',
-                'attributes': {
-                  'hackathon-slug': document.result.event.slug,
-                  'hackathon-action': 'interest'
-                }
-              }
-            ]
-          },
-          {
-            'alias': 'products',
-            'data': [
-              {
-                'name': 'product',
-                'attributes': {
-                  'product': 'hackathon',
-                  'persona': 'hackathon-hunter',
-                  'action': 'interest'
-                }
-              }
-            ]
-          });
+
           MauticEvent.createEvent({
             'alias': 'hackathon',
             'data': [
@@ -1212,19 +1186,6 @@ var show_interest_modal = function() {
         }).then(success => {
           if (success) {
             appBounty.fetchBounty();
-            EmailPreferenceEvent.createEvent({
-              'alias': 'products',
-              'data': [
-                {
-                  'name': 'product',
-                  'attributes': {
-                    'product': 'bounties',
-                    'persona': 'bounty-hunter',
-                    'action': 'interest'
-                  }
-                }
-              ]
-            });
             MauticEvent.createEvent({
               'alias': 'products',
               'data': [

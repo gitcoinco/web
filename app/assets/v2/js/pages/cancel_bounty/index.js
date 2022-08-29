@@ -37,19 +37,6 @@ window.onload = function() {
         cancelBounty(data);
       }
 
-      EmailPreferenceEvent.createEvent({
-        'alias': 'products',
-        'data': [
-          {
-            'name': 'product',
-            'attributes': {
-              'product': 'bounties',
-              'persona': 'bounty-funder',
-              'action': 'cancel'
-            }
-          }
-        ]
-      });
       MauticEvent.createEvent({
         'alias': 'products',
         'data': [

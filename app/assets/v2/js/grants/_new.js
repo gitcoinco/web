@@ -257,19 +257,6 @@ Vue.mixin({
         data: getFormData(data),
         headers: headers,
         success: response => {
-          EmailPreferenceEvent.createEvent({
-            'alias': 'products',
-            'data': [
-              {
-                'name': 'product',
-                'attributes': {
-                  'product': 'grants',
-                  'persona': 'grants-creator',
-                  'action': 'create'
-                }
-              }
-            ]
-          });
           MauticEvent.createEvent({
             'alias': 'products',
             'data': [

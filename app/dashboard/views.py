@@ -3113,7 +3113,7 @@ def get_passport_trust_bonus(request, handle):
 def passport(request):
     url = 'https://gitcoin.notion.site/gitcoin/Your-digital-citizenship-pass-in-a-decentralized-society-541ce3929afc4f9cb1cdc4c44db12c68'
     return redirect(url)
-
+    
 
 
 @login_required
@@ -7598,7 +7598,17 @@ def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
     else:
         http_response = getattr(requests, method.lower())(url=url, headers=headers, params=params)
 
-    return http_response.json()
+    response = http_response.json()
+
+
+    # Temporary logging of Mautic interaction in order to prepare for a move over from Mautic to Hubspot.
+    try:
+        log = MauticLog(method=method, endpoint=endpoint, payload=payload, params=params, status_code=http_response.status_code)
+        log.save()
+    except Exception:
+        pass
+
+    return response
 
 
 @csrf_exempt
