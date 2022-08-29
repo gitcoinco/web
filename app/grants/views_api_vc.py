@@ -18,13 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+from datetime import datetime
 
 from django.conf import settings
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 
-from grants.models import Contribution, Grant
+from grants.models import Contribution, Grant, GrantContributionIndex
 from perftools.models import StaticJsonEnv
 from townsquare.models import SquelchProfile
 
@@ -75,46 +76,39 @@ def contributor_statistics(request):
 
     # Get number of grants the user contributed to
     num_grants_contribute_to = (
-        Contribution.objects.filter(profile_for_clr__handle=handle, success=True)
+        GrantContributionIndex.objects.filter(profile__handle=handle)
         .order_by("grant_id")
         .distinct("grant_id")
         .count()
     )
 
-    # Get the number of grants the user contributed to
+    # Get number of rounds the user contributed to
     num_rounds_contribute_to = (
-        Contribution.objects.filter(
-            success=True,
-            subscription__contributor_profile__handle=handle,
-            subscription__network="mainnet",
-            subscription__grant__clr_calculations__latest=True,
-        )
-        .order_by("subscription__grant__clr_calculations__grantclr__round_num")
-        .distinct("subscription__grant__clr_calculations__grantclr__round_num")
+        GrantContributionIndex.objects.filter(profile__handle=handle)
+        .order_by("round_num")
+        .distinct("round_num")
         .count()
     )
 
-    total_contribution_amount = Contribution.objects.filter(
-        profile_for_clr__handle=handle, success=True
-    ).aggregate(Sum("amount_per_period_usdt"))["amount_per_period_usdt__sum"]
-    total_contribution_amount = (
-        total_contribution_amount if total_contribution_amount is not None else 0
-    )
+    # Get the total contribution amount
+    total_contribution_amount = GrantContributionIndex.objects.filter(
+        profile__handle=handle
+    ).aggregate(total_contribution_amount=Sum("amount"))["total_contribution_amount"]
+
+    total_contribution_amount
+
+    if total_contribution_amount is None:
+        total_contribution_amount = 0
 
     # GR14 contributor (and not squelched by FDD)
+    start = datetime.now()
     profile_squelch = SquelchProfile.objects.filter(
         profile__handle=handle, active=True
     ).values_list("profile_id", flat=True)
 
     num_gr14_contributions = (
-        Contribution.objects.filter(
-            success=True,
-            subscription__contributor_profile__handle=handle,
-            subscription__network="mainnet",
-            subscription__grant__clr_calculations__latest=True,
-            subscription__grant__clr_calculations__grantclr__round_num=14,
-        )
-        .exclude(subscription__contributor_profile_id__in=profile_squelch)
+        GrantContributionIndex.objects.filter(profile__handle=handle, round_num=14)
+        .exclude(profile_id__in=profile_squelch)
         .count()
     )
 
@@ -123,7 +117,7 @@ def contributor_statistics(request):
             "num_grants_contribute_to": num_grants_contribute_to,
             "num_rounds_contribute_to": num_rounds_contribute_to,
             "total_contribution_amount": total_contribution_amount,
-            "is_gr14_contributor": num_gr14_contributions > 0,
+            "num_gr14_contributions": num_gr14_contributions,
         }
     )
 

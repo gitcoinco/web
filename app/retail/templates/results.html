@@ -286,33 +286,6 @@
       </div>
 
 
-      <div class="content-block content-block--grey">
-        <div class="container" >
-          <h2 class="content-block__title">{{hackathons | length }} {% trans "Virtual Hackathons" %} worth ${{hackathon_total|floatformat:0|intcomma}}.</h2>
-
-          <div class="hackathon-breakdown">
-            {% for hackathon in hackathons %}
-              <div class="{% if forloop.counter > 7 %}hidden{%endif%}" >
-                {% if hackathon.1.logo %}
-                  <img data-src="{{hackathon.1.logo}}"/>
-                {%else %}
-                  <img data-src="/dynamic/avatar/gitcoinbot"/>
-                {%endif %}
-                <h4>{{hackathon.0.name}}</h4>
-                {% if hackathon.1.num_bounties and hackathon.1.total_volume > 1 %}
-                  <p>{{hackathon.1.num_bounties}} Bounties</p>
-                  <p>${{hackathon.1.total_volume|floatformat:0|intcomma}} In Prizes</p>
-                {% endif %}
-                <p>{{hackathon.1.range}}</p>
-                <a href="{% url 'hackathon' hackathon.0.slug %}">View Prize Explorer</a>
-              </div>
-            {% endfor %}
-            <h4>
-            <a class="btn btn-primary view_more" role="button" href="#">{% trans "See more" %}</a>
-          </div>
-        </div>
-      </div>
-
 
       <div class="row mt-5 pb-5 text-center">
         <div class="col">

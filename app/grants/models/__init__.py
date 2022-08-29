@@ -35,3 +35,4 @@ from .grant_type import GrantType
 from .hall_of_fame import GrantHallOfFame, GrantHallOfFameGrantee
 from .phantom_funding import PhantomFunding
 from .subscription import Subscription
+from .grant_contribution_index import GrantContributionIndex
