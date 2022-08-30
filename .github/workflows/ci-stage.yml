@@ -1,9 +1,12 @@
-name: Build & deploy to staging
-
+name: Build & Deploy App to Staging
 on:
-  # run it during push to branch
-  push:
-    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      # commit hash (for frontend deploy to fleek)
+      commit:
+        description: "Branch/Commit ref"
+        default: "origin/master"
+        type: string
 
 jobs:
   build-and-test:
