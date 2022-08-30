@@ -689,20 +689,20 @@ const task = new awsx.ecs.FargateTaskDefinition(`gitcoin-review-${environmentNam
             links: []
         },
         celery: {
-            image: "gitcoin/web:0b8eae8cd2",
+            image: dockerGtcWebImage,
             command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"],
             memory: 4096,
-            cpu: 2000,
+            cpu: 1000,
             portMappings: [],
             environment: environment,
             dependsOn: [],
             links: []
         },
         celeryHighPriority: {
-            image: "gitcoin/web:0b8eae8cd2",
+            image: dockerGtcWebImage,
             command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
             memory: 4096,
-            cpu: 2000,
+            cpu: 1000,
             portMappings: [],
             environment: environment,
             dependsOn: [],
