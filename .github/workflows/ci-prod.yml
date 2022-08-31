@@ -11,6 +11,7 @@ on:
 jobs:
   build-and-test:
     name: Build and Test
+    environment: production
 
     # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
