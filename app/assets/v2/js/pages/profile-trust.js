@@ -181,6 +181,7 @@ Vue.component('active-trust-manager', {
       saveSuccessMsg: document.trust_bonus_status === 'pending_celery' ? 'Your Passport has been submitted.' : false,
       roundStartDate: parseMonthDay(document.round_start_date),
       roundEndDate: parseMonthDay(document.round_end_date),
+      clrRound: document.clr_round,
       services: document.services || [],
       modalShow: false,
       modalName: false,
