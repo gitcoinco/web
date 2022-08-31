@@ -8,8 +8,8 @@ from economy.models import SuperModel
 class GR15TrustScore(SuperModel):
     """Stores the trust bonus calculations for GR15"""
 
-    profile = models.ForeignKey(
-        "dashboard.Profile",
+    user = models.ForeignKey(
+        User,
         related_name="gr15_trustbonus",
         on_delete=models.CASCADE,
         null=False,
@@ -17,8 +17,14 @@ class GR15TrustScore(SuperModel):
         help_text=_("The owner of the trust bonus"),
     )
 
-    apu_score = models.DecimalField(
+    last_apu_score = models.DecimalField(
         "APU Score",
+        decimal_places=18,
+        max_digits=64,
+    )
+
+    max_apu_score = models.DecimalField(
+        "Max APU Score",
         decimal_places=18,
         max_digits=64,
     )
@@ -29,5 +35,5 @@ class GR15TrustScore(SuperModel):
         max_digits=5,
     )
 
-    last_apu_calculation = models.DateTimeField("Last APU calculation")
-    last_trust_bonus_update = models.DateTimeField("Last trust bonus update")
+    last_apu_calculation_time = models.DateTimeField("Last APU calculation")
+    max_apu_calculation_time = models.DateTimeField("Last APU calculation")
