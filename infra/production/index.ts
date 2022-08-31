@@ -406,19 +406,19 @@ let environment = [
     },
     {
         name: "READ_REPLICA_1_DATABASE_URL",
-        value: readReplica1
+        value: databaseURL
     },
     {
         name: "READ_REPLICA_2_DATABASE_URL",
-        value: readReplica2
+        value: databaseURL
     },
     {
         name: "READ_REPLICA_3_DATABASE_URL",
-        value: readReplica3
+        value: databaseURL
     },
     {
         name: "READ_REPLICA_4_DATABASE_URL",
-        value: readReplica4
+        value: databaseURL
     },
     {
         name: "DEBUG",
@@ -766,24 +766,24 @@ const celery = new awsx.ecs.FargateService("celery", {
     },
 });
 
-const flower = new awsx.ecs.FargateService("flower", {
-    cluster,
-    desiredCount: 2,
-    taskDefinitionArgs: {
-        containers: {
-            celery: {
-                image: "mher/flower",
-                command: ["flower", "--broker=" + redisConnectionUrl, "--port=8888"],
-                memory: 4096,
-                cpu: 2000,
-                portMappings: [],
-                environment: environment,
-                dependsOn: [],
-                links: []
-            },
-        },
-    },
-});
+// const flower = new awsx.ecs.FargateService("flower", {
+//     cluster,
+//     desiredCount: 2,
+//     taskDefinitionArgs: {
+//         containers: {
+//             celery: {
+//                 image: "mher/flower",
+//                 command: ["flower", "--broker=" + redisConnectionUrl, "--port=8888"],
+//                 memory: 4096,
+//                 cpu: 2000,
+//                 portMappings: [],
+//                 environment: environment,
+//                 dependsOn: [],
+//                 links: []
+//             },
+//         },
+//     },
+// });
 
 const ecsTarget = new aws.appautoscaling.Target("autoscaling_target", {
     maxCapacity: 10,
