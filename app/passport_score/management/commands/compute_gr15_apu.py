@@ -13,22 +13,51 @@ MIN_TRUST_BONUS = 0.5
 
 
 def load_passport_stamps():
+    """
+    Load stamps from the grants database & prepares the data for input into the GR15 scoring algorithm
+    """
+
+    # Load stamps and store them into a dataframe
     stamps = list(PassportStamp.objects.all().values("user_id", "stamp_provider"))
     df = pd.DataFrame(stamps)
 
-    print(df)
     df["stamp_provider"] = df.stamp_provider.str.lower()
 
+    # Get list of all unique provider names
     providers = [p for p in df.stamp_provider.unique() if p]
 
+    # Insert a column for each provider, set 0 as default and 1 if the user owns that stamp
+    # Example:
+    #     user_id   stamp_provider     google facebook twitter      ...
+    #     1         google              1      0        0
+    #     1         facebook            0      1        0
+    #     1         twitter             0      0        1
+    #     2         google              1      0        0
+    #     3         facebook            0      1        0
+    #     3         twitter             0      0        1
+    #   ...
     for p in providers:
         df[p] = 0
         df.loc[df["stamp_provider"] == p, p] = 1
 
+    # Group by user_id, performing max aggrgation withina group.
+    # The result will be that we have 1 row per user, and  each row will contain the 
+    # following in the specific provider columns:
+    #       0 if the user DOES NOT HAVE that stamp
+    #       1 if the user has that stamp
+    # The example from above becomes:
+    #     user_id   google facebook twitter      ...
+    #     1          1      1        1
+    #     2          1      0        0
+    #     3          0      1        1
+    #   ...
     prepared_df = df.groupby(["user_id"]).max()
     prepared_df.reset_index(inplace=True)
 
+    # Reset the index, we want to have the user_id as separate column 
     grouping_fields_1 = ["user_id"]
+
+    # TODO: grouping_fields - not sure why this is for, we could probably remove it ...
     grouping_fields = []
 
     return (prepared_df, providers, grouping_fields, grouping_fields_1)
@@ -158,13 +187,6 @@ class Command(BaseCommand):
             # Write the new scores back to the DB
             ###################################################################################
             # Determine the records to be created in the DB (for new users that have submitted their passport) and the ones to be created
-            # for user_id, data in df_gr15_scores.iterrows():
-            #     print(data.last_apu_calculation_time)
-            #     print(data.max_apu_calculation_time)
-            #     print(data.last_apu_calculation_time.to_dat)
-            #     print(data.max_apu_calculation_time)
-
-            # return
 
             new_records = [
                 GR15TrustScore(
