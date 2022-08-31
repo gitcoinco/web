@@ -57,16 +57,16 @@
             <div class="h-100 shadow bg-white rounded flex-column text-center">
               <div class="px-3 pt-3">
                 <div class="spacer-mb-2 font-weight-bold">My Score</div>
-                <h1 class="display-3 text-grey-400">[[trust_bonus]]%</h1>
+                <h1 class="display-3 text-grey-400">[[trustBonus]]%</h1>
                 <p class="text-grey-400">This is the current estimated matching weight of your GR15 contributions.</p>
                 <p class="text-grey-400 font-smaller-2">Your score may increase during each round.</p>
               </div>
               <hr class="m-0" />
               <div class="p-3">
                 <div class="progress rounded-0" style="height: 0.4rem;">
-                  <div class="progress-bar bg-secondary" role="progressbar" :style="{width: `${100/150 * trust_bonus}%`}" :aria-valuenow="`${100/150 * trust_bonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar bg-secondary" role="progressbar" :style="{width: `${100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <p class="text-grey-400 spacer-mt-2 text-left font-smaller-2">You'll receive [[trust_bonus]]% of 150% Match</p>
+                <p class="text-grey-400 spacer-mt-2 text-left font-smaller-2">You'll receive [[trustBonus]]% of 150% Match</p>
               </div>
             </div>
         </div>
