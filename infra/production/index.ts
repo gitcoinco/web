@@ -406,19 +406,19 @@ let environment = [
     },
     {
         name: "READ_REPLICA_1_DATABASE_URL",
-        value: databaseURL
+        value: readReplica1
     },
     {
         name: "READ_REPLICA_2_DATABASE_URL",
-        value: databaseURL
+        value: readReplica2
     },
     {
         name: "READ_REPLICA_3_DATABASE_URL",
-        value: databaseURL
+        value: readReplica3
     },
     {
         name: "READ_REPLICA_4_DATABASE_URL",
-        value: databaseURL
+        value: readReplica4
     },
     {
         name: "DEBUG",
@@ -755,6 +755,25 @@ const celery = new awsx.ecs.FargateService("celery", {
             celeryHighPriority: {
                 image: "gitcoin/web:0b8eae8cd2",
                 command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+        },
+    },
+});
+
+const flower = new awsx.ecs.FargateService("flower", {
+    cluster,
+    desiredCount: 2,
+    taskDefinitionArgs: {
+        containers: {
+            celery: {
+                image: "mher/flower",
+                command: ["flower", "--broker=" + redisConnectionUrl, "--port=8888"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
