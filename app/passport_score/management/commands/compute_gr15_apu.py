@@ -6,7 +6,7 @@ from django.utils import timezone
 
 import pandas as pd
 from dashboard.models import PassportStamp
-from grants.models.gr15_trust_score import GR15TrustScore
+from passport_score.models import GR15TrustScore
 
 MAX_TRUST_BONUS = 1.5
 MIN_TRUST_BONUS = 0.5
@@ -138,6 +138,10 @@ class Command(BaseCommand):
             ] = MAX_TRUST_BONUS
 
             # Linear interpolation for users who have an APU score < median
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # Note: the trust bonus might end up NaN if apu_median - apu_min == 0 
+            # as sthis will lead to division by 0
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             df_gr15_scores.loc[
                 (df_gr15_scores.trust_bonus < MAX_TRUST_BONUS)
                 & (df_gr15_scores.last_apu_score < apu_median),
