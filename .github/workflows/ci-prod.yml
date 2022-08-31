@@ -5,7 +5,7 @@ on:
       # commit hash (for frontend deploy to fleek)
       commit:
         description: "Branch/Commit ref"
-        default: "origin/stable"
+        default: "origin/master"
         type: string
 
 jobs:
