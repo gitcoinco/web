@@ -59,6 +59,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Reset to commit
+        run: |
+          git fetch
+          git reset --hard ${{ github.event.inputs.commit }}
+          
       - name: Use Node.js 14
         uses: actions/setup-node@v2
         with:
