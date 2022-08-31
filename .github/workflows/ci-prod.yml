@@ -60,11 +60,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Reset to commit
-        run: |
-          git fetch
-          git reset --hard ${{ github.event.inputs.commit }}
-
       - name: Use Node.js 14
         uses: actions/setup-node@v2
         with:
@@ -177,7 +172,7 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_USER: ${{ secrets.DB_USER }}
-          DOCKER_GTC_WEB_IMAGE: "gitcoin/web:880a012954"
+          DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
           DATADOG_KEY: ${{ secrets.DATADOG_KEY }}
           ROUTE_53_ZONE: ${{ secrets.ROUTE_53_ZONE }}
           DOMAIN: ${{ secrets.DOMAIN }}
@@ -239,7 +234,7 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_USER: ${{ secrets.DB_USER }}
-          DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
+          DOCKER_GTC_WEB_IMAGE: "gitcoin/web:880a012954"
           DATADOG_KEY: ${{ secrets.DATADOG_KEY }}
           ROUTE_53_ZONE: ${{ secrets.ROUTE_53_ZONE }}
           DOMAIN: ${{ secrets.DOMAIN }}
