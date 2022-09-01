@@ -198,7 +198,6 @@ jobs:
 
       - name: Run Pulumi Up
         uses: pulumi/actions@v3
-        id: pulumi
         if: inputs.pulumi_deploy     
         with:
           command: up
