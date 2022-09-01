@@ -187,6 +187,7 @@ Vue.component('active-trust-manager', {
       pyVerificationError: false,
       passportDetailsShow: false,
       confirmUnlinkPassportShow: false,
+      noPassportShow: false,
       stampVerifications: document.passport_trust_bonus_stamp_validation,
       passportDid: document.passport_did,
       unlinkSuccessMsg: false,
@@ -361,6 +362,25 @@ Vue.component('active-trust-manager', {
         this.isTrustBonusRefreshInProgress = true;
         _refreshTrustBonus();
       }
+    },
+    async checkForPassport() {
+      try {
+        const genesis = await this.reader.getGenesis(selectedAccount);
+        const streams = genesis && genesis.streams;
+
+        // if loaded then the user has a ceramicAccount
+        if (streams && Object.keys(streams).length > 0) {
+          console.log('They have a passport so we can show next step');
+        } else {
+          this.noPassportShow = true;
+        }
+      } catch (e) {
+
+      }
+    },
+    lintToPassport() {
+      this.noPassportShow = false;
+      window.open('https://passport.gitcoin.co/#/', '_blank');
     },
     /*
      * The ignoreErrors attribute is intended to be used when calling this function automatically on page
