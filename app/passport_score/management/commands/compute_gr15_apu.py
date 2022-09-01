@@ -6,6 +6,7 @@ from django.utils import timezone
 
 import pandas as pd
 from dashboard.models import PassportStamp
+from passport_score.gr15_providers import providers
 from passport_score.models import GR15TrustScore
 
 MAX_TRUST_BONUS = 1.5
@@ -21,10 +22,12 @@ def load_passport_stamps():
     stamps = list(PassportStamp.objects.all().values("user_id", "stamp_provider"))
     df = pd.DataFrame(stamps)
 
-    df["stamp_provider"] = df.stamp_provider.str.lower()
+    print("stamps", df)
 
     # Get list of all unique provider names
-    providers = [p for p in df.stamp_provider.unique() if p]
+    # providers = [p for p in df.stamp_provider.unique() if p]
+    print("Providers: ", providers)
+    print("Providers count: ", len(providers))
 
     # Insert a column for each provider, set 0 as default and 1 if the user owns that stamp
     # Example:
@@ -41,7 +44,7 @@ def load_passport_stamps():
         df.loc[df["stamp_provider"] == p, p] = 1
 
     # Group by user_id, performing max aggrgation withina group.
-    # The result will be that we have 1 row per user, and  each row will contain the 
+    # The result will be that we have 1 row per user, and  each row will contain the
     # following in the specific provider columns:
     #       0 if the user DOES NOT HAVE that stamp
     #       1 if the user has that stamp
@@ -54,13 +57,101 @@ def load_passport_stamps():
     prepared_df = df.groupby(["user_id"]).max()
     prepared_df.reset_index(inplace=True)
 
-    # Reset the index, we want to have the user_id as separate column 
+    # Reset the index, we want to have the user_id as separate column
     grouping_fields_1 = ["user_id"]
 
     # TODO: grouping_fields - not sure why this is for, we could probably remove it ...
     grouping_fields = []
 
     return (prepared_df, providers, grouping_fields, grouping_fields_1)
+
+
+def calculate_trust_bonus(df_existing_gr15_scores, df_apu_scores):
+    """Calculate the new trust bonus score based on:
+
+    df_existing_gr15_scores - the current set of records from the DB (the previous run)
+    df_apu_scores - the newly computed APU scores
+    """
+    # Set the user_id as index, as we will join on that
+    df_existing_gr15_scores.set_index("user_id", inplace=True)
+    df_apu_scores.set_index("user_id", inplace=True)
+
+    # Create a new boolean column to mark the records coming from DB (to be used after join, to separate
+    # new records from records to be updated)
+    df_existing_gr15_scores["from_db"] = True
+
+    apu_median = df_apu_scores["Score"].median()
+    apu_min = df_apu_scores["Score"].min()
+    print("APU median: %s" % apu_median)
+
+    df_gr15_scores = df_existing_gr15_scores.join(df_apu_scores, how="outer")
+
+    # Ensure valid values in Score. NaN might occur for users that have removed all thei stamps
+    df_gr15_scores.Score.fillna(0.0, inplace=True)
+
+    print("\nInitial scores summary (including db records): \n%s" % df_gr15_scores)
+
+    # Update records ....
+    now = timezone.now()
+    df_gr15_scores.last_apu_score = df_gr15_scores.Score
+    df_gr15_scores.last_apu_calculation_time = now
+
+    print("last_apu_score:", df_gr15_scores.last_apu_score)
+    print("max_apu_score:", df_gr15_scores.max_apu_score)
+
+    max_apus_to_update = (pd.isnull(df_gr15_scores.max_apu_score)) | (
+        df_gr15_scores.last_apu_score > df_gr15_scores.max_apu_score
+    )
+    df_gr15_scores.loc[
+        max_apus_to_update,
+        "max_apu_score",
+    ] = df_gr15_scores.last_apu_score
+    df_gr15_scores.loc[
+        max_apus_to_update,
+        "max_apu_calculation_time",
+    ] = now
+
+    # Linear interpolation for users who have an APU score < median
+    # Users with score above median get the max trust bonus
+    # !!! AND !!!: we never store a trust_bonus score smaller than in the previous calculation (i. e. loaded from db)
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # Note: the trust bonus might end up NaN if apu_median - apu_min == 0
+    # as this will lead to division by 0
+    # We are setting the trust_bonus to 0 in this case
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    new_trust_bonus = (df_gr15_scores.last_apu_score - apu_min) / (
+        apu_median - apu_min
+    ) * (MAX_TRUST_BONUS - MIN_TRUST_BONUS) + MIN_TRUST_BONUS
+
+    # Ensure max trust bonus
+    new_trust_bonus.clip(upper=1.5, inplace=True)
+
+    # Ensure valid values (eliminate NaNs)
+    new_trust_bonus.fillna(0.0, inplace=True)
+    df_gr15_scores.trust_bonus.fillna(0.0, inplace=True)
+
+    print("-----------------")
+    print("new_trust_bonus", new_trust_bonus)
+    print("-----------------")
+    print("df_gr15_scores.trust_bonus", df_gr15_scores.trust_bonus)
+    print("-----------------")
+
+    update_trust_bonus_condition = new_trust_bonus > df_gr15_scores.trust_bonus
+
+    df_gr15_scores.loc[
+        update_trust_bonus_condition,
+        "trust_bonus",
+    ] = new_trust_bonus.loc[update_trust_bonus_condition]
+    df_gr15_scores.loc[
+        update_trust_bonus_condition,
+        "trust_bonus_calculation_time",
+    ] = now
+
+    # Fill any null values in the trust_bonus_calculation_time
+    df_gr15_scores.trust_bonus_calculation_time.fillna(now, inplace=True)
+
+    print("\nRecords after trust bonus recalculation: \n%s" % df_gr15_scores)
+    return df_gr15_scores
 
 
 class Command(BaseCommand):
@@ -85,12 +176,12 @@ class Command(BaseCommand):
             ) = load_passport_stamps()
 
             self.stdout.write("Running scorer")
-            scores = compute_apu_scores(
+            df_apu_scores = compute_apu_scores(
                 prepared_df, stamp_fields, grouping_fields, grouping_fields_1
             )
 
-            scores.set_index("user_id")
-            self.stdout.write("\nScores: \n%s" % scores)
+            df_apu_scores.set_index("user_id")
+            self.stdout.write("\nScores: \n%s" % df_apu_scores)
 
             ###################################################################################
             # Evaluate the APU score, apply the trust bonus calculation
@@ -104,6 +195,7 @@ class Command(BaseCommand):
                 "trust_bonus",
                 "last_apu_calculation_time",
                 "max_apu_calculation_time",
+                "trust_bonus_calculation_time",
             )
 
             # Create a DataFrame for the data, handle the case when the dataset loaded from DB is empty
@@ -121,73 +213,19 @@ class Command(BaseCommand):
                         "trust_bonus": [],
                         "last_apu_calculation_time": [],
                         "max_apu_calculation_time": [],
+                        "trust_bonus_calculation_time": [],
                     }
                 )
 
-            # Set the user_id as index, as we will join on that
-            df_existing_gr15_scores.set_index("user_id", inplace=True)
-            scores.set_index("user_id", inplace=True)
-
-            # Create a new boolean column to mark the records coming from DB (to be used after join, to separate
-            # new records from records to be updated)
-            df_existing_gr15_scores["from_db"] = True
-
-            apu_median = scores["Score"].median()
-            apu_min = scores["Score"].min()
-            self.stdout.write("APU median: %s" % apu_median)
-
-            df_gr15_scores = df_existing_gr15_scores.join(scores, how="outer")
-
-            self.stdout.write(
-                "\nInitial scores summary (including db records): \n%s" % df_gr15_scores
+            df_gr15_scores = calculate_trust_bonus(
+                df_existing_gr15_scores, df_apu_scores
             )
 
-            # Update records ....
-            now = timezone.now()
-            df_gr15_scores.last_apu_score = df_gr15_scores.Score
-            df_gr15_scores.last_apu_calculation_time = now
-
-            max_apus_to_update = (pd.isnull(df_gr15_scores.max_apu_score)) | (
-                df_gr15_scores.last_apu_score > df_gr15_scores.max_apu_score
-            )
-            df_gr15_scores.loc[
-                max_apus_to_update,
-                "max_apu_score",
-            ] = df_gr15_scores.last_apu_score
-            df_gr15_scores.loc[
-                max_apus_to_update,
-                "max_apu_calculation_time",
-            ] = now
-
-            # Set the trust bonus to 1.5 for user who have now gone anove median
-            df_gr15_scores.loc[
-                (df_gr15_scores.trust_bonus < MAX_TRUST_BONUS)
-                & (df_gr15_scores.last_apu_score >= apu_median),
-                "trust_bonus",
-            ] = MAX_TRUST_BONUS
-
-            # Linear interpolation for users who have an APU score < median
-            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # Note: the trust bonus might end up NaN if apu_median - apu_min == 0 
-            # as sthis will lead to division by 0
-            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            df_gr15_scores.loc[
-                (df_gr15_scores.trust_bonus < MAX_TRUST_BONUS)
-                & (df_gr15_scores.last_apu_score < apu_median),
-                "trust_bonus",
-            ] = (df_gr15_scores.last_apu_score - apu_min) / (apu_median - apu_min) * (
-                MAX_TRUST_BONUS - MIN_TRUST_BONUS
-            ) + MIN_TRUST_BONUS
-
-            self.stdout.write(
-                "\nRecords after trust bonus recalculation: \n%s" % df_gr15_scores
-            )
-
+            self.stdout.write("\nNew scores & trust bonus: \n%s" % df_gr15_scores)
             ###################################################################################
             # Write the new scores back to the DB
             ###################################################################################
             # Determine the records to be created in the DB (for new users that have submitted their passport) and the ones to be created
-
             new_records = [
                 GR15TrustScore(
                     user_id=user_id,
@@ -196,6 +234,7 @@ class Command(BaseCommand):
                     trust_bonus=data.trust_bonus,
                     last_apu_calculation_time=data.last_apu_calculation_time,
                     max_apu_calculation_time=data.max_apu_calculation_time,
+                    trust_bonus_calculation_time=data.trust_bonus_calculation_time,
                 )
                 for user_id, data in df_gr15_scores.loc[
                     df_gr15_scores.from_db != True
@@ -211,6 +250,7 @@ class Command(BaseCommand):
                     trust_bonus=data.trust_bonus,
                     last_apu_calculation_time=data.last_apu_calculation_time,
                     max_apu_calculation_time=data.max_apu_calculation_time,
+                    trust_bonus_calculation_time=data.trust_bonus_calculation_time,
                 )
                 for user_id, data in df_gr15_scores.loc[
                     df_gr15_scores.from_db == True

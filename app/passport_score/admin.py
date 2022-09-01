@@ -13,6 +13,7 @@ class GR15TrustScoreAdmin(admin.ModelAdmin):
         "get_trust_bonus",
         "last_apu_calculation_time",
         "max_apu_calculation_time",
+        "trust_bonus_calculation_time"
     )
 
     def get_last_apu_score(self, obj):

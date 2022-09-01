@@ -1,4 +1,3 @@
-
 import datar.all as r
 # delay import as this is only available in celery envs
 import pandas as pd
@@ -9,6 +8,7 @@ from datar.core.factory import func_factory
 def my_paste(x):
     return ", ".join(x)
 
+
 @func_factory("agg", "x")
 def my_len(x):
     return len(x)
@@ -18,13 +18,12 @@ def my_len(x):
 def my_head(x, n=1):
     return x[0:n]
 
-def compute_apu_scores(gc, stamp_field_names, grouping_fieldnames, grouping_fieldnames_1):
-    grouping_fields = [
-        r.f[fieldname] for fieldname in grouping_fieldnames
-    ]
-    grouping_fields_1 = [
-        r.f[fieldname] for fieldname in grouping_fieldnames_1
-    ]
+
+def compute_apu_scores(
+    gc, stamp_field_names, grouping_fieldnames, grouping_fieldnames_1
+):
+    grouping_fields = [r.f[fieldname] for fieldname in grouping_fieldnames]
+    grouping_fields_1 = [r.f[fieldname] for fieldname in grouping_fieldnames_1]
     stamp_fields = [r.f[fieldname] for fieldname in stamp_field_names]
 
     pca_dat = gc >> r.select(~r.f[grouping_fields_1])
@@ -32,10 +31,14 @@ def compute_apu_scores(gc, stamp_field_names, grouping_fieldnames, grouping_fiel
     method_combos = (
         gc
         >> r.select(~r.f[grouping_fields])
-        >> r.pivot_longer(cols=[stamp_fields], names_to="Authentication", values_to="Value")
+        >> r.pivot_longer(
+            cols=[stamp_fields], names_to="Authentication", values_to="Value"
+        )
         >> r.filter(r.f.Value)
         >> r.group_by(r.f.user_id)
-        >> r.summarise(Combo=my_paste(r.f.Authentication), Num=my_len(r.f.Authentication))
+        >> r.summarise(
+            Combo=my_paste(r.f.Authentication), Num=my_len(r.f.Authentication)
+        )
         >> r.group_by(r.f.Combo)
         >> r.summarise(Count=r.n(), Num=my_head(r.f.Num))
         >> r.arrange(r.desc(r.f.Count))
@@ -51,7 +54,9 @@ def compute_apu_scores(gc, stamp_field_names, grouping_fieldnames, grouping_fiel
     method4_prelim = (
         gc
         >> r.select(~r.f[grouping_fields])
-        >> r.pivot_longer(cols=[stamp_fields], names_to="Authentication", values_to="Value")
+        >> r.pivot_longer(
+            cols=[stamp_fields], names_to="Authentication", values_to="Value"
+        )
         >> r.filter(r.f.Value)
         >> r.group_by(r.f.user_id)
         >> r.summarise(Combo=my_paste(r.f.Authentication))

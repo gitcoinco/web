@@ -36,4 +36,5 @@ class GR15TrustScore(SuperModel):
     )
 
     last_apu_calculation_time = models.DateTimeField("Last APU calculation")
-    max_apu_calculation_time = models.DateTimeField("Last APU calculation")
+    max_apu_calculation_time = models.DateTimeField("Max APU calculation")
+    trust_bonus_calculation_time = models.DateTimeField("Last trust bonus calculation", null=True, blank=True)
