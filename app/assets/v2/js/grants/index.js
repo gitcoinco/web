@@ -367,6 +367,13 @@ if (document.getElementById('grants-showcase')) {
         }
 
         getGrants.grants.forEach(function(item) {
+
+          const amount_received = Number(item.amount_received.replace(',', ''));
+          const rounded_lifetime_amount = Math.round(amount_received / 1000) * 1000;
+
+          item.rounded_lifetime_amount = (rounded_lifetime_amount > 1000) ?
+            `~$${rounded_lifetime_amount}` : 'Less than $1,000';
+
           if (!vm.prevouslyLoadedGrants[item.id]) {
             vm.grants.push(item);
             vm.previouslyLoadedGrants[item.id] = item;
