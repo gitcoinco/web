@@ -7,6 +7,10 @@ on:
         description: "Branch/Commit ref"
         default: "origin/master"
         type: string
+      pulumi_deploy:
+        description: "Run the Pulumi Deployment"
+        default: false
+        type: boolean
 
 jobs:
   build-and-test:
@@ -62,7 +66,7 @@ jobs:
       - name: Reset to commit
         run: |
           git fetch
-          git reset --hard ${{ github.event.inputs.commit }}
+          git reset --hard ${{ inputs.commit }}
           
       - name: Use Node.js 14
         uses: actions/setup-node@v2
@@ -140,11 +144,32 @@ jobs:
     needs: build-and-test
     environment: staging
     runs-on: ubuntu-latest
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }} 
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
+      DATADOG_KEY: ${{ secrets.DATADOG_KEY }}
+      ROUTE_53_ZONE: ${{ secrets.ROUTE53_ZONE_ID }}
+      DOMAIN: ${{ secrets.DOMAIN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      GITHUB_CLIENT_ID: ${{ secrets.GTC_GITHUB_CLIENT_ID }}
+      GITHUB_CLIENT_SECRET: ${{ secrets.GTC_GITHUB_CLIENT_SECRET }}
+      TEMP_DATABASE: ${{ secrets.TEMP_DATABASE }}
 
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Reset to commit
+        run: |
+          git fetch
+          git reset --hard ${{ inputs.commit }}
 
       - name: Use Node.js
         uses: actions/setup-node@v2
@@ -152,42 +177,34 @@ jobs:
           # node-version: ${{ matrix.node-version }}
           cache: "npm"
           cache-dependency-path: infra/staging/package-lock.json
-
-      # Install pulumi dependencies
-      # Select the new pulumi stack 
-      - run: |
-          npm install
-          pulumi stack select -c gitcoin/staging/dev
-          pulumi config -s gitcoin/staging/dev set aws:region us-west-2 --non-interactive
+      
+      - name: Install Pulumi Dependencies
+        # Install pulumi dependencies
+        # Select the new pulumi stack 
+        run: |
+            npm install
+            pulumi stack select -c gitcoin/staging/dev
+            pulumi config -s gitcoin/staging/dev set aws:region us-west-2 --non-interactive
         working-directory: infra/staging
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-
-      # Run pulumi actions
-      - uses: pulumi/actions@v3
+      
+      - name: Run Pulumi Preview
+        uses: pulumi/actions@v3
         id: pulumi
+        with:
+          command: preview
+          stack-name: gitcoin/staging/dev
+          upsert: false
+          work-dir: infra/staging
+
+      - name: Run Pulumi Up
+        uses: pulumi/actions@v3
+        id: pulumi
+        if: inputs.pulumi_deploy     
         with:
           command: up
           stack-name: gitcoin/staging/dev
           upsert: false
           work-dir: infra/staging
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }} 
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
-          DATADOG_KEY: ${{ secrets.DATADOG_KEY }}
-          ROUTE_53_ZONE: ${{ secrets.ROUTE53_ZONE_ID }}
-          DOMAIN: ${{ secrets.DOMAIN }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          GITHUB_CLIENT_ID: ${{ secrets.GTC_GITHUB_CLIENT_ID }}
-          GITHUB_CLIENT_SECRET: ${{ secrets.GTC_GITHUB_CLIENT_SECRET }}
-          TEMP_DATABASE: ${{ secrets.TEMP_DATABASE }}
 
       # The static files are already bundled and located in the folder /code/app/static in the container
       - name: Copy static files to bucket
