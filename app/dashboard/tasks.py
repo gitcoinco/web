@@ -19,13 +19,16 @@ from app.utils import get_location_from_ip
 from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import (
-    Activity, Bounty, Earning, ObjectView, Passport, PassportStamp, Profile, TransactionHistory, UserAction,
+    Activity, Bounty, Earning, ObjectView, Passport, PassportStamp, Profile, TransactionHistory, UserAction, PassportStamp
 )
+from passport_score.models import GR15TrustScore
 from dashboard.utils import get_tx_status_and_details
 from economy.models import EncodeAnything
 from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
+
+from passport_score.views import compute_gr15_apu
 
 from .passport_reader import SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER, get_passport, get_stream_ids
 
@@ -503,7 +506,7 @@ def save_tx_status_and_details(self, earning_pk, chain='std'):
 
 
 @app.shared_task
-def calculate_trust_bonus(user_id, did, address):
+def calculate_apu_score(user_id, did, address):
     """
     :param self: Self
     :param user_id: the user_id
@@ -683,6 +686,8 @@ def calculate_trust_bonus(user_id, did, address):
                                     stamp_validation["match_percent"] = matched_services[service_key]["match_percent"]
             except Exception as e:
                 logger.error("Error verifying the stamp: %s. Error: %s", stamp, e, exc_info=True)
+
+        compute_gr15_apu()
 
         # Calculate the trust score based on the verified stamps
         trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * (1 if match["is_verified"] else 0) for _, match in matched_services.items()]))
