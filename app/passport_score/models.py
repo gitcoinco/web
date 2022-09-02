@@ -41,3 +41,6 @@ class GR15TrustScore(SuperModel):
     trust_bonus_calculation_time = models.DateTimeField("Last trust bonus calculation", null=True, blank=True)
 
     stamps = JSONField("Scored stamps", default=[], null=False, blank=True)
+
+    is_sybil = models.BooleanField("Is sybil", default=False, blank=True)
+    notes = JSONField("Notes", default=[], null=True, blank=True)

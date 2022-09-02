@@ -518,10 +518,25 @@ def calculate_trust_bonus(user_id, did, address):
         # Verify that this DID is not associated to any other profile.
         # We want to avoid the same user creating multiple accounts and re-using the same did
         duplicates = Passport.objects.exclude(user_id=user_id).filter(did=did)
-
+        
         # Duplicate DID
         if len(duplicates) > 0:
-            raise Exception(f"The DID '{did}' is already associated with another users profile.")
+            # See https://github.com/gitcoinco/passport/issues/496
+            for dup in duplicates:
+                gr15_trustbonus = dup.user.gr15_trustbonus
+
+                if not gr15_trustbonus.notes:
+                    gr15_trustbonus.notes = []
+
+                gr15_trustbonus.is_sybil = True
+                gr15_trustbonus.notes.append({
+                    "timestamp": timezone.now().isoformat(),
+                    "note": f"Marking as sybil. Duplicate did: {did}"
+                })
+                gr15_trustbonus.trust_bonus = 0
+                gr15_trustbonus.last_apu_score = 0
+                gr15_trustbonus.save()
+            duplicates.delete()
 
         # Pull streamIds from Ceramic Account associated with DID
         stream_ids = get_stream_ids(did)
@@ -648,8 +663,22 @@ def calculate_trust_bonus(user_id, did, address):
                             stamp_provider = stamp_credential["credentialSubject"]["provider"]
 
                             # if the hash exists in PassportStamps assigned to another user, then this user cannot use it
-                            duplicate_stamp_ids = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
-                            stamp_id_is_valid = len(duplicate_stamp_ids) == 0
+                            duplicate_stamps = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
+                            # stamp_id_is_valid = len(duplicate_stamp_ids) == 0
+                            if len(duplicate_stamps) > 0:
+                                for dup in duplicate_stamps:
+                                    gr15_trustbonus = dup.user.gr15_trustbonus
+
+                                    if not gr15_trustbonus.notes:
+                                        gr15_trustbonus.notes = []
+
+                                    gr15_trustbonus.is_sybil = True
+                                    gr15_trustbonus.notes.append({
+                                        "timestamp": timezone.now().isoformat(),
+                                        "note": f"Marking as sybil. Duplicate stamp id: {stamp_id}"
+                                    })
+                                    gr15_trustbonus.save()
+                                duplicate_stamps.delete()
 
                             if not stamp_id_is_valid:
                                 msg = "Duplicate stamp id detected: %s" % (stamp_id, )
