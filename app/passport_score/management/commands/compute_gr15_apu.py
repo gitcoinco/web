@@ -49,7 +49,9 @@ def load_passport_stamps():
 
     df_stamps = df.copy()
     df_stamps["is_stamp_preserved"] = 1
-    df_stamps_processed_last_calculation_round = df_stamps_processed_last_calculation_round.explode("stamps")
+    df_stamps_processed_last_calculation_round = (
+        df_stamps_processed_last_calculation_round.explode("stamps")
+    )
     # Drop any rows that will contain NaN provider (these users have no stamps)
     df_stamps_processed_last_calculation_round.dropna(inplace=True)
     print(
@@ -74,8 +76,6 @@ def load_passport_stamps():
     df_stamp_overview.loc[
         df_stamp_overview.is_stamp_preserved != 1, "is_stamp_preserved"
     ] = 0
-
-    # df["is_stamp_preserved"] = df_stamp_overview.is_stamp_preserved
 
     print("df_stamp_overview:\n", df_stamp_overview)
 
