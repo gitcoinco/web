@@ -4,6 +4,7 @@ from datetime import datetime
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
+import numpy as np
 import pandas as pd
 from dashboard.models import PassportStamp
 from passport_score.gr15_providers import providers
@@ -19,10 +20,64 @@ def load_passport_stamps():
     """
 
     # Load stamps and store them into a dataframe
-    stamps = list(PassportStamp.objects.all().values("user_id", "stamp_provider"))
-    df = pd.DataFrame(stamps)
+    stamps_from_db = PassportStamp.objects.values("user_id", "stamp_provider")
+    if stamps_from_db:
+        df = pd.DataFrame(stamps_from_db)
+    else:
+        df = pd.DataFrame.from_dict(
+            {
+                "user_id": [],
+                "stamp_provider": [],
+            }
+        )
 
-    print("stamps", df)
+    df_stamps_processed_from_db = GR15TrustScore.objects.values("user_id", "stamps")
+    if df_stamps_processed_from_db:
+        df_stamps_processed_last_calculation_round = pd.DataFrame(
+            df_stamps_processed_from_db
+        )
+    else:
+        df_stamps_processed_last_calculation_round = pd.DataFrame.from_dict(
+            {
+                "user_id": [],
+                "stamps": [],
+            }
+        )
+
+    df_user_stamp_list = df.groupby("user_id")["stamp_provider"].apply(list)
+    print("User stamp list:\n", df_user_stamp_list)
+
+    df_stamps = df.copy()
+    df_stamps["is_stamp_preserved"] = 1
+    df_stamps_processed_last_calculation_round = df_stamps_processed_last_calculation_round.explode("stamps")
+    # Drop any rows that will contain NaN provider (these users have no stamps)
+    df_stamps_processed_last_calculation_round.dropna(inplace=True)
+    print(
+        "===> df_stamps_processed_last_calculation_round:\n",
+        df_stamps_processed_last_calculation_round,
+    )
+    # Merge:
+    #   - left - the stamps processed last time
+    #   - right - all the current stamps
+    #   - how='outer'  => this will get us empty cells in the columns of the left
+    #       dataset, which will indicate stamps that have been removed
+    # And we will add a column which is_stamp_preserved will contain 1 is the stamp was present in the previous calc, 0 otherwise
+    df_stamp_overview = df_stamps_processed_last_calculation_round.merge(
+        df_stamps,
+        how="outer",
+        left_on=["user_id", "stamps"],
+        right_on=["user_id", "stamp_provider"],
+    )
+
+    print("===> df_stamp_overview:\n", df_stamp_overview)
+    # Set the value of is_stamp_preserved to 0, in cases where a stamp has been removed compared to the previous calculatioin
+    df_stamp_overview.loc[
+        df_stamp_overview.is_stamp_preserved != 1, "is_stamp_preserved"
+    ] = 0
+
+    # df["is_stamp_preserved"] = df_stamp_overview.is_stamp_preserved
+
+    print("df_stamp_overview:\n", df_stamp_overview)
 
     # Get list of all unique provider names
     # providers = [p for p in df.stamp_provider.unique() if p]
@@ -40,8 +95,8 @@ def load_passport_stamps():
     #     3         twitter             0      0        1
     #   ...
     for p in providers:
-        df[p] = 0
-        df.loc[df["stamp_provider"] == p, p] = 1
+        df_stamp_overview[p] = 0
+        df_stamp_overview.loc[df_stamp_overview["stamp_provider"] == p, p] = 1
 
     # Group by user_id, performing max aggrgation withina group.
     # The result will be that we have 1 row per user, and  each row will contain the
@@ -54,7 +109,21 @@ def load_passport_stamps():
     #     2          1      0        0
     #     3          0      1        1
     #   ...
-    prepared_df = df.groupby(["user_id"]).max()
+    aggregation_rule = {k: "max" for k in providers}
+
+    def list_exclude_nan(iterable):
+        return list([x for x in iterable if not pd.isna(x)])
+
+    # We will exclude the nan values from the list of providers, we'll only store the new valid ones
+    aggregation_rule["stamp_provider"] = list_exclude_nan
+    # is_stamp_preserved will contain 1 is the stamp was present in the previous calc, 0 otherwise
+    # we want to identify the users that had a stamp removed (we will recalculate the trust bonus even this means lowering the score)
+    # By applying min, we identify thoses users (as they end up having 0)
+    aggregation_rule["is_stamp_preserved"] = min
+    prepared_df = df_stamp_overview.groupby(["user_id"]).agg(aggregation_rule)
+    print("=" * 40)
+    print("prepared_df\n", prepared_df)
+    print("=" * 40)
     prepared_df.reset_index(inplace=True)
 
     # Reset the index, we want to have the user_id as separate column
@@ -73,8 +142,8 @@ def calculate_trust_bonus(df_existing_gr15_scores, df_apu_scores):
     df_apu_scores - the newly computed APU scores
     """
     # Set the user_id as index, as we will join on that
-    df_existing_gr15_scores.set_index("user_id", inplace=True)
-    df_apu_scores.set_index("user_id", inplace=True)
+    # df_existing_gr15_scores.set_index("user_id", inplace=True)
+    # df_apu_scores.set_index("user_id", inplace=True)
 
     # Create a new boolean column to mark the records coming from DB (to be used after join, to separate
     # new records from records to be updated)
@@ -83,11 +152,14 @@ def calculate_trust_bonus(df_existing_gr15_scores, df_apu_scores):
     apu_median = df_apu_scores["Score"].median()
     apu_min = df_apu_scores["Score"].min()
     print("APU median: %s" % apu_median)
+    print("APU min: %s" % apu_min)
 
     df_gr15_scores = df_existing_gr15_scores.join(df_apu_scores, how="outer")
 
     # Ensure valid values in Score. NaN might occur for users that have removed all thei stamps
     df_gr15_scores.Score.fillna(0.0, inplace=True)
+    df_gr15_scores.has_removed_stamps.fillna(False, inplace=True)
+    df_gr15_scores.current_stamps.fillna("", inplace=True)
 
     print("\nInitial scores summary (including db records): \n%s" % df_gr15_scores)
 
@@ -128,6 +200,7 @@ def calculate_trust_bonus(df_existing_gr15_scores, df_apu_scores):
 
     # Ensure valid values (eliminate NaNs)
     new_trust_bonus.fillna(0.0, inplace=True)
+    new_trust_bonus.replace([np.inf, -np.inf], 0, inplace=True)
     df_gr15_scores.trust_bonus.fillna(0.0, inplace=True)
 
     print("-----------------")
@@ -136,7 +209,9 @@ def calculate_trust_bonus(df_existing_gr15_scores, df_apu_scores):
     print("df_gr15_scores.trust_bonus", df_gr15_scores.trust_bonus)
     print("-----------------")
 
-    update_trust_bonus_condition = new_trust_bonus > df_gr15_scores.trust_bonus
+    update_trust_bonus_condition = (df_gr15_scores.has_removed_stamps == True) | (
+        new_trust_bonus > df_gr15_scores.trust_bonus
+    )
 
     df_gr15_scores.loc[
         update_trust_bonus_condition,
@@ -180,7 +255,32 @@ class Command(BaseCommand):
                 prepared_df, stamp_fields, grouping_fields, grouping_fields_1
             )
 
-            df_apu_scores.set_index("user_id")
+            df_apu_scores.set_index("user_id", inplace=True)
+            prepared_df.set_index("user_id", inplace=True)
+            # This will initialize all NaNs with []  (see https://stackoverflow.com/a/64207857)
+            print("===>df_apu_scores\n", df_apu_scores)
+            print("===>prepared_df\n", prepared_df)
+
+            df_t = pd.DataFrame(
+                {
+                    "current_stamps": prepared_df.stamp_provider,
+                    "has_removed_stamps": (1 - prepared_df.is_stamp_preserved).astype(
+                        "bool"
+                    ),
+                },
+                index=prepared_df.index,
+            )
+            print("===>df_t\n", df_t)
+
+            df_apu_scores = df_apu_scores.merge(
+                df_t, how="outer", left_index=True, right_index=True
+            )
+
+            # df_apu_scores["current_stamps"] = prepared_df.stamp_provider
+            # df_apu_scores["current_stamps"].fillna("HELLO", inplace=True)
+            # df_apu_scores["has_removed_stamps"] = (
+            #     1 - prepared_df.is_stamp_preserved
+            # )  # Just invert the logic here
             self.stdout.write("\nScores: \n%s" % df_apu_scores)
 
             ###################################################################################
@@ -196,6 +296,7 @@ class Command(BaseCommand):
                 "last_apu_calculation_time",
                 "max_apu_calculation_time",
                 "trust_bonus_calculation_time",
+                "stamps",
             )
 
             # Create a DataFrame for the data, handle the case when the dataset loaded from DB is empty
@@ -214,13 +315,17 @@ class Command(BaseCommand):
                         "last_apu_calculation_time": [],
                         "max_apu_calculation_time": [],
                         "trust_bonus_calculation_time": [],
+                        "stamps": [[]],
                     }
                 )
 
+            df_existing_gr15_scores.set_index("user_id", inplace=True)
             df_gr15_scores = calculate_trust_bonus(
                 df_existing_gr15_scores, df_apu_scores
             )
 
+            # Drop any records with no current_stamps
+            # df_gr15_scores.dropna(subset=["current_stamps"], inplace=True)
             self.stdout.write("\nNew scores & trust bonus: \n%s" % df_gr15_scores)
             ###################################################################################
             # Write the new scores back to the DB
@@ -235,6 +340,7 @@ class Command(BaseCommand):
                     last_apu_calculation_time=data.last_apu_calculation_time,
                     max_apu_calculation_time=data.max_apu_calculation_time,
                     trust_bonus_calculation_time=data.trust_bonus_calculation_time,
+                    stamps=data.current_stamps,
                 )
                 for user_id, data in df_gr15_scores.loc[
                     df_gr15_scores.from_db != True
@@ -251,6 +357,7 @@ class Command(BaseCommand):
                     last_apu_calculation_time=data.last_apu_calculation_time,
                     max_apu_calculation_time=data.max_apu_calculation_time,
                     trust_bonus_calculation_time=data.trust_bonus_calculation_time,
+                    stamps=data.current_stamps,
                 )
                 for user_id, data in df_gr15_scores.loc[
                     df_gr15_scores.from_db == True
@@ -270,14 +377,18 @@ class Command(BaseCommand):
             self.stdout.write(
                 "\nBulk updating existing records (count=%s)\n" % len(records_from_db)
             )
+
             GR15TrustScore.objects.bulk_update(
                 records_from_db,
                 [
+                    "user_id",
                     "last_apu_score",
                     "max_apu_score",
                     "trust_bonus",
                     "last_apu_calculation_time",
                     "max_apu_calculation_time",
+                    "trust_bonus_calculation_time",
+                    "stamps",
                 ],
             )
         except Exception as exc:
