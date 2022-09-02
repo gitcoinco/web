@@ -83,7 +83,7 @@ from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
-from dashboard.tasks import calculate_trust_bonus, increment_view_count, update_trust_bonus
+from dashboard.tasks import increment_view_count, update_trust_bonus, calculate_apu_score
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
     get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
@@ -3171,9 +3171,8 @@ def verify_passport(request, handle):
 
     # TODO: reset challenge?
     # request.session['passport_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
-
     # enqueue the validation and saving procedure
-    calculate_trust_bonus.delay(request.user.id, did, address)
+    calculate_apu_score.delay(request.user.id, did, address)
 
     # return a 200 response to signal that calculate_trust_bonus has been called
     return JsonResponse({'ok': True})
