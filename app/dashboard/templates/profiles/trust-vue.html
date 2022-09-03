@@ -50,6 +50,51 @@
           </template>
         </b-modal>
 
+        <b-modal v-model="passportScoringShow" hide-header hide-footer>
+          <div class="mt-1">
+            <h4>Processing...</h4>
+            <p class="my-2 text-muted">Please hold while we connect to your Gitcoin Passport.</p>
+          </div>
+          <div class="d-flex mb-3" style="height: 150px;">
+            <div class="d-flex flex-column justify-content-between align-items-center h-100 mr-2">
+              <div class="status" :class="{ complete: loadingStates.submitting.complete, loading: loadingStates.submitting.loading }">
+                <div v-if="loadingStates.submitting.loading"></div>
+                <i v-if="loadingStates.submitting.complete" class="fas fa-solid fa-check" style="color: white"></i>
+              </div>
+              <div class="vl" :class="{ complete: loadingStates.submitting.complete }"></div>
+              <div class="status" :class="{ complete: loadingStates.scoring.complete, loading: loadingStates.scoring.loading }">
+                <div v-if="loadingStates.scoring.loading"></div>
+                <i v-if="loadingStates.scoring.complete" class="fas fa-solid fa-check" style="color: white"></i>
+              </div>
+              <div class="vl" :class="{ complete: loadingStates.scoring.complete }"></div>
+              <div class="status" :class="{ complete: loadingStates.saving.complete, loading: loadingStates.saving.loading }">
+                <div v-if="loadingStates.saving.loading"></div>
+                <i v-if="loadingStates.saving.complete" class="fas fa-solid fa-check" style="color: white"></i>
+              </div>
+            </div>
+            <div class="d-flex flex-column statuses h-100">
+              <div class="d-flex">
+                <div>
+                  <p class="font-weight-bold mb-0">Submitting</p>
+                  <p>The metadata is being saved in a safe place.</p>
+                </div>
+              </div>
+              <div class="d-flex">
+                <div>
+                  <p class="font-weight-bold mb-0">Scoring</p>
+                  <p>Connecting to the Mainnet blockchain.</p>
+                </div>
+              </div>
+              <div class="d-flex">
+                <div>
+                  <p class="font-weight-bold mb-0">Saving</p>
+                  <p>Just another moment while we finish things up...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </b-modal>
+
         <why-this-matters-modal
           :show-modal="modalShow && modalName === 'why-this-matters-modal'"
           @modal-dismissed="hideModal()">

@@ -188,6 +188,8 @@ Vue.component('active-trust-manager', {
       passportDetailsShow: false,
       confirmUnlinkPassportShow: false,
       noPassportShow: false,
+      passportScoringShow: false,
+      apuScoreStatus: null, // null, saving, submitting, scoring, complete
       stampVerifications: document.passport_trust_bonus_stamp_validation,
       passportDid: document.passport_did,
       unlinkSuccessMsg: false,
@@ -232,6 +234,22 @@ Vue.component('active-trust-manager', {
 
         return services;
       }, {});
+    },
+    loadingStates: function() {
+      return {
+        submitting: {
+          loading: this.apuScoreStatus === 'submitting',
+          complete: this.apuScoreStatus === 'scoring'
+        },
+        scoring: {
+          loading: this.apuScoreStatus === 'scoring',
+          complete: this.apuScoreStatus === 'saving'
+        },
+        saving: {
+          loading: this.apuScoreStatus === 'saving',
+          complete: this.apuScoreStatus === 'complete'
+        }
+      };
     }
   },
   methods: {
@@ -327,6 +345,7 @@ Vue.component('active-trust-manager', {
           this.pyVerificationError = this.trustBonusStatus.indexOf('Error:') !== -1;
 
           if (response.passport_trust_bonus_status === 'pending_celery') {
+            this.apuScoreStatus = 'scoring';
             _refreshTrustBonus();
           } else if (response.passport_trust_bonus_status === 'saved') {
             this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
@@ -334,6 +353,8 @@ Vue.component('active-trust-manager', {
             this.saveSuccessMsg = false;
             this.stampVerifications = response.passport_trust_bonus_stamp_validation;
             this.passportDid = response.passport_did;
+
+            this.apuScoreSaved();
           } else {
             this.isTrustBonusRefreshInProggress = false;
             this.saveSuccessMsg = false;
@@ -363,20 +384,12 @@ Vue.component('active-trust-manager', {
         _refreshTrustBonus();
       }
     },
-    async checkForPassport() {
-      try {
-        const genesis = await this.reader.getGenesis(selectedAccount);
-        const streams = genesis && genesis.streams;
-
-        // if loaded then the user has a ceramicAccount
-        if (streams && Object.keys(streams).length > 0) {
-          console.log('They have a passport so we can show next step');
-        } else {
-          this.noPassportShow = true;
-        }
-      } catch (e) {
-
-      }
+    apuScoreSaved() {
+      this.apuScoreStatus = 'saving';
+      setTimeout(() => {
+        this.apuScoreStatus = 'complete',
+        this.passportScoringShow = false;
+      }, 800);
     },
     lintToPassport() {
       this.noPassportShow = false;
@@ -585,6 +598,7 @@ Vue.component('active-trust-manager', {
             // _alert('Your Passport\'s Trust Bonus has been saved!', 'success', 6000);
             this.saveSuccessMsg = 'Your Passport has been submitted.';
             this.trustBonusStatus = 'pending_celery';
+            this.apuScoreStatus = 'submitted';
             this.refreshTrustBonus();
           }
         }
@@ -598,6 +612,27 @@ Vue.component('active-trust-manager', {
 
       // stop loading
       this.loading = false;
+    },
+    async checkForPassport() {
+      try {
+        const genesis = await this.reader.getGenesis(selectedAccount);
+        const streams = genesis && genesis.streams;
+
+        // if streams account has pa
+        if (streams && Object.keys(streams).length > 0) {
+          // Show passport indication modal
+          this.passportScoringShow = true;
+          this.apuScoreStatus = 'submitting';
+          this.did = genesis.did;
+          await this.savePassport();
+          this.apuScoreStatus = 'scoring';
+        } else {
+          this.noPassportShow = true;
+        }
+      } catch (e) {
+        // Error state in design??
+        this.passportScoringShow = false;
+      }
     },
     async showConfirmUnlinkPassport() {
       this.confirmUnlinkPassportShow = true;
