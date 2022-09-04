@@ -32,8 +32,8 @@ class GR15TrustScore(SuperModel):
 
     trust_bonus = models.DecimalField(
         "Trust bonus",
-        decimal_places=2,
-        max_digits=5,
+        decimal_places=18,
+        max_digits=64,
     )
 
     last_apu_calculation_time = models.DateTimeField("Last APU calculation")
