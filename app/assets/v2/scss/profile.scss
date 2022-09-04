@@ -649,3 +649,19 @@ nav.navbar.navbar-dark{
     border: solid 1px #059669;
   }
 }
+
+.currentScore.saved {
+  color: #059669;
+}
+
+.progress-bar.bg-secondary {
+  background-color: #059669 !important;
+}
+
+.trustBonusBg {
+  background: url(static('wallpapers/confetti.svg')) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}

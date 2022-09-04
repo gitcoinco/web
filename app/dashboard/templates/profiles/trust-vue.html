@@ -104,8 +104,8 @@
           :show-modal="modalShow" :type="modalName"
           @modal-dismissed="hideModal()">
         </state-modal> -->
-        <div class="row spacer-mt-4">
-          <div class="col-12 col-lg-6 spacer-pb-3">
+        <div class="row spacer-mt-4" :class="{ trustBonusBg: apuScoreStatus === 'complete' }">
+          <div class="col-12 col-lg-6 spacer-pb-3 pl-0 pl-lg-5">
             <h1>Trust Bonus</h1>
             <span class="line-height-2">
               Trust Bonus is powered by Gitcoin Passport, a decentralized identity verification application. Trust Bonus scores are calculated based on the identification stamps you complete.
@@ -120,12 +120,12 @@
               Submit Passport
             </b-button>
           </div>
-          <div class="col-12 col-lg-6 position-relative">
+          <div class="col-12 col-lg-6 position-relative pr-0 pr-lg-5">
             <div class="h-100 shadow bg-white rounded flex-column text-center">
               <div class="d-flex flex-row-reverse"><div class="badge badge-pill bg-lightpurple mt-3 mr-3 font-subheader font-weight-light">GR[[clrRound]]</div></div>
               <div class="px-3 pt-3">
                 <h6 class="spacer-mb-2 font-weight-bold">My Score</h6>
-                <h1 class="display-3 text-grey-400">[[trustBonus]]%</h1>
+                <h1 class="display-3 text-grey-400 currentScore" :class="{ saved: apuScoreStatus === 'complete' }">[[trustBonus]]%</h1>
                 <p class="text-grey-400">This is the current estimated matching weight of your GR[[clrRound]] contributions.</p>
                 <p class="text-grey-400 small">Your score may increase during each round.</p>
               </div>
