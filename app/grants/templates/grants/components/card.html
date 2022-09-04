@@ -243,10 +243,10 @@
           <div class="col" v-else>
             <!-- not on a round  -->
             <p class="text-black h4 gc-font-base">
-              $[[grant.amount_received || 0 | round | formatNumber]]
+              [[grant.rounded_lifetime_amount]]
             </p>
             <p>
-              total raised
+              Estimated lifetime funding received
             </p>
           </div>
           <div class="col" v-if="grant.clr_round_num">
