@@ -223,7 +223,7 @@ def calculate_trust_bonus(df_existing_gr15_scores, df_apu_scores):
     new_trust_bonus.clip(upper=1.5, inplace=True)
 
     # Ensure valid values (eliminate NaNs)
-    new_trust_bonus.fillna(0.0, inplace=True)
+    new_trust_bonus.fillna(MIN_TRUST_BONUS, inplace=True)
     new_trust_bonus.replace([np.inf, -np.inf], 0, inplace=True)
     df_gr15_scores.trust_bonus.fillna(0.0, inplace=True)
 
@@ -337,7 +337,7 @@ def get_new_trust_bonus():
                     "last_apu_calculation_time": [],
                     "max_apu_calculation_time": [],
                     "trust_bonus_calculation_time": [],
-                    "stamps": [[]],
+                    "stamps": [],
                 }
             )
 
