@@ -2888,6 +2888,9 @@ def get_profile_tab(request, profile, tab, prev_context):
         # QF round info
         clr_rounds_metadata = get_clr_rounds_metadata()
 
+        # round number
+        context['clr_round'] = clr_rounds_metadata['clr_round']
+
         # place clr dates (as unix ts)
         context['round_start_date'] = calendar.timegm(clr_rounds_metadata['round_start_date'].utctimetuple())
         context['round_end_date'] = calendar.timegm(clr_rounds_metadata['round_end_date'].utctimetuple())

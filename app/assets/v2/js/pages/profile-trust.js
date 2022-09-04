@@ -182,6 +182,7 @@ Vue.component('active-trust-manager', {
       roundStartDate: parseMonthDay(document.round_start_date),
       roundEndDate: parseMonthDay(document.round_end_date),
       services: document.services || [],
+      clrRound: document.clr_round,
       modalShow: false,
       modalName: false,
       pyVerificationError: false,
@@ -239,11 +240,11 @@ Vue.component('active-trust-manager', {
       return {
         submitting: {
           loading: this.apuScoreStatus === 'submitting',
-          complete: this.apuScoreStatus === 'scoring'
+          complete: this.apuScoreStatus === 'scoring' | this.apuScoreStatus === 'saving' | this.apuScoreStatus === 'complete'
         },
         scoring: {
           loading: this.apuScoreStatus === 'scoring',
-          complete: this.apuScoreStatus === 'saving'
+          complete: this.apuScoreStatus === 'saving' | this.apuScoreStatus === 'complete'
         },
         saving: {
           loading: this.apuScoreStatus === 'saving',
