@@ -3,10 +3,8 @@ from django.contrib.auth.models import User
 import pytest
 from dashboard.models import Passport, PassportStamp
 from passport_score.gr15_providers import providers
-from passport_score.management.commands.test_compute_gr15_trust_bonus import (
-    get_apu_median, get_new_trust_bonus, save_gr15_trustbonus_records,
-)
 from passport_score.models import GR15TrustScore
+from passport_score.utils import get_apu_median, get_new_trust_bonus, save_gr15_trustbonus_records
 from test_plus.test import TestCase
 
 NUM_USERS = 10

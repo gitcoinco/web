@@ -4,7 +4,7 @@ from django.utils import timezone
 import pandas as pd
 import pytest
 from passport_score.gr15_providers import providers
-from passport_score.management.commands.test_compute_gr15_trust_bonus import calculate_trust_bonus
+from passport_score.utils import calculate_trust_bonus
 from test_plus.test import TestCase
 
 CURRENT_USERNAME = "bot_dude"
