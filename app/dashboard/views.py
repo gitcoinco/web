@@ -2912,8 +2912,8 @@ def get_profile_tab(request, profile, tab, prev_context):
             # gets passport_trust_bonus || trust_bonus
             context['trust_bonus'] = profile.final_trust_bonus
             # this score will be displayed on first load if the passport is connected
-            context['passport_trust_bonus'] = gr15_trust_bonus.trust_bonus
-            context['passport_trust_bonus_status'] = gr15_trust_bonus.trust_bonus_status
+            context['passport_trust_bonus'] = gr15_trust_bonus.trust_bonus if gr15_trust_bonus else 0
+            context['passport_trust_bonus_status'] = gr15_trust_bonus.trust_bonus_status if gr15_trust_bonus else ""
             # TODO: geri - remove the 2 fields from below ???
             context['passport_trust_bonus_last_updated'] = profile.passport_trust_bonus_last_updated.isoformat() if profile.passport_trust_bonus_last_updated else None
             context['passport_trust_bonus_stamp_validation'] = json.dumps(profile.passport_trust_bonus_stamp_validation) if profile.passport_trust_bonus_stamp_validation is not None else None
