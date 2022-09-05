@@ -14,6 +14,46 @@ MAX_TRUST_BONUS = 1.5
 MIN_TRUST_BONUS = 0.5
 
 
+def get_min_apu_for_user(user_id):
+    num_user_stamps = PassportStamp.objects.filter(user_id=user_id).count()
+    return num_user_stamps / len(providers)
+
+
+def compute_min_trust_bonus_for_user(user_id):
+    stamps = [s.stamp_provider for s in PassportStamp.objects.filter(user_id=user_id)]
+
+    apu_score = get_min_apu_for_user(user_id)
+    apu_median = get_apu_median()
+    apu_min = get_apu_min()
+    trust_bonus = 1.5
+
+    if apu_score < apu_median:
+        trust_bonus = (apu_score - apu_min) / (apu_median - apu_min) * (
+            MAX_TRUST_BONUS - MIN_TRUST_BONUS
+        ) + MIN_TRUST_BONUS
+
+    try:
+        gr15_trust_bonus = GR15TrustScore.objects.get(user_id=user_id)
+    except GR15TrustScore.DoesNotExist:
+        gr15_trust_bonus = GR15TrustScore(user_id=user_id)
+
+    if (not gr15_trust_bonus.trust_bonus) or gr15_trust_bonus.trust_bonus < trust_bonus:
+        gr15_trust_bonus.trust_bonus = trust_bonus
+        gr15_trust_bonus.trust_bonus_calculation_time = timezone.now()
+
+    gr15_trust_bonus.last_apu_score = apu_score
+    gr15_trust_bonus.last_apu_calculation_time = timezone.now()
+
+    if (
+        not gr15_trust_bonus.max_apu_score
+    ) or gr15_trust_bonus.max_apu_score < apu_score:
+        gr15_trust_bonus.max_apu_score = apu_score
+        gr15_trust_bonus.max_apu_calculation_time = timezone.now()
+
+    gr15_trust_bonus.stamps = stamps
+    gr15_trust_bonus.save()
+
+
 def get_apu_median():
     """Calculate the median APU from the records in GR15TrustScore"""
     df_gr15_calculations = pd.DataFrame(GR15TrustScore.objects.values("last_apu_score"))
@@ -145,10 +185,10 @@ def load_passport_stamps():
     prepared_df.reset_index(inplace=True)
 
     # Reset the index, we want to have the user_id as separate column
-    grouping_fields_1 = ["user_id"]
+    grouping_fields_1 = ["user_id", "stamp_provider", "is_stamp_preserved"]
 
     # TODO: grouping_fields - not sure why this is for, we could probably remove it ...
-    grouping_fields = []
+    grouping_fields = ["stamp_provider", "is_stamp_preserved"]
 
     return (prepared_df, providers, grouping_fields, grouping_fields_1)
 
@@ -268,6 +308,7 @@ def get_new_trust_bonus():
 
         df_apu_scores.set_index("user_id", inplace=True)
         prepared_df.set_index("user_id", inplace=True)
+
         # This will initialize all NaNs with []  (see https://stackoverflow.com/a/64207857)
         print("===>df_apu_scores\n", df_apu_scores)
         print("===>prepared_df\n", prepared_df)

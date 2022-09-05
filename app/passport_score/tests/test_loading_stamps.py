@@ -88,8 +88,8 @@ class TestLoadingStamps(TestCase):
             assert list(prepared_df[provider]) == [0, 0, 0]
 
         assert _providers == providers
-        assert grouping_fields == []
-        assert grouping_fields_1 == ["user_id"]
+        assert grouping_fields == ["stamp_provider", "is_stamp_preserved"]
+        assert grouping_fields_1 == ["user_id", "stamp_provider", "is_stamp_preserved"]
 
     def test_loading_stamps_removed_from_gr15_trust_score(self):
         """Test loading stamps when some stamps have been removed from GR15TrustScore"""

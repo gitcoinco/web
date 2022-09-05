@@ -59,5 +59,5 @@ providers = [
     "ethPossessionsGte#1",
     "NFT",
     "Lens",
-    "ZkSynk",
+    "ZkSync",
 ]
