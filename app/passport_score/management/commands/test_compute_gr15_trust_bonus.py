@@ -14,6 +14,18 @@ MAX_TRUST_BONUS = 1.5
 MIN_TRUST_BONUS = 0.5
 
 
+def get_apu_median():
+    """Calculate the median APU from the records in GR15TrustScore"""
+    df_gr15_calculations = pd.DataFrame(GR15TrustScore.objects.values("last_apu_score"))
+    return df_gr15_calculations.last_apu_score.median()
+
+
+def get_apu_min():
+    """Calculate the min APU from the records in GR15TrustScore"""
+    df_gr15_calculations = pd.DataFrame(GR15TrustScore.objects.values("last_apu_score"))
+    return df_gr15_calculations.last_apu_score.min()
+
+
 def load_passport_stamps():
     """
     Load stamps from the grants database & prepares the data for input into the GR15 scoring algorithm
@@ -21,7 +33,7 @@ def load_passport_stamps():
         - 1 row for each user
         - user_id is the index
         - 1 row for each configured provider with 1 if the user has that stamp
-        - column `is_stamp_preserved` 
+        - column `is_stamp_preserved`
             - 1 - if all the stamps already in GR15TrustScore have been kept by the user
             - 0 - if stamps from GR15TrustScore have been deleted by the user
 
@@ -223,7 +235,7 @@ def calculate_trust_bonus(df_existing_gr15_scores, df_apu_scores):
     new_trust_bonus.clip(upper=1.5, inplace=True)
 
     # Ensure valid values (eliminate NaNs)
-    new_trust_bonus.fillna(MIN_TRUST_BONUS, inplace=True)
+    new_trust_bonus.fillna(MAX_TRUST_BONUS, inplace=True)
     new_trust_bonus.replace([np.inf, -np.inf], 0, inplace=True)
     df_gr15_scores.trust_bonus.fillna(0.0, inplace=True)
 
@@ -255,7 +267,7 @@ def calculate_trust_bonus(df_existing_gr15_scores, df_apu_scores):
 
 def get_new_trust_bonus():
 
-        # delay import as this is only available in newer envs ...
+    # delay import as this is only available in newer envs ...
     from passport_score.gr15_scorer import compute_apu_scores
 
     try:
@@ -342,11 +354,13 @@ def get_new_trust_bonus():
             )
 
         df_existing_gr15_scores.set_index("user_id", inplace=True)
-        df_existing_gr15_scores["original_last_apu_score"] = df_existing_gr15_scores.last_apu_score
-        df_existing_gr15_scores["original_trust_bonus"] = df_existing_gr15_scores.trust_bonus
-        df_gr15_scores = calculate_trust_bonus(
-            df_existing_gr15_scores, df_apu_scores
-        )
+        df_existing_gr15_scores[
+            "original_last_apu_score"
+        ] = df_existing_gr15_scores.last_apu_score
+        df_existing_gr15_scores[
+            "original_trust_bonus"
+        ] = df_existing_gr15_scores.trust_bonus
+        df_gr15_scores = calculate_trust_bonus(df_existing_gr15_scores, df_apu_scores)
 
         return df_gr15_scores
     except Exception as exc:
@@ -398,15 +412,11 @@ def save_gr15_trustbonus_records(df_gr15_scores):
     print("\nNew records to be created: \n%s" % new_records)
 
     # Bulk creating new records
-    print(
-        "\nBulk creating new records (count=%s)\n" % len(new_records)
-    )
+    print("\nBulk creating new records (count=%s)\n" % len(new_records))
     GR15TrustScore.objects.bulk_create(new_records)
 
     # Bulk updating existing records
-    print(
-        "\nBulk updating existing records (count=%s)\n" % len(records_from_db)
-    )
+    print("\nBulk updating existing records (count=%s)\n" % len(records_from_db))
 
     GR15TrustScore.objects.bulk_update(
         records_from_db,
@@ -428,21 +438,31 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         start = datetime.now()
-        self.stdout.write(self.style.SUCCESS(f'{datetime.now()} START'))
+        self.stdout.write(self.style.SUCCESS(f"{datetime.now()} START"))
 
         df_gr15_trust_bonus = get_new_trust_bonus().round(18)
 
-        df_gr15_trust_bonus_changed = df_gr15_trust_bonus.loc[df_gr15_trust_bonus.original_trust_bonus != df_gr15_trust_bonus.trust_bonus]
+        df_gr15_trust_bonus_changed = df_gr15_trust_bonus.loc[
+            df_gr15_trust_bonus.original_trust_bonus != df_gr15_trust_bonus.trust_bonus
+        ]
 
         save_gr15_trustbonus_records(df_gr15_trust_bonus_changed)
 
-        self.stdout.write(self.style.SUCCESS('=' * 80))
-        self.stdout.write(self.style.SUCCESS('%s' % df_gr15_trust_bonus))
-        self.stdout.write(self.style.SUCCESS('%s' % df_gr15_trust_bonus_changed["original_trust_bonus"]))
-        self.stdout.write(self.style.SUCCESS('%s' % df_gr15_trust_bonus_changed["trust_bonus"]))
-        self.stdout.write(self.style.SUCCESS('%s' % str(df_gr15_trust_bonus.shape)))
-        self.stdout.write(self.style.SUCCESS('%s' % str(df_gr15_trust_bonus_changed.shape)))
-        self.stdout.write(self.style.SUCCESS('%s' % str(df_gr15_trust_bonus.columns)))
-        self.stdout.write(self.style.SUCCESS(f'{datetime.now()} DONE'))
+        self.stdout.write(self.style.SUCCESS("=" * 80))
+        self.stdout.write(self.style.SUCCESS("%s" % df_gr15_trust_bonus))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "%s" % df_gr15_trust_bonus_changed["original_trust_bonus"]
+            )
+        )
+        self.stdout.write(
+            self.style.SUCCESS("%s" % df_gr15_trust_bonus_changed["trust_bonus"])
+        )
+        self.stdout.write(self.style.SUCCESS("%s" % str(df_gr15_trust_bonus.shape)))
+        self.stdout.write(
+            self.style.SUCCESS("%s" % str(df_gr15_trust_bonus_changed.shape))
+        )
+        self.stdout.write(self.style.SUCCESS("%s" % str(df_gr15_trust_bonus.columns)))
+        self.stdout.write(self.style.SUCCESS(f"{datetime.now()} DONE"))
         end = datetime.now()
-        self.stdout.write(self.style.SUCCESS(f'DURATION {end - start}'))
+        self.stdout.write(self.style.SUCCESS(f"DURATION {end - start}"))

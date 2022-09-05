@@ -304,7 +304,7 @@ class TestTrustBonusCalculation(TestCase):
         EQUAL_APU_SCORES = [0.75 for _ in self.users]
 
         # Users with no stamps whould get their score reduced to 0
-        EXPECTED_TRUST_BONUS_FOR_EQ_APU = [0.5 for _ in self.users]
+        EXPECTED_TRUST_BONUS_FOR_EQ_APU = [1.5 for _ in self.users]
 
         # the df_existing_gr15_scores will contain records of older calculation runs
         df_existing_gr15_scores = pd.DataFrame.from_dict(
