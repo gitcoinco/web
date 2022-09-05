@@ -30,6 +30,71 @@
           </div>
         </b-modal>
 
+        <b-modal v-model="noPassportShow" cancel-variant="light" hide-header>
+          <div class="d-flex">
+            <div class="pr-2">
+              <div class="p-2 border rounded-circle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 9.00001V11M12 15H12.01M20.6179 5.98434C20.4132 5.99472 20.2072 5.99997 20 5.99997C16.9265 5.99997 14.123 4.84453 11.9999 2.94434C9.87691 4.84446 7.07339 5.99985 4 5.99985C3.79277 5.99985 3.58678 5.9946 3.38213 5.98422C3.1327 6.94783 3 7.95842 3 9.00001C3 14.5915 6.82432 19.2898 12 20.622C17.1757 19.2898 21 14.5915 21 9.00001C21 7.95847 20.8673 6.94791 20.6179 5.98434Z" stroke="#664AEC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold">No Passport Found</p>
+              <p class="my-2 text-muted">Make sure you select an account that is associated with a Gitcoin Passport or create a new one.</p>
+             </div>
+          </div>
+          <template v-slot:modal-footer>
+            <b-button variant="outline" class="btn btn-lg btn-outline-gc-grey" @click="noPassportShow = false">Cancel</b-button>
+            <b-button variant="primary" class="col-12 col-md-auto btn btn-lg flex-shrink-0 btn-primary" @click.prevent="lintToPassport();">Create Passport</b-button>
+          </template>
+        </b-modal>
+
+        <b-modal v-model="passportScoringShow" hide-header hide-footer>
+          <div class="mt-1">
+            <h4>Processing...</h4>
+            <p class="my-2 text-muted">Please hold while we connect to your Gitcoin Passport.</p>
+          </div>
+          <div class="d-flex mb-3" style="height: 150px;">
+            <div class="d-flex flex-column justify-content-between align-items-center h-100 mr-2">
+              <div class="status" :class="{ complete: loadingStates.submitting.complete, loading: loadingStates.submitting.loading }">
+                <div v-if="loadingStates.submitting.loading"></div>
+                <i v-if="loadingStates.submitting.complete" class="fas fa-solid fa-check" style="color: white"></i>
+              </div>
+              <div class="vl" :class="{ complete: loadingStates.submitting.complete }"></div>
+              <div class="status" :class="{ complete: loadingStates.scoring.complete, loading: loadingStates.scoring.loading }">
+                <div v-if="loadingStates.scoring.loading"></div>
+                <i v-if="loadingStates.scoring.complete" class="fas fa-solid fa-check" style="color: white"></i>
+              </div>
+              <div class="vl" :class="{ complete: loadingStates.scoring.complete }"></div>
+              <div class="status" :class="{ complete: loadingStates.saving.complete, loading: loadingStates.saving.loading }">
+                <div v-if="loadingStates.saving.loading"></div>
+                <i v-if="loadingStates.saving.complete" class="fas fa-solid fa-check" style="color: white"></i>
+              </div>
+            </div>
+            <div class="d-flex flex-column statuses h-100">
+              <div class="d-flex">
+                <div>
+                  <p class="font-weight-bold mb-0">Submitting</p>
+                  <p>The metadata is being saved in a safe place.</p>
+                </div>
+              </div>
+              <div class="d-flex">
+                <div>
+                  <p class="font-weight-bold mb-0">Scoring</p>
+                  <p>Connecting to the Mainnet blockchain.</p>
+                </div>
+              </div>
+              <div class="d-flex">
+                <div>
+                  <p class="font-weight-bold mb-0">Saving</p>
+                  <p>Just another moment while we finish things up...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </b-modal>
+
         <why-this-matters-modal
           :show-modal="modalShow && modalName === 'why-this-matters-modal'"
           @modal-dismissed="hideModal()">
@@ -39,136 +104,39 @@
           :show-modal="modalShow" :type="modalName"
           @modal-dismissed="hideModal()">
         </state-modal> -->
-
-        <div class="row spacer-mt-4">
-          <div class="col-12 col-lg-4 col-xl-6 d-flex spacer-pb-3">
-            <img class="w-100 my-auto" src={% static "v2/images/passport-landing-2.png" %} />
-          </div>
-
-          <div class="col-12 col-lg-8 col-xl-6 spacer-pb-3">
-
-            <!-- Ceramic connection status -->
-            <span class="position-absolute" style="right: 18px; top: -18px;" :title="`${isCeramicConnected ? 'Ceramic is up!' : 'Ceramic is down :('}`">
-              <span class="mr-1 d-inline-block rounded-circle" :style="`width: 10px; height: 10px; ${isCeramicConnected ? 'background: green;' : 'background: red;'}`"></span>Ceramic Network
-            </span>
-
+        <div class="row spacer-mt-4" :class="{ trustBonusBg: apuScoreStatus === 'complete' }">
+          <div class="col-12 col-lg-6 spacer-pb-3 pl-0 pl-lg-5">
             <h1>Trust Bonus</h1>
             <span class="line-height-2">
-              Trust Bonus has received an upgrade! It's now powered by Gitcoin Passport, a decentralized identity verification application. Trust Bonus scores are calculated based on the identification stamps you complete.
+              Trust Bonus is powered by Gitcoin Passport, a decentralized identity verification application. Trust Bonus scores are calculated based on the identification stamps you complete.
               <br/>
               <br/>
-              Note: If you already have a Trust Bonus score, saving a new one will override your existing score. Be sure to collect all your existing stamps in your new Passport before saving a new score!
+              If you’ve already created a Gitcoin Passport,  you’ll want to Refresh Passport an hour before the round ends to receive the maximum score. 
+              <br/>
+              <br/>
+              For more information check out, <a href="" target="_blank">"WTF is Trust Bonus?"</a>.
             </span>
-
-            <div>
-
-              <ul class="list-unstyled mt-4 pb-2">
-                <!-- <i class="fa-regular fa-circle-check"></i> -->
-                <li class="d-flex border-top border-bottom py-3">
-                  <div :class="`gc-border-circle ${step === 1 && !passportVerified? 'gc-border-default' : 'gc-border-success'}`">
-                    <span v-if="step === 1 && !passportVerified" class="m-auto">1</span>
-                    <i v-else :class="`fa fa-check m-auto ${step > 1 || passportVerified ? 'gc-text-success' : 'gc-text-default'}`"></i>
-                  </div>
-                  <div class="px-2">
-                    <div :class="`pb-1 ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
-                      <strong>Create</strong>
-                    </div>
-                    <div :class="` ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
-                      Visit <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="link cursor-pointer">Gitcoin Passport</a> to create your proof of personhood and complete stamps.
-                    </div>
-                    <div class="d-flex flex-row">
-                      <b-button v-if="step === 1 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerConnect()">
-                        Connect Passport
-                      </b-button>
-                      <div v-if="pyVerificationError" class="ml-2 mt-3 py-2 border rounded button btn-lg">
-                        Validation failed
-                      </div>
-                    </div>
-                    <div v-if="step === 1 && verificationError" class="d-flex px-0 pt-3 my-auto">
-                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
-                      <div class="d-inline ml-2 my-auto">
-                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
-                      </div>
-                    </div>
-                </div>
-                </li>
-                <li class="d-flex border-bottom py-3">
-                  <div :class="`gc-border-circle ${step < 2 && !passportVerified ? 'gc-border-disabled' : step === 2 && !passportVerified ? 'gc-border-default' : 'gc-border-success'}`">
-                    <span v-if="step <= 2 && !passportVerified" :class="`m-auto ${step > 2 ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`">2</span>
-                    <i v-else :class="`fa fa-check m-auto ${step > 2 || passportVerified ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
-                  </div>
-                  <div class="px-2">
-                    <div :class="`pb-1 ${(step < 2 && !passportVerified) ? 'gc-text-disabled' : 'gc-text-default'}`">
-                      <strong>Score</strong>
-                    </div>
-                    <div :class="`${(step < 2 && !passportVerified)? 'gc-text-disabled' : 'gc-text-default'}`">
-                      Return to present your stamps to Gitcoin and receive a Trust Bonus score.
-                    </div>
-                    <div class="d-flex flex-row">
-                      <b-button v-if="step === 2 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerRefresh()">
-                        Score Passport
-                      </b-button>
-                      <b-button v-if="passportVerified" variant="dark" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-dark" :disabled="loading" @click="() => passportActionHandlerConnect()">
-                        Refresh Passport
-                      </b-button>
-                      <div v-if="trustBonusStatus === 'pending_celery'" class="ml-2 mt-3 py-2 border rounded button btn-lg">
-                        <div class="spinner-border spinner-border-sm"></div>
-                        Validating Passport ...
-                      </div>
-                    </div>
-                    <div v-if="step === 2 && verificationError" class="d-flex px-0 pt-3 my-auto">
-                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
-                      <div class="d-inline ml-2 my-auto">
-                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li class="d-flex border-bottom py-3">
-                  <div :class="`gc-border-circle ${step < 3 && !passportVerified ? 'gc-border-disabled' : step === 3 && !passportVerified ? 'gc-border-default' : 'gc-border-success'}`">
-                    <span v-if="step <= 3 && !passportVerified" :class="`m-auto ${step > 3 ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">3</span>
-                    <i v-else :class="`fa fa-check m-auto ${step >= 3 || passportVerified ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
-                  </div>
-                  <div class="px-2">
-                    <div :class="`pb-1 ${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
-                      <strong>Save</strong>
-                    </div>
-                    <div :class="`${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
-                      Save your Trust Bonus score so it is used to calculate your matching amounts.
-                    </div>
-                    <b-button v-if="step === 3 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerSave()">
-                      Save Passport
-                    </b-button>
-                    <div v-if="step === 3 && verificationError" class="d-flex px-0 pt-3 my-auto">
-                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
-                      <div class="d-inline ml-2 my-auto">
-                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
-                      </div>
-                    </div>
-                    <div v-if="saveSuccessMsg" class="d-flex px-0 pt-3 my-auto">
-                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #059669"></i>
-                      <div class="d-inline ml-2 my-auto">
-                        <span style="color: #059669"><div class="font-smaller-2" v-html="saveSuccessMsg"></div></span>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            <div class="row">
-              <div class="col-12 col-lg-6">
-                <div class="spacer-mb-2 font-weight-semibold">Trust Bonus Score</div>
+            <b-button variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3" @click="() => checkForPassport()">
+              Submit Passport
+            </b-button>
+          </div>
+          <div class="col-12 col-lg-6 position-relative pr-0 pr-lg-5">
+            <div class="h-100 shadow bg-white rounded flex-column text-center">
+              <div class="d-flex flex-row-reverse"><div class="badge badge-pill bg-lightpurple mt-3 mr-3 font-subheader font-weight-light">GR[[clrRound]]</div></div>
+              <div class="px-3 pt-3">
+                <h6 class="spacer-mb-2 font-weight-bold">My Score</h6>
+                <h1 class="display-3 text-grey-400 currentScore" :class="{ saved: apuScoreStatus === 'complete' }">[[trustBonus]]%</h1>
+                <p class="text-grey-400">This is the current estimated matching weight of your GR[[clrRound]] contributions.</p>
+                <p class="text-grey-400 small">Your score may increase during each round.</p>
+              </div>
+              <hr class="m-0" />
+              <div class="p-3">
                 <div class="progress rounded-0" style="height: 0.4rem;">
-                  <div class="progress-bar bg-secondary disabled" role="progressbar" :style="{width: `${!passport ? 0 : 100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar bg-secondary" role="progressbar" :style="{width: `${100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
+                <p class="text-grey-400 spacer-mt-2 text-left small">You'll receive [[trustBonus]]% of 150% Match</p>
               </div>
             </div>
-            <div class="row">
-              <div :class="`col-12 spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trustBonus]]% of 150% Match. <a href="#" @click="showPassportDetails"><i class="fa fa-info-circle"></i></a></div>
-            </div>
-
-          </div>
         </div>
       </div>
     </active-trust-manager>

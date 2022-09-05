@@ -182,11 +182,15 @@ Vue.component('active-trust-manager', {
       roundStartDate: parseMonthDay(document.round_start_date),
       roundEndDate: parseMonthDay(document.round_end_date),
       services: document.services || [],
+      clrRound: document.clr_round,
       modalShow: false,
       modalName: false,
       pyVerificationError: false,
       passportDetailsShow: false,
       confirmUnlinkPassportShow: false,
+      noPassportShow: false,
+      passportScoringShow: false,
+      apuScoreStatus: null, // null, saving, submitting, scoring, complete
       stampVerifications: document.passport_trust_bonus_stamp_validation,
       passportDid: document.passport_did,
       unlinkSuccessMsg: false,
@@ -211,10 +215,9 @@ Vue.component('active-trust-manager', {
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
 
+    this.refreshTrustBonus();
     // start watching for trust bonus status updates, in case the calculation is still pending
-    if (this.trustBonusStatus === 'pending_celery') {
-      this.refreshTrustBonus();
-    } else if (this.pyVerificationError) {
+    if (this.pyVerificationError) {
       // clear all state
       this.reset(true);
       this.verificationError = this.trustBonusStatus;
@@ -231,6 +234,22 @@ Vue.component('active-trust-manager', {
 
         return services;
       }, {});
+    },
+    loadingStates: function() {
+      return {
+        submitting: {
+          loading: this.apuScoreStatus === 'submitting',
+          complete: this.apuScoreStatus === 'scoring' | this.apuScoreStatus === 'saving' | this.apuScoreStatus === 'complete'
+        },
+        scoring: {
+          loading: this.apuScoreStatus === 'scoring',
+          complete: this.apuScoreStatus === 'saving' | this.apuScoreStatus === 'complete'
+        },
+        saving: {
+          loading: this.apuScoreStatus === 'saving',
+          complete: this.apuScoreStatus === 'complete'
+        }
+      };
     }
   },
   methods: {
@@ -326,6 +345,7 @@ Vue.component('active-trust-manager', {
           this.pyVerificationError = this.trustBonusStatus.indexOf('Error:') !== -1;
 
           if (response.passport_trust_bonus_status === 'pending_celery') {
+            this.apuScoreStatus = 'scoring';
             _refreshTrustBonus();
           } else if (response.passport_trust_bonus_status === 'saved') {
             this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
@@ -333,6 +353,8 @@ Vue.component('active-trust-manager', {
             this.saveSuccessMsg = false;
             this.stampVerifications = response.passport_trust_bonus_stamp_validation;
             this.passportDid = response.passport_did;
+
+            this.apuScoreSaved();
           } else {
             this.isTrustBonusRefreshInProggress = false;
             this.saveSuccessMsg = false;
@@ -361,6 +383,17 @@ Vue.component('active-trust-manager', {
         this.isTrustBonusRefreshInProgress = true;
         _refreshTrustBonus();
       }
+    },
+    apuScoreSaved() {
+      this.apuScoreStatus = 'saving';
+      setTimeout(() => {
+        this.apuScoreStatus = 'complete',
+        this.passportScoringShow = false;
+      }, 800);
+    },
+    lintToPassport() {
+      this.noPassportShow = false;
+      window.open('https://passport.gitcoin.co/#/', '_blank');
     },
     /*
      * The ignoreErrors attribute is intended to be used when calling this function automatically on page
@@ -565,6 +598,7 @@ Vue.component('active-trust-manager', {
             // _alert('Your Passport\'s Trust Bonus has been saved!', 'success', 6000);
             this.saveSuccessMsg = 'Your Passport has been submitted.';
             this.trustBonusStatus = 'pending_celery';
+            this.apuScoreStatus = 'submitted';
             this.refreshTrustBonus();
           }
         }
@@ -578,6 +612,27 @@ Vue.component('active-trust-manager', {
 
       // stop loading
       this.loading = false;
+    },
+    async checkForPassport() {
+      try {
+        const genesis = await this.reader.getGenesis(selectedAccount);
+        const streams = genesis && genesis.streams;
+
+        // if streams account has pa
+        if (streams && Object.keys(streams).length > 0) {
+          // Show passport indication modal
+          this.passportScoringShow = true;
+          this.apuScoreStatus = 'submitting';
+          this.did = genesis.did;
+          await this.savePassport();
+          this.apuScoreStatus = 'scoring';
+        } else {
+          this.noPassportShow = true;
+        }
+      } catch (e) {
+        // Error state in design??
+        this.passportScoringShow = false;
+      }
     },
     async showConfirmUnlinkPassport() {
       this.confirmUnlinkPassportShow = true;

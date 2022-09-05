@@ -610,3 +610,58 @@ nav.navbar.navbar-dark{
 .ql-align-justify {
   text-align: justify;
 }
+
+.status {
+  width: 32px;
+  height: 32px;
+  border: solid 1px $gc-grey-400;
+  border-radius: 50%;
+  &.complete {
+    background: #059669;
+    border: none;
+  }
+  
+  &.loading {
+    border: solid 1px $gc-violet-500;
+  }
+
+  .fa-check {
+    color: white;
+    margin-top: 10px;
+    margin-left: 9px;
+  }
+
+  div {
+    background: $gc-violet-500;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+}
+
+.vl {
+  height: 27px;
+  width: 1px;
+  border: solid 1px #D9D9D9;
+  &.complete {
+    border: solid 1px #059669;
+  }
+}
+
+.currentScore.saved {
+  color: #059669;
+}
+
+.progress-bar.bg-secondary {
+  background-color: #059669 !important;
+}
+
+.trustBonusBg {
+  background: url(static('wallpapers/confetti.svg')) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}

@@ -83,7 +83,7 @@ from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
-from dashboard.tasks import calculate_trust_bonus, increment_view_count, update_trust_bonus
+from dashboard.tasks import increment_view_count, update_trust_bonus, calculate_apu_score
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
     get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
@@ -132,6 +132,7 @@ from .models import (
     ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction,
     UserVerificationModel,
 )
+from passport_score.models import GR15TrustScore
 from .notifications import maybe_market_to_email, maybe_market_to_github
 from .passport_reader import CERAMIC_URL, SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER
 from .poh_utils import is_registered_on_poh
@@ -2888,6 +2889,9 @@ def get_profile_tab(request, profile, tab, prev_context):
         # QF round info
         clr_rounds_metadata = get_clr_rounds_metadata()
 
+        # round number
+        context['clr_round'] = clr_rounds_metadata['clr_round']
+
         # place clr dates (as unix ts)
         context['round_start_date'] = calendar.timegm(clr_rounds_metadata['round_start_date'].utctimetuple())
         context['round_end_date'] = calendar.timegm(clr_rounds_metadata['round_end_date'].utctimetuple())
@@ -3095,6 +3099,7 @@ def get_passport_trust_bonus(request, handle):
     profile = user.profile
     did = None
     try:
+        gr15_trust_bonus = GR15TrustScore.objects.get(user_id=user.id)
         db_passport = Passport.objects.get(user_id=user.id)
         did = db_passport.did
     except Passport.DoesNotExist:
@@ -3103,7 +3108,7 @@ def get_passport_trust_bonus(request, handle):
 
     return JsonResponse({
         "passport_did": did,
-        "passport_trust_bonus": profile.passport_trust_bonus,
+        "passport_trust_bonus": gr15_trust_bonus.trust_bonus,
         "passport_trust_bonus_status": profile.passport_trust_bonus_status,
         "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated,
         "passport_trust_bonus_stamp_validation": profile.passport_trust_bonus_stamp_validation
@@ -3171,9 +3176,8 @@ def verify_passport(request, handle):
 
     # TODO: reset challenge?
     # request.session['passport_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
-
     # enqueue the validation and saving procedure
-    calculate_trust_bonus.delay(request.user.id, did, address)
+    calculate_apu_score.delay(request.user.id, did, address)
 
     # return a 200 response to signal that calculate_trust_bonus has been called
     return JsonResponse({'ok': True})
