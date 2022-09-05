@@ -116,7 +116,10 @@
               <br/>
               For more information check out, <a href="" target="_blank">"WTF is Trust Bonus?"</a>.
             </span>
-            <b-button variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3" @click="() => checkForPassport()">
+            <b-button v-if="apuScoreStatus === 'complete'" variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3 refresh-button" @click="() => checkForPassport()">
+              Refresh Passport
+            </b-button>
+            <b-button v-else variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3" @click="() => checkForPassport()">
               Submit Passport
             </b-button>
           </div>
