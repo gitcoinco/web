@@ -132,6 +132,7 @@ from .models import (
     ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction,
     UserVerificationModel,
 )
+from passport_score.models import GR15TrustScore
 from .notifications import maybe_market_to_email, maybe_market_to_github
 from .passport_reader import CERAMIC_URL, SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER
 from .poh_utils import is_registered_on_poh
@@ -3098,6 +3099,7 @@ def get_passport_trust_bonus(request, handle):
     profile = user.profile
     did = None
     try:
+        gr15_trust_bonus = GR15TrustScore.objects.get(user_id=user.id)
         db_passport = Passport.objects.get(user_id=user.id)
         did = db_passport.did
     except Passport.DoesNotExist:
@@ -3106,7 +3108,7 @@ def get_passport_trust_bonus(request, handle):
 
     return JsonResponse({
         "passport_did": did,
-        "passport_trust_bonus": profile.passport_trust_bonus,
+        "passport_trust_bonus": gr15_trust_bonus.trust_bonus,
         "passport_trust_bonus_status": profile.passport_trust_bonus_status,
         "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated,
         "passport_trust_bonus_stamp_validation": profile.passport_trust_bonus_stamp_validation

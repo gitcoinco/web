@@ -215,10 +215,9 @@ Vue.component('active-trust-manager', {
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
 
+    this.refreshTrustBonus();
     // start watching for trust bonus status updates, in case the calculation is still pending
-    if (this.trustBonusStatus === 'pending_celery') {
-      this.refreshTrustBonus();
-    } else if (this.pyVerificationError) {
+    if (this.pyVerificationError) {
       // clear all state
       this.reset(true);
       this.verificationError = this.trustBonusStatus;
