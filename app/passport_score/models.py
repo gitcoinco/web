@@ -44,3 +44,5 @@ class GR15TrustScore(SuperModel):
 
     is_sybil = models.BooleanField("Is sybil", default=False, blank=True)
     notes = JSONField("Notes", default=[], null=True, blank=True)
+
+    trust_bonus_status = models.CharField(max_length=40, null=True, blank=True)

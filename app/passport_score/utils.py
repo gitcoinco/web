@@ -1,12 +1,12 @@
 import traceback
-from datetime import datetime
+from decimal import Decimal
 
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
 import numpy as np
 import pandas as pd
-from dashboard.models import PassportStamp
+from dashboard.models import PassportStamp, Profile
 from passport_score.gr15_providers import providers
 from passport_score.models import GR15TrustScore
 
@@ -16,7 +16,7 @@ MIN_TRUST_BONUS = 0.5
 
 def get_min_apu_for_user(user_id):
     num_user_stamps = PassportStamp.objects.filter(user_id=user_id).count()
-    return num_user_stamps / len(providers)
+    return Decimal(num_user_stamps / len(providers))
 
 
 def compute_min_trust_bonus_for_user(user_id):
@@ -29,8 +29,8 @@ def compute_min_trust_bonus_for_user(user_id):
 
     if apu_score < apu_median:
         trust_bonus = (apu_score - apu_min) / (apu_median - apu_min) * (
-            MAX_TRUST_BONUS - MIN_TRUST_BONUS
-        ) + MIN_TRUST_BONUS
+            Decimal(MAX_TRUST_BONUS) - Decimal(MIN_TRUST_BONUS)
+        ) + Decimal(MIN_TRUST_BONUS)
 
     try:
         gr15_trust_bonus = GR15TrustScore.objects.get(user_id=user_id)
@@ -51,13 +51,14 @@ def compute_min_trust_bonus_for_user(user_id):
         gr15_trust_bonus.max_apu_calculation_time = timezone.now()
 
     gr15_trust_bonus.stamps = stamps
+    gr15_trust_bonus.trust_bonus_status = "saved"
     gr15_trust_bonus.save()
 
 
 def get_apu_median():
     """Calculate the median APU from the records in GR15TrustScore"""
     df_gr15_calculations = pd.DataFrame(GR15TrustScore.objects.values("last_apu_score"))
-    return df_gr15_calculations.last_apu_score.median()
+    return Decimal(df_gr15_calculations.last_apu_score.median())
 
 
 def get_apu_min():

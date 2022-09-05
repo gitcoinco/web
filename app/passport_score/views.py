@@ -7,8 +7,8 @@ from django.utils import timezone
 import pandas as pd
 from dashboard.models import PassportStamp
 from passport_score.gr15_providers import providers
-from passport_score.models import GR15TrustScore
 from passport_score.gr15_scorer import compute_apu_scores
+from passport_score.models import GR15TrustScore
 
 MAX_TRUST_BONUS = 1.5
 MIN_TRUST_BONUS = 0.5
