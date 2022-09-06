@@ -669,3 +669,15 @@ nav.navbar.navbar-dark{
 .refresh-button {
   background: $gc-grey-500;
 }
+
+.providers {
+  margin: 15px 0;
+  img {
+    height: 32px;
+    margin-right: 10px;
+  }
+  p {
+    margin-bottom: 0px;
+    margin-top: 5px;
+  }
+}
