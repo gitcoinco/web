@@ -1,52 +1,196 @@
 <style>
-  .gr15-container { left: 0px; top: 135px;}
+  .gr15-container {
+    left: 0px;
+    top: 135px;
+  }
 
-  .gr15-logo, .gr15-date, .gr15-summary, .gr15-cta { position: absolute;left: 0;  right: 0; margin-left: auto; margin-right: auto; width: 100%;  text-align: center; }
+  .gr15-logo,
+  .gr15-date,
+  .gr15-summary,
+  .gr15-cta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    text-align: center;
+  }
+  .gr15-cta a {
+    color: #fff;
+  }
 
-  .gr15-logo { top: 0; max-width: 683px; width: 40%; margin-top: -15px; }
-  .gr15-date { top: 52%; font-size: 5rem; }
-  .gr15-summary { font-size: 2rem; bottom: 20%; }
-  .gr15-cta { font-size: 1.3rem; bottom: 0%; margin-bottom: 0; }
+  .gr15-logo {
+    top: 0;
+    max-width: 683px;
+    width: 40%;
+    margin-top: -15px;
+  }
+  .gr15-date {
+    top: 52%;
+    font-size: 5rem;
+  }
+  .gr15-summary {
+    font-size: 2rem;
+    bottom: 20%;
+  }
+  .gr15-cta {
+    font-size: 1.3rem;
+    bottom: 0%;
+    margin-bottom: 0;
+  }
 
-  .gr15-scaler { width: 77%; visibility: hidden; }
-  @media only screen and (max-width: 1500px) { .gr15-scaler { width: 75%;  } .gr15-container { top: 100px; } .gr15-date { font-size: 3rem; } .gr15-summary { font-size: 1.4rem; } }
-  @media only screen and (max-width: 1200px) { .gr15-scaler { width: 73%; } .gr15-container { top: 100px; } }
-  @media only screen and (max-width: 1100px) { .gr15-scaler { width: 71%; } .gr15-container { top: 100px; } .gr15-logo { width: 35%; } .gr15-date { top: 49%; } .gr15-cta a { padding: 0.2em 0.8em; } }
-  @media only screen and (max-width: 900px) { .gr15-scaler { width: 68%; } .gr15-container { top: 100px; } .gr15-date { font-size: calc(1rem + 1.5vw); } .gr15-summary { font-size: 1.1rem; } }
-  @media only screen and (max-width: 800px) { .gr15-scaler { width: 69%; } .gr15-container { top: 80px; } .gr15-date { font-size: calc(0.8rem + 1.5vw); } .gr15-cta a { bottom: 0; padding: 0.2em 0.8em; }  }
-  @media only screen and (max-width: 700px) {  .gr15-container { top: 60px; }  .gr15-summary { bottom: 14%;}  .gr15-cta a { padding: 0.1em 0.5em; } }
-  @media only screen and (max-width: 600px) { .gr15-scaler { width: 60%; } .gr15-container { top: 70px; } .gr15-summary { bottom: 17%;} .gr15-logo { width: 30%; } .gr15-date { top: 40%; } .gr15-summary { font-size: 0.8rem; } }
-  @media only screen and (max-width: 400px) { .gr15-container { top: 40px; } .gr15-cta a { font-size: 0.7rem; } .gr15-logo { width: 20%; } .gr15-date { top: 18%; } }
-
-
+  .gr15-scaler {
+    width: 77%;
+    visibility: hidden;
+  }
+  @media only screen and (max-width: 1500px) {
+    .gr15-scaler {
+      width: 75%;
+    }
+    .gr15-container {
+      top: 100px;
+    }
+    .gr15-date {
+      font-size: 3rem;
+    }
+    .gr15-summary {
+      font-size: 1.4rem;
+    }
+  }
+  @media only screen and (max-width: 1200px) {
+    .gr15-scaler {
+      width: 73%;
+    }
+    .gr15-container {
+      top: 100px;
+    }
+    .gr15-cta button {
+      font-size: 0.8rem;
+    }
+  }
+  @media only screen and (max-width: 1100px) {
+    .gr15-scaler {
+      width: 71%;
+    }
+    .gr15-container {
+      top: 100px;
+    }
+    .gr15-logo {
+      width: 35%;
+    }
+    .gr15-date {
+      top: 49%;
+    }
+    .gr15-cta a {
+      padding: 0.2em 0.8em;
+    }
+  }
+  @media only screen and (max-width: 900px) {
+    .gr15-scaler {
+      width: 68%;
+    }
+    .gr15-container {
+      top: 100px;
+    }
+    .gr15-date {
+      font-size: calc(1rem + 1.5vw);
+    }
+    .gr15-summary {
+      font-size: 1.1rem;
+    }
+  }
+  @media only screen and (max-width: 800px) {
+    .gr15-scaler {
+      width: 69%;
+    }
+    .gr15-container {
+      top: 80px;
+    }
+    .gr15-date {
+      font-size: calc(0.8rem + 1.5vw);
+    }
+    .gr15-cta a {
+      bottom: 0;
+      padding: 0.2em 0.8em;
+    }
+  }
+  @media only screen and (max-width: 700px) {
+    .gr15-container {
+      top: 60px;
+    }
+    .gr15-summary {
+      bottom: 14%;
+    }
+    .gr15-cta button {
+      padding: 0.1em 0.5em;
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    .gr15-scaler {
+      width: 60%;
+    }
+    .gr15-container {
+      top: 70px;
+    }
+    .gr15-summary {
+      bottom: 17%;
+    }
+    .gr15-logo {
+      width: 30%;
+    }
+    .gr15-date {
+      top: 40%;
+    }
+    .gr15-summary {
+      font-size: 0.6rem;
+    }
+  }
+  @media only screen and (max-width: 400px) {
+    .gr15-container {
+      top: 40px;
+    }
+    .gr15-cta a {
+      font-size: 0.7rem;
+    }
+    .gr15-logo {
+      width: 20%;
+    }
+    .gr15-date {
+      top: 18%;
+    }
+  }
 </style>
 
-
 <header class="gr15">
-  <div
-  class="position-relative"
-  >
-    <img src="static/v2/images/home/gr15/background.jpeg" style="width: 100%; " />
-    <div class="text-white gr15-container position-absolute d-flex justify-content-center w-100">
+  <div class="position-relative">
+    <img src="static/v2/images/home/gr15/background.jpeg" style="width: 100%" />
+    <div
+      class="text-white gr15-container position-absolute d-flex justify-content-center w-100"
+    >
       <div class="gr15-text-container">
         <!-- Hack to scale the entire block based on screen size -->
-        <img class="gr15-scaler" src="static/v2/images/home/gr15/background.jpeg" />
+        <img
+          class="gr15-scaler"
+          src="static/v2/images/home/gr15/background.jpeg"
+        />
         <div class="">
           <img
             class="gr15-logo"
             src="static/v2/images/home/gr15/GR15_Logo.png"
             alt="GR15 Logo"
           />
-            <h1 class="gr15-date">September 07-22, 2022</h1>
-            <p class="gr15-summary">Discover and fund extraordinary public goods</p>
-            <p class="gr15-cta">
-              <a
-              href="/grants"
-              title="Discover and Fund Public Goods"
-                class="btn btn-lg btn-primary"
-                type="button"
-              />Explore Grants</a>
-            </p>
+          <h1 class="gr15-date">September 07-22, 2022</h1>
+          <p class="gr15-summary">
+            Discover and fund extraordinary public goods
+          </p>
+          <p class="gr15-cta">
+            <button class="btn btn-lg btn-primary" type="button">
+              <a href="/grants" title="Discover and Fund Public Goods"
+                >Explore Grants</a
+              >
+            </button>
+          </p>
         </div>
       </div>
     </div>
