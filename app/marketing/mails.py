@@ -32,9 +32,9 @@ from marketing.common.utils import allowed_to_send_email, func_name, get_or_save
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,
-    render_bounty_expire_warning, render_bounty_feedback, render_bounty_hypercharged,
+    render_bounty_expire_warning, render_bounty_hypercharged,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_featured_funded_bounty,
-    render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent, render_gdpr_update,
+    render_funder_payout_reminder, render_gdpr_reconsent, render_gdpr_update,
     render_grant_cancellation_email, render_grant_match_distribution_final_txn, render_grant_recontribute,
     render_grant_txn_failed, render_grant_update, render_match_distribution, render_match_email, render_mention,
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
@@ -430,70 +430,6 @@ def admin_contact_funder(bounty, text, from_user):
                 text,
                 cc_emails=cc_emails,
                 from_name=from_email,
-                categories=['transactional', func_name()],
-            )
-    finally:
-        translation.activate(cur_language)
-
-
-def funder_stale(to_email, github_username, days=30, time_as_str='about a month'):
-    from_email = 'product@gitcoin.co'
-    cur_language = translation.get_language()
-    try:
-        setup_lang(to_email)
-
-        subject = "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
-        __, text = render_funder_stale(github_username, days, time_as_str)
-        cc_emails = []
-        if allowed_to_send_email(to_email, 'admin_contact_funder'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                text,
-                cc_emails=cc_emails,
-                from_name=from_email,
-                categories=['transactional', func_name()],
-            )
-    finally:
-        translation.activate(cur_language)
-
-
-def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
-    from_email = 'product@gitcoin.co'
-    to_email = None
-    cur_language = translation.get_language()
-    if previous_bounties is None:
-        previous_bounties = []
-
-    try:
-        setup_lang(to_email)
-        if persona == 'fulfiller':
-            accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
-            to_email = accepted_fulfillments.first().fulfiller_email if accepted_fulfillments.exists() else ""
-        elif persona == 'funder':
-            to_email = bounty.bounty_owner_email
-            if not to_email:
-                if bounty.bounty_owner_profile:
-                    to_email = bounty.bounty_owner_profile.email
-            if not to_email:
-                if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
-                    to_email = bounty.bounty_owner_profile.user.email
-        if not to_email:
-            return
-
-        subject = bounty.github_url
-        html, text = render_bounty_feedback(bounty, persona, previous_bounties)
-        cc_emails = [from_email, 'product@gitcoin.co']
-        if allowed_to_send_email(to_email, 'bounty_feedback'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                text,
-                html,
-                cc_emails=cc_emails,
-                from_name="Gitcoin Product Team",
                 categories=['transactional', func_name()],
             )
     finally:
