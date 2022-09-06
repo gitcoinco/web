@@ -156,12 +156,15 @@
               <br/>
               For more information check out, <a href="" target="_blank">"WTF is Trust Bonus?"</a>.
             </span>
-            <b-button v-if="apuScoreStatus === 'complete'" variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3 refresh-button" @click="() => checkForPassport()">
+            <b-button v-if="apuScoreStatus === 'complete'" :disabled="!isStaff && !isSubmissionEnabled" variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3 refresh-button" @click="() => checkForPassport()">
               Refresh Passport
             </b-button>
-            <b-button v-else variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3" @click="() => checkForPassport()">
+            <b-button v-else variant="primary" :disabled="!isStaff && !isSubmissionEnabled" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3" @click="() => checkForPassport()">
               Submit Passport
             </b-button>
+            
+            <p v-if="!isSubmissionEnabled" class="text-grey-400 spacer-mt-2 text-left small">GR15 Countdown [[countDown]]</p>
+            <p v-if="!isSubmissionEnabled" class="text-grey-400 spacer-mt-2 text-left small">You will be able to connect your Passport when the Round begins.</p>
           </div>
           <div class="col-12 col-lg-6 position-relative pr-0 pl-0 pr-lg-5">
             <div class="h-100 shadow bg-white rounded flex-column text-center">

@@ -156,6 +156,15 @@ Vue.component('trust-bonus-passport', {
   }
 });
 
+let currentTime = new Date();
+let gr15Start = Date.parse('2022-09-07T15:00:00.000Z');
+let distance = gr15Start - currentTime;
+
+var days = Math.floor((distance % (24 * 1000 * 60 * 60 * 24)) / (24 * 1000 * 60 * 60));
+var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+let countDown = `${days} day, ${hours} ${hours > 1 ? 'hours' : 'hour'}, ${minutes} min, ${seconds} sec`;
 
 // Create the trust-bonus view
 Vue.component('active-trust-manager', {
@@ -171,7 +180,7 @@ Vue.component('active-trust-manager', {
       passportVerified: document.is_passport_connected && (document.trust_bonus_status ? document.trust_bonus_status.indexOf('Error:') === -1 : false),
       passportUrl: 'https://passport.gitcoin.co/',
       rawPassport: undefined,
-      trustBonus: (document.trust_bonus * 100) || 50,
+      trustBonus: ((document.trust_bonus * 100) || 50).toFixed(1),
       trustBonusStatus: document.trust_bonus_status,
       isTrustBonusRefreshInProgress: false,
       isCeramicConnected: true,
@@ -193,6 +202,9 @@ Vue.component('active-trust-manager', {
       myStampsShow: false,
       passportStamps: [],
       apuScoreStatus: null, // null, saving, submitting, scoring, complete
+      isSubmissionEnabled: currentTime > gr15Start,
+      isStaff: document.contxt.is_staff,
+      countDown: countDown,
       stampVerifications: document.passport_trust_bonus_stamp_validation,
       passportDid: document.passport_did,
       unlinkSuccessMsg: false,
@@ -350,7 +362,7 @@ Vue.component('active-trust-manager', {
             this.apuScoreStatus = 'scoring';
             _refreshTrustBonus();
           } else if (response.passport_trust_bonus_status === 'saved') {
-            this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
+            this.trustBonus = ((parseFloat(response.passport_trust_bonus) * 100) || 50).toFixed(1);
             this.passportStamps = response.passport_stamps;
             this.isTrustBonusRefreshInProgress = false;
             this.saveSuccessMsg = false;
@@ -534,9 +546,10 @@ Vue.component('active-trust-manager', {
           }));
 
           // set the new trustBonus score
-          this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
-            return (service.is_verified ? service.match_percent : 0) + total;
-          }, 50));
+          // TODO: this is not needed in GR15 ...
+          // this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
+          //   return (service.is_verified ? service.match_percent : 0) + total;
+          // }, 50));
 
         } catch (error) {
           console.error('Error checking passport: ', error);
