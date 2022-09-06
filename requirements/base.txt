@@ -119,5 +119,5 @@ graphqlclient==0.2.4
 docutils==0.17.1
 unidecode==1.2.0
 drf-flex-fields==0.9.1
-pandas
+pandas==1.1.5
 django-svg-image-form-field==1.0.1

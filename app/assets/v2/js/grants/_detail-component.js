@@ -619,7 +619,7 @@ Vue.component('grant-details', {
     const rounded_lifetime_amount = Math.round(amount_received / 1000) * 1000;
 
     vm.grant.rounded_lifetime_amount = (rounded_lifetime_amount > 1000) ?
-      `~$${rounded_lifetime_amount}` : 'Less than $1,000';
+      `~$${rounded_lifetime_amount.toLocaleString()}` : 'Less than $1,000';
 
     if (vm.grant.description_rich_edited) {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));

@@ -1,27 +1,27 @@
-import datar.all as r
 # delay import as this is only available in celery envs
 import pandas as pd
-from datar.core.factory import func_factory
-
-
-@func_factory("agg", "x")
-def my_paste(x):
-    return ", ".join(x)
-
-
-@func_factory("agg", "x")
-def my_len(x):
-    return len(x)
-
-
-@func_factory("agg", "x")
-def my_head(x, n=1):
-    return x[0:n]
 
 
 def compute_apu_scores(
     gc, stamp_field_names, grouping_fieldnames, grouping_fieldnames_1
 ):
+    import datar.all as r
+    from datar.core.factory import func_factory
+
+    @func_factory("agg", "x")
+    def my_paste(x):
+        return ", ".join(x)
+
+
+    @func_factory("agg", "x")
+    def my_len(x):
+        return len(x)
+
+
+    @func_factory("agg", "x")
+    def my_head(x, n=1):
+        return x[0:n]
+
     grouping_fields = [r.f[fieldname] for fieldname in grouping_fieldnames]
     grouping_fields_1 = [r.f[fieldname] for fieldname in grouping_fieldnames_1]
     stamp_fields = [r.f[fieldname] for fieldname in stamp_field_names]

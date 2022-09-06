@@ -44,8 +44,12 @@ git add .
 git stash
 
 # If no $BRANCH is specified, it will use the current one
+echo "- checkout $BRANCH"
 git checkout "$BRANCH"
-git pull origin "$BRANCH"
+echo "- fetch"
+git fetch origin $BRANCH 
+echo "- reset to origin/$BRANCH"
+git reset --hard "origin/$BRANCH"
 
 # deploy hooks
 echo "- install req"
