@@ -1854,18 +1854,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     is_new (TYPE): Description</p>
 <p>Returns:
     tup: response_html, response_txt</p>
-<h2 id="retail.emails.render_funder_stale">render_funder_stale</h2>
-
-<pre><code class="python">render_funder_stale(github_username, days=60, time_as_str='a couple months')
-</code></pre>
-
-<p>Render the stale funder email template.</p>
-<p>Args:
-    github_username (str): The Github username to be referenced in the email.
-    days (int): The number of days back to reference.
-    time_as_str (str): The human readable length of time to reference.</p>
-<p>Returns:
-    str: The rendered response as a string.</p>
 <h2 id="retail.emails.render_share_bounty">render_share_bounty</h2>
 
 <pre><code class="python">render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invite=False)
@@ -1894,18 +1882,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 
 <p>Display the no applicant for bounty reminder email template.</p>
 <p>Params:
-    username (str): The Github username to reference in the email.</p>
-<p>Returns:
-    HttpResponse: The HTML version of the templated HTTP response.</p>
-<h2 id="retail.emails.funder_stale">funder_stale</h2>
-
-<pre><code class="python">funder_stale(request)
-</code></pre>
-
-<p>Display the stale funder email template.</p>
-<p>Params:
-    limit (int): The number of days to limit the scope of the email to.
-    duration_copy (str): The copy to use for associated duration text.
     username (str): The Github username to reference in the email.</p>
 <p>Returns:
     HttpResponse: The HTML version of the templated HTTP response.</p>
