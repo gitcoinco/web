@@ -128,6 +128,8 @@
     <div class="header">
       {% include 'home/nav.html' %}
     </div>
+
+
     {% if landingBanner.slides|length > 1 %}
     <header class="w-100 home-carousel">
       <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -165,6 +167,8 @@
 
     {% elif landingBanner.default %}
       <!-- Default Slide -->
+      {% include 'home/gr15.html' %}
+      <!--
       <header class="grad">
         <div class="container build-slide">
           <div class="row pt-5">
@@ -178,6 +182,7 @@
           </div>
         </div>
       </header>
+      -->
 
     {% else %}
       <!-- custom slide -->
@@ -198,6 +203,7 @@
         </div>
       </header>
     {% endif %}
+
 
     <section class="container my-5">
       <div class="row py-5 my-5">
