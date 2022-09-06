@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -10,7 +11,7 @@ class GR15TrustScore(SuperModel):
 
     user = models.ForeignKey(
         User,
-        related_name="gr15_trustbonusKKK",
+        related_name="gr15_trustbonus",
         on_delete=models.CASCADE,
         null=False,
         unique=True,
@@ -31,10 +32,17 @@ class GR15TrustScore(SuperModel):
 
     trust_bonus = models.DecimalField(
         "Trust bonus",
-        decimal_places=2,
-        max_digits=5,
+        decimal_places=18,
+        max_digits=64,
     )
 
     last_apu_calculation_time = models.DateTimeField("Last APU calculation")
     max_apu_calculation_time = models.DateTimeField("Max APU calculation")
     trust_bonus_calculation_time = models.DateTimeField("Last trust bonus calculation", null=True, blank=True)
+
+    stamps = JSONField("Scored stamps", default=[], null=False, blank=True)
+
+    is_sybil = models.BooleanField("Is sybil", default=False, blank=True)
+    notes = JSONField("Notes", default=[], null=True, blank=True)
+
+    trust_bonus_status = models.CharField(max_length=40, null=True, blank=True)

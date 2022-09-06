@@ -126,6 +126,7 @@
             document.challenge = {{ challenge|safe }};
             document.round_start_date = {{ round_start_date }};
             document.round_end_date = {{ round_end_date }};
+            document.clr_round = {{ clr_round }};
             document.is_passport_connected = {% if is_passport_connected %}{{ is_passport_connected }}{% else %}0{% endif %};
             document.trust_bonus = {% if passport_trust_bonus %}{{ passport_trust_bonus }}{% else %}0{% endif %};
             document.trust_bonus_status = {% if passport_trust_bonus_status %}"{{ passport_trust_bonus_status }}"{% else %}null{% endif %};

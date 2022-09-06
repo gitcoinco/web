@@ -156,6 +156,15 @@ Vue.component('trust-bonus-passport', {
   }
 });
 
+let currentTime = new Date();
+let gr15Start = Date.parse('2022-09-07T15:00:00.000Z');
+let distance = gr15Start - currentTime;
+
+var days = Math.floor((distance % (24 * 1000 * 60 * 60 * 24)) / (24 * 1000 * 60 * 60));
+var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+let countDown = `${days} day, ${hours} ${hours > 1 ? 'hours' : 'hour'}, ${minutes} min, ${seconds} sec`;
 
 // Create the trust-bonus view
 Vue.component('active-trust-manager', {
@@ -171,7 +180,7 @@ Vue.component('active-trust-manager', {
       passportVerified: document.is_passport_connected && (document.trust_bonus_status ? document.trust_bonus_status.indexOf('Error:') === -1 : false),
       passportUrl: 'https://passport.gitcoin.co/',
       rawPassport: undefined,
-      trustBonus: (document.trust_bonus * 100) || 50,
+      trustBonus: ((document.trust_bonus * 100) || 50).toFixed(1),
       trustBonusStatus: document.trust_bonus_status,
       isTrustBonusRefreshInProgress: false,
       isCeramicConnected: true,
@@ -182,11 +191,20 @@ Vue.component('active-trust-manager', {
       roundStartDate: parseMonthDay(document.round_start_date),
       roundEndDate: parseMonthDay(document.round_end_date),
       services: document.services || [],
+      clrRound: document.clr_round,
       modalShow: false,
       modalName: false,
       pyVerificationError: false,
       passportDetailsShow: false,
       confirmUnlinkPassportShow: false,
+      noPassportShow: false,
+      passportScoringShow: false,
+      myStampsShow: false,
+      passportStamps: [],
+      apuScoreStatus: null, // null, saving, submitting, scoring, complete
+      isSubmissionEnabled: currentTime > gr15Start,
+      isStaff: document.contxt.is_staff,
+      countDown: countDown,
       stampVerifications: document.passport_trust_bonus_stamp_validation,
       passportDid: document.passport_did,
       unlinkSuccessMsg: false,
@@ -211,10 +229,9 @@ Vue.component('active-trust-manager', {
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
 
+    this.refreshTrustBonus();
     // start watching for trust bonus status updates, in case the calculation is still pending
-    if (this.trustBonusStatus === 'pending_celery') {
-      this.refreshTrustBonus();
-    } else if (this.pyVerificationError) {
+    if (this.pyVerificationError) {
       // clear all state
       this.reset(true);
       this.verificationError = this.trustBonusStatus;
@@ -231,6 +248,22 @@ Vue.component('active-trust-manager', {
 
         return services;
       }, {});
+    },
+    loadingStates: function() {
+      return {
+        submitting: {
+          loading: this.apuScoreStatus === 'submitting',
+          complete: this.apuScoreStatus === 'scoring' | this.apuScoreStatus === 'saving' | this.apuScoreStatus === 'complete'
+        },
+        scoring: {
+          loading: this.apuScoreStatus === 'scoring',
+          complete: this.apuScoreStatus === 'saving' | this.apuScoreStatus === 'complete'
+        },
+        saving: {
+          loading: this.apuScoreStatus === 'saving',
+          complete: this.apuScoreStatus === 'complete'
+        }
+      };
     }
   },
   methods: {
@@ -326,13 +359,17 @@ Vue.component('active-trust-manager', {
           this.pyVerificationError = this.trustBonusStatus.indexOf('Error:') !== -1;
 
           if (response.passport_trust_bonus_status === 'pending_celery') {
+            this.apuScoreStatus = 'scoring';
             _refreshTrustBonus();
           } else if (response.passport_trust_bonus_status === 'saved') {
-            this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
+            this.trustBonus = ((parseFloat(response.passport_trust_bonus) * 100) || 50).toFixed(1);
+            this.passportStamps = response.passport_stamps;
             this.isTrustBonusRefreshInProgress = false;
             this.saveSuccessMsg = false;
             this.stampVerifications = response.passport_trust_bonus_stamp_validation;
             this.passportDid = response.passport_did;
+
+            this.apuScoreSaved();
           } else {
             this.isTrustBonusRefreshInProggress = false;
             this.saveSuccessMsg = false;
@@ -361,6 +398,17 @@ Vue.component('active-trust-manager', {
         this.isTrustBonusRefreshInProgress = true;
         _refreshTrustBonus();
       }
+    },
+    apuScoreSaved() {
+      this.apuScoreStatus = 'saving';
+      setTimeout(() => {
+        this.apuScoreStatus = 'complete',
+        this.passportScoringShow = false;
+      }, 800);
+    },
+    lintToPassport() {
+      this.noPassportShow = false;
+      window.open('https://passport.gitcoin.co/#/', '_blank');
     },
     /*
      * The ignoreErrors attribute is intended to be used when calling this function automatically on page
@@ -498,9 +546,10 @@ Vue.component('active-trust-manager', {
           }));
 
           // set the new trustBonus score
-          this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
-            return (service.is_verified ? service.match_percent : 0) + total;
-          }, 50));
+          // TODO: this is not needed in GR15 ...
+          // this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
+          //   return (service.is_verified ? service.match_percent : 0) + total;
+          // }, 50));
 
         } catch (error) {
           console.error('Error checking passport: ', error);
@@ -565,6 +614,7 @@ Vue.component('active-trust-manager', {
             // _alert('Your Passport\'s Trust Bonus has been saved!', 'success', 6000);
             this.saveSuccessMsg = 'Your Passport has been submitted.';
             this.trustBonusStatus = 'pending_celery';
+            this.apuScoreStatus = 'submitted';
             this.refreshTrustBonus();
           }
         }
@@ -578,6 +628,27 @@ Vue.component('active-trust-manager', {
 
       // stop loading
       this.loading = false;
+    },
+    async checkForPassport() {
+      try {
+        const genesis = await this.reader.getGenesis(selectedAccount);
+        const streams = genesis && genesis.streams;
+
+        // if streams account has pa
+        if (streams && Object.keys(streams).length > 0) {
+          // Show passport indication modal
+          this.passportScoringShow = true;
+          this.apuScoreStatus = 'submitting';
+          this.did = genesis.did;
+          await this.savePassport();
+          this.apuScoreStatus = 'scoring';
+        } else {
+          this.noPassportShow = true;
+        }
+      } catch (e) {
+        // Error state in design??
+        this.passportScoringShow = false;
+      }
     },
     async showConfirmUnlinkPassport() {
       this.confirmUnlinkPassportShow = true;
