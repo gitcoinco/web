@@ -1,3 +1,5 @@
+{% load humanize static i18n tz %}
+
 <style>
   .gr15-container {
     left: 0px;
@@ -164,7 +166,10 @@
 
 <header class="gr15">
   <div class="position-relative">
-    <img src="static/v2/images/home/gr15/background.jpeg" style="width: 100%" />
+    <img
+      src="{% static 'v2/images/home/gr15/background.jpeg' %}"
+      style="width: 100%"
+    />
     <div
       class="text-white gr15-container position-absolute d-flex justify-content-center w-100"
     >
@@ -172,12 +177,12 @@
         <!-- Hack to scale the entire block based on screen size -->
         <img
           class="gr15-scaler"
-          src="static/v2/images/home/gr15/background.jpeg"
+          src="{% static 'v2/images/home/gr15/background.jpeg' %}"
         />
         <div class="">
           <img
             class="gr15-logo"
-            src="static/v2/images/home/gr15/GR15_Logo.png"
+            src="{% static 'v2/images/home/gr15/GR15_Logo.png' %}"
             alt="GR15 Logo"
           />
           <h1 class="gr15-date">September 07-22, 2022</h1>
