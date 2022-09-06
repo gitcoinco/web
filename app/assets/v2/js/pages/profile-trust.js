@@ -190,6 +190,8 @@ Vue.component('active-trust-manager', {
       confirmUnlinkPassportShow: false,
       noPassportShow: false,
       passportScoringShow: false,
+      myStampsShow: false,
+      passportStamps: [],
       apuScoreStatus: null, // null, saving, submitting, scoring, complete
       stampVerifications: document.passport_trust_bonus_stamp_validation,
       passportDid: document.passport_did,
@@ -349,6 +351,7 @@ Vue.component('active-trust-manager', {
             _refreshTrustBonus();
           } else if (response.passport_trust_bonus_status === 'saved') {
             this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
+            this.passportStamps = response.passport_stamps;
             this.isTrustBonusRefreshInProgress = false;
             this.saveSuccessMsg = false;
             this.stampVerifications = response.passport_trust_bonus_stamp_validation;

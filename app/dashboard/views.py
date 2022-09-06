@@ -3121,6 +3121,7 @@ def get_passport_trust_bonus(request, handle):
         "passport_did": did,
         "passport_trust_bonus": gr15_trust_bonus.trust_bonus,
         "passport_trust_bonus_status": gr15_trust_bonus.trust_bonus_status,
+        "passport_stamps": gr15_trust_bonus.stamps,
         "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated,
         "passport_trust_bonus_stamp_validation": profile.passport_trust_bonus_stamp_validation
     })
