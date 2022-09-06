@@ -59,7 +59,6 @@ TRANSACTIONAL_EMAILS = [
     ('tip', _('Tip Emails'), _('Only when you are sent a tip')),
     ('bounty', _('Bounty Notification Emails'), _('Only when you\'re active on a bounty')),
     ('bounty_match', _('Bounty Match Emails'), _('Only when you\'ve posted a open bounty and you have a new match')),
-    ('bounty_feedback', _('Bounty Feedback Emails'), _('Only after a bounty you participated in is finished.')),
     (
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
         _('Only after you posted a bounty which is going to expire')
@@ -556,91 +555,6 @@ def render_no_applicant_reminder(bounty):
     return response_html, response_txt
 
 
-def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
-    if persona == 'fulfiller':
-        accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
-        github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() and accepted_fulfillments.first().fulfiller_github_username else ""
-        txt = f"""
-hi{github_username},
-
-thanks for turning around this bounty. we're hyperfocused on making Gitcoin a great place for blockchain developers to hang out, learn new skills, and git coins.
-
-in that spirit, we have a few questions for you.
-
-> what would you say your average hourly rate was for this bounty? {bounty.github_url}
-
-> what was the best thing about working on the platform? what was the worst?
-
-> would you use Gitcoin again?
-
-thanks again for being a member of the community.
-
-kyle, frank & alisa (gitcoin product team)
-
-PS - we've got some new gitcoin schwag on order. if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :).
-
-"""
-    elif persona == 'funder':
-        github_username = " @" + bounty.bounty_owner_github_username if bounty.bounty_owner_github_username else ""
-        if bounty.status == 'done':
-            txt = f"""
-
-hi{github_username},
-
-thanks for putting this bounty ({bounty.github_url}) on Gitcoin.  i'm glad to see it was turned around.
-
-we're hyperfocused on making Gitcoin a great place for blockchain developers to hang out, learn new skills, and git some coins.
-
-in that spirit, we have a few questions for you:
-
-> how much coaching/communication did it take the counterparty to turn around the issue? was this burdensome?
-
-> what was the best thing about working on the platform? what was the worst?
-
-> would you use gitcoin again?
-
-thanks for being a member of the community.
-
-kyle, frank & alisa (gitcoin product team)
-
-PS - we've got some new gitcoin schwag on order. if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
-
-"""
-        elif bounty.status == 'cancelled':
-            txt = f"""
-hi{github_username},
-
-we saw that you cancelled this bounty.
-
-we are sorry to see that the bounty did not get done.
-
-we have a few questions for you.
-
-> why did you decide to cancel the bounty?
-
-> would you use gitcoin again?
-
-thanks again for being a member of the community.
-
-kyle, frank & alisa (gitcoin product team)
-
-PS - we've got some new gitcoin schwag on order. if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
-
-"""
-        else:
-            raise Exception('unknown bounty status')
-    else:
-        raise Exception('unknown persona')
-
-    params = {
-        'txt': txt,
-		'email_type': 'bounty_feedback'
-    }
-    response_txt = premailer_transform(render_to_string("emails/txt.html", params))
-    response_html = f"<pre>{response_txt}</pre>"
-
-    return response_html, response_txt
-
 
 def render_admin_contact_funder(bounty, text, from_user):
     txt = f"""
@@ -659,45 +573,6 @@ def render_admin_contact_funder(bounty, text, from_user):
     response_txt = txt
 
     return response_html, response_txt
-
-
-def render_funder_stale(github_username, days=60, time_as_str='a couple months'):
-    """Render the stale funder email template.
-
-    Args:
-        github_username (str): The Github username to be referenced in the email.
-        days (int): The number of days back to reference.
-        time_as_str (str): The human readable length of time to reference.
-
-    Returns:
-        str: The rendered response as a string.
-
-    """
-    github_username = f"@{github_username}" if github_username else "there"
-    response_txt = f"""
-hi {github_username},
-
-kyle, frank, and alisa from Gitcoin here — i see you haven't funded an issue in {time_as_str}.
-
-in the spirit of making Gitcoin better + checking in:
-
-> do you have any issues which might be bounty worthy or projects you're hoping to build?
-
-> do you have any feedback for us on how we might improve the product to fit your needs?
-
-> are you interested in hosting or partnering in one of our upcoming hackathons? this is often teh best way to get top talent working on your issues.
-
-appreciate you being a part of the community + if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
-
-~ kyle, frank & alisa (gitcoin product team)
-
-
-"""
-
-    params = {'txt': response_txt}
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    return response_html, response_txt
-
 
 def get_notification_count(profile, days_ago, from_date):
     from_date = from_date + timedelta(days=1)
@@ -1627,23 +1502,6 @@ def new_bounty_acceptance(request):
     return HttpResponse(response_html)
 
 
-@staff_member_required
-def bounty_feedback(request):
-    from dashboard.models import Bounty
-    from marketing.common.utils import handle_bounty_feedback
-
-    bounty = Bounty.objects.current().filter(idx_status='done').last()
-
-    (to_fulfiller, to_funder, fulfiller_previous_bounties, funder_previous_bounties) = handle_bounty_feedback(bounty)
-
-    if to_fulfiller:
-        response_html, _ = render_bounty_feedback(bounty, 'fulfiller', fulfiller_previous_bounties)
-        return HttpResponse(response_html)
-
-    if to_funder:
-        response_html, _ = render_bounty_feedback(bounty, 'funder', funder_previous_bounties)
-        return HttpResponse(response_html)
-
 
 @staff_member_required
 def funder_payout_reminder(request):
@@ -1695,26 +1553,6 @@ def match_distribution(request):
     from townsquare.models import MatchRanking
     mr = MatchRanking.objects.last()
     response_html, _ = render_match_distribution(mr)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def funder_stale(request):
-    """Display the stale funder email template.
-
-    Params:
-        limit (int): The number of days to limit the scope of the email to.
-        duration_copy (str): The copy to use for associated duration text.
-        username (str): The Github username to reference in the email.
-
-    Returns:
-        HttpResponse: The HTML version of the templated HTTP response.
-
-    """
-    limit = int(request.GET.get('limit', 30))
-    duration_copy = request.GET.get('duration_copy', 'about a month')
-    username = request.GET.get('username', 'foo')
-    response_html, _ = render_funder_stale(username, limit, duration_copy)
     return HttpResponse(response_html)
 
 
