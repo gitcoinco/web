@@ -712,8 +712,6 @@ urlpatterns = [
         retail.emails.bounty_expire_warning,
         name='bounty_expire_warning'
     ),
-    path('_administration/email/bounty_feedback', retail.emails.bounty_feedback, name='bounty_feedback'),
-    path('_administration/email/funder_stale', retail.emails.funder_stale, name='funder_stale'),
     path(
         '_administration/email/start_work_expire_warning',
         retail.emails.start_work_expire_warning,
