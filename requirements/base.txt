@@ -121,5 +121,3 @@ unidecode==1.2.0
 drf-flex-fields==0.9.1
 pandas==1.1.5
 django-svg-image-form-field==1.0.1
-datar==0.8.6
-pdtypes==0.0.4
