@@ -50,6 +50,46 @@
           </template>
         </b-modal>
 
+        <b-modal v-model="myStampsShow" hide-header hide-footer>
+          <div class="d-flex justify-content-center">
+            <div class="pr-2">
+              <div class="p-2 border rounded-circle">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.58579 1.58579C1.21071 1.96086 1 2.46957 1 3V5C1 5.53043 1.21071 6.03914 1.58579 6.41421C1.96086 6.78929 2.46957 7 3 7H5C5.53043 7 6.03914 6.78929 6.41421 6.41421C6.78929 6.03914 7 5.53043 7 5V3C7 2.46957 6.78929 1.96086 6.41421 1.58579C6.03914 1.21071 5.53043 1 5 1H3C2.46957 1 1.96086 1.21071 1.58579 1.58579Z" stroke="#664AEC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M11.5858 1.58579C11.2107 1.96086 11 2.46957 11 3V5C11 5.53043 11.2107 6.03914 11.5858 6.41421C11.9609 6.78929 12.4696 7 13 7H15C15.5304 7 16.0391 6.78929 16.4142 6.41421C16.7893 6.03914 17 5.53043 17 5V3C17 2.46957 16.7893 1.96086 16.4142 1.58579C16.0391 1.21071 15.5304 1 15 1H13C12.4696 1 11.9609 1.21071 11.5858 1.58579Z" stroke="#664AEC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M1.58579 11.5858C1.21071 11.9609 1 12.4696 1 13V15C1 15.5304 1.21071 16.0391 1.58579 16.4142C1.96086 16.7893 2.46957 17 3 17H5C5.53043 17 6.03914 16.7893 6.41421 16.4142C6.78929 16.0391 7 15.5304 7 15V13C7 12.4696 6.78929 11.9609 6.41421 11.5858C6.03914 11.2107 5.53043 11 5 11H3C2.46957 11 1.96086 11.2107 1.58579 11.5858Z" stroke="#664AEC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M11.5858 11.5858C11.2107 11.9609 11 12.4696 11 13V15C11 15.5304 11.2107 16.0391 11.5858 16.4142C11.9609 16.7893 12.4696 17 13 17H15C15.5304 17 16.0391 16.7893 16.4142 16.4142C16.7893 16.0391 17 15.5304 17 15V13C17 12.4696 16.7893 11.9609 16.4142 11.5858C16.0391 11.2107 15.5304 11 15 11H13C12.4696 11 11.9609 11.2107 11.5858 11.5858Z" stroke="#664AEC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>              
+              </div>
+            </div>
+          </div>
+          <div class="d-flex flex-column justify-content-center text-center">
+            <p class="font-weight-bold m-2">Passport Details</p>
+            <p class="text-grey-400 m-2">This is an overview of the Stamps/Data associated with your Gitcoin Passport.</p>
+          </div>
+          <div class="d-flex flex-column ">
+            <p class="text-grey-400">Stamps</p>
+            <hr class="m-0">
+            <div v-for="stamp in passportStamps">
+              <div class="d-flex justify-content-between providers">
+                <div class="d-flex">
+                  <img v-if="stamp === 'Github'" src="{% static "v2/images/stamps/GithubStampIcon.svg" %}" height="60">
+                  <img v-if="stamp === 'Facebook'" src="{% static "v2/images/stamps/FacebookStampIcon.svg" %}" height="60">
+                  <img v-if="stamp === 'Google'" src="{% static "v2/images/stamps/GoogleStampIcon.svg" %}" height="60">
+                  <img v-if="stamp === 'Twitter'" src="{% static "v2/images/stamps/TwitterStampIcon.svg" %}" height="60">
+                  <img v-if="stamp === 'Ens'" src="{% static "v2/images/stamps/EnsStampIcon.svg" %}" height="60">
+                  <img v-if="stamp === 'Poh'" src="{% static "v2/images/stamps/PohStampIcon.svg" %}" height="60">
+                  <img v-if="stamp === 'Brightid'" src="{% static "v2/images/stamps/BrightidStampIcon.svg" %}" height="60">
+                  <p class="font-weight-bold">[[stamp]]</p>
+                </div>
+                <p style="color: #059669">Verified</p>
+              </div>
+              <hr class="m-0">
+            </div>
+          </div>
+          <b-button variant="primary" class="mt-2 col-12 btn btn-lg btn-primary" @click.prevent="myStampsShow = false">Done</b-button>
+        </b-modal>
+
         <b-modal v-model="passportScoringShow" hide-header hide-footer>
           <div class="mt-1">
             <h4>Processing...</h4>
@@ -116,11 +156,14 @@
               <br/>
               For more information check out, <a href="" target="_blank">"WTF is Trust Bonus?"</a>.
             </span>
-            <b-button variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3" @click="() => checkForPassport()">
+            <b-button v-if="apuScoreStatus === 'complete'" variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3 refresh-button" @click="() => checkForPassport()">
+              Refresh Passport
+            </b-button>
+            <b-button v-else variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3" @click="() => checkForPassport()">
               Submit Passport
             </b-button>
           </div>
-          <div class="col-12 col-lg-6 position-relative pr-0 pr-lg-5">
+          <div class="col-12 col-lg-6 position-relative pr-0 pl-0 pr-lg-5">
             <div class="h-100 shadow bg-white rounded flex-column text-center">
               <div class="d-flex flex-row-reverse"><div class="badge badge-pill bg-lightpurple mt-3 mr-3 font-subheader font-weight-light">GR[[clrRound]]</div></div>
               <div class="px-3 pt-3">
@@ -131,8 +174,17 @@
               </div>
               <hr class="m-0" />
               <div class="p-3">
-                <div class="progress rounded-0" style="height: 0.4rem;">
-                  <div class="progress-bar bg-secondary" role="progressbar" :style="{width: `${100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="d-flex">
+                  <div style="width: 98%;">
+                    <div class="progress rounded-0" style="height: 0.4rem; margin-top: 7px; margin-right: 5px;">
+                      <div class="progress-bar bg-secondary" role="progressbar" :style="{width: `${100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div @click="myStampsShow = true" style="cursor: pointer;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M16 8C16 10.1217 15.1571 12.1566 13.6569 13.6569C12.1566 15.1571 10.1217 16 8 16C5.87827 16 3.84344 15.1571 2.34315 13.6569C0.842855 12.1566 0 10.1217 0 8C0 5.87827 0.842855 3.84344 2.34315 2.34315C3.84344 0.842855 5.87827 0 8 0C10.1217 0 12.1566 0.842855 13.6569 2.34315C15.1571 3.84344 16 5.87827 16 8ZM9 4C9 4.26522 8.89464 4.51957 8.70711 4.70711C8.51957 4.89464 8.26522 5 8 5C7.73478 5 7.48043 4.89464 7.29289 4.70711C7.10536 4.51957 7 4.26522 7 4C7 3.73478 7.10536 3.48043 7.29289 3.29289C7.48043 3.10536 7.73478 3 8 3C8.26522 3 8.51957 3.10536 8.70711 3.29289C8.89464 3.48043 9 3.73478 9 4ZM7 7C6.73478 7 6.48043 7.10536 6.29289 7.29289C6.10536 7.48043 6 7.73478 6 8C6 8.26522 6.10536 8.51957 6.29289 8.70711C6.48043 8.89464 6.73478 9 7 9V12C7 12.2652 7.10536 12.5196 7.29289 12.7071C7.48043 12.8946 7.73478 13 8 13H9C9.26522 13 9.51957 12.8946 9.70711 12.7071C9.89464 12.5196 10 12.2652 10 12C10 11.7348 9.89464 11.4804 9.70711 11.2929C9.51957 11.1054 9.26522 11 9 11V8C9 7.73478 8.89464 7.48043 8.70711 7.29289C8.51957 7.10536 8.26522 7 8 7H7Z" fill="#0E0333"/>
+                    </svg>
+                  </div>
                 </div>
                 <p class="text-grey-400 spacer-mt-2 text-left small">You'll receive [[trustBonus]]% of 150% Match</p>
               </div>
