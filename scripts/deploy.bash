@@ -47,7 +47,7 @@ git stash
 echo "- checkout $BRANCH"
 git checkout "$BRANCH"
 echo "- fetch"
-git fetch
+git fetch origin $BRANCH 
 echo "- reset to origin/$BRANCH"
 git reset --hard "origin/$BRANCH"
 
