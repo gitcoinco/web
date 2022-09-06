@@ -106,6 +106,7 @@ from marketing.models import Keyword
 from mautic_logging.models import MauticLog
 from oauth2_provider.decorators import protected_resource
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
+from passport_score.models import GR15TrustScore
 from perftools.models import JSONStore, StaticJsonEnv
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -2888,21 +2889,32 @@ def get_profile_tab(request, profile, tab, prev_context):
         # QF round info
         clr_rounds_metadata = get_clr_rounds_metadata()
 
+        # round number
+        context['clr_round'] = clr_rounds_metadata['clr_round']
+
         # place clr dates (as unix ts)
         context['round_start_date'] = calendar.timegm(clr_rounds_metadata['round_start_date'].utctimetuple())
         context['round_end_date'] = calendar.timegm(clr_rounds_metadata['round_end_date'].utctimetuple())
         context['show_round_banner'] = clr_rounds_metadata['show_round_banner']
 
+        gr15_trust_bonus = None
+        try:
+            gr15_trust_bonus = GR15TrustScore.objects.get(user_id=request.user.id)
+        except GR15TrustScore.DoesNotExist:
+            pass
+
         # Passport Trust Bonus or original Trust Bonus
         if context['use_passport_trust_bonus']:
             # check if their is already a Passport associated for the user
+            # TODO: geri - determine this in another way ??? is_passport_connected
             context['is_passport_connected'] = json.dumps(bool(profile.passport_trust_bonus))
 
             # gets passport_trust_bonus || trust_bonus
             context['trust_bonus'] = profile.final_trust_bonus
             # this score will be displayed on first load if the passport is connected
-            context['passport_trust_bonus'] = profile.passport_trust_bonus
-            context['passport_trust_bonus_status'] = profile.passport_trust_bonus_status
+            context['passport_trust_bonus'] = gr15_trust_bonus.trust_bonus if gr15_trust_bonus else 0
+            context['passport_trust_bonus_status'] = gr15_trust_bonus.trust_bonus_status if gr15_trust_bonus else ""
+            # TODO: geri - remove the 2 fields from below ???
             context['passport_trust_bonus_last_updated'] = profile.passport_trust_bonus_last_updated.isoformat() if profile.passport_trust_bonus_last_updated else None
             context['passport_trust_bonus_stamp_validation'] = json.dumps(profile.passport_trust_bonus_stamp_validation) if profile.passport_trust_bonus_stamp_validation is not None else None
 
@@ -3095,16 +3107,21 @@ def get_passport_trust_bonus(request, handle):
     profile = user.profile
     did = None
     try:
+        gr15_trust_bonus = GR15TrustScore.objects.get(user_id=user.id)
         db_passport = Passport.objects.get(user_id=user.id)
         did = db_passport.did
     except Passport.DoesNotExist:
         # This should not occur
         raise
+    except GR15TrustScore.DoesNotExist:
+        # This should not occur
+        raise
 
     return JsonResponse({
         "passport_did": did,
-        "passport_trust_bonus": profile.passport_trust_bonus,
-        "passport_trust_bonus_status": profile.passport_trust_bonus_status,
+        "passport_trust_bonus": gr15_trust_bonus.trust_bonus,
+        "passport_trust_bonus_status": gr15_trust_bonus.trust_bonus_status,
+        "passport_stamps": gr15_trust_bonus.stamps,
         "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated,
         "passport_trust_bonus_stamp_validation": profile.passport_trust_bonus_stamp_validation
     })
@@ -3165,13 +3182,29 @@ def verify_passport(request, handle):
         })
 
     # record that a pending update is in-progress...
-    profile.passport_trust_bonus_status = "pending_celery"
-    profile.passport_trust_bonus_last_updated = timezone.now()
-    profile.save()
+    gr15_trust_bonus = None
+    try:
+        gr15_trust_bonus = GR15TrustScore.objects.get(user_id=user.id)
+    except GR15TrustScore.DoesNotExist:
+        # no worries, we'll create a new instance
+        pass
+
+    if not gr15_trust_bonus:
+        gr15_trust_bonus = GR15TrustScore(user_id=user.id, 
+                                stamps=[],
+                                last_apu_score = 0,
+                                max_apu_score = 0,
+                                trust_bonus = 0,
+                                last_apu_calculation_time = timezone.now(),
+                                max_apu_calculation_time = timezone.now(),
+                                trust_bonus_calculation_time = timezone.now()
+                            )
+
+    gr15_trust_bonus.trust_bonus_status = "pending_celery"
+    gr15_trust_bonus.save()
 
     # TODO: reset challenge?
     # request.session['passport_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
-
     # enqueue the validation and saving procedure
     calculate_trust_bonus.delay(request.user.id, did, address)
 
