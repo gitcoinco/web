@@ -3206,7 +3206,7 @@ def verify_passport(request, handle):
     # TODO: reset challenge?
     # request.session['passport_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
     # enqueue the validation and saving procedure
-    calculate_apu_score.delay(request.user.id, did, address)
+    calculate_trust_bonus.delay(request.user.id, did, address)
 
     # return a 200 response to signal that calculate_trust_bonus has been called
     return JsonResponse({'ok': True})

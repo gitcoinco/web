@@ -506,7 +506,7 @@ def save_tx_status_and_details(self, earning_pk, chain='std'):
 
 
 @app.shared_task
-def calculate_apu_score(user_id, did, address):
+def calculate_trust_bonus(user_id, did, address):
     """
     :param self: Self
     :param user_id: the user_id
