@@ -11,7 +11,7 @@ class GR15TrustScore(SuperModel):
 
     user = models.ForeignKey(
         User,
-        related_name="gr15_trustbonus",
+        related_name="gr15_trustbonus_set",
         on_delete=models.CASCADE,
         null=False,
         unique=True,
@@ -40,9 +40,9 @@ class GR15TrustScore(SuperModel):
     max_apu_calculation_time = models.DateTimeField("Max APU calculation")
     trust_bonus_calculation_time = models.DateTimeField("Last trust bonus calculation", null=True, blank=True)
 
-    stamps = JSONField("Scored stamps", default=[], null=False, blank=True)
+    stamps = JSONField("Scored stamps", default=list, null=False, blank=True)
 
     is_sybil = models.BooleanField("Is sybil", default=False, blank=True)
-    notes = JSONField("Notes", default=[], null=True, blank=True)
+    notes = JSONField("Notes", default=list, null=True, blank=True)
 
     trust_bonus_status = models.CharField(max_length=40, null=True, blank=True)

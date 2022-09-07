@@ -59,7 +59,6 @@ def get_stream_ids(did, ids=[CERAMIC_GITCOIN_PASSPORT_STREAM_ID]):
             },
             "opts": {
                 "pin": True,
-                "sync": True,
                 "anchor": False,
             }
         })
