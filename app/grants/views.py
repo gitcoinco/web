@@ -544,15 +544,15 @@ def get_grants(request):
     }
     _grants = get_grants_by_filters(**filters)
 
-    if sort == '' and keyword:
-        # return grants result starting with exact title matches
-        exact_matches = [
-            grant for grant in _grants if grant.title.lower() == keyword.lower()
-        ]
-        non_exact_matches = [
-            grant for grant in _grants if grant.title.lower() != keyword.lower()
-        ]
-        _grants = exact_matches + non_exact_matches
+    # if sort == '' and keyword:
+    #     # return grants result starting with exact title matches
+    #     exact_matches = [
+    #         grant for grant in _grants if grant.title.lower() == keyword.lower()
+    #     ]
+    #     non_exact_matches = [
+    #         grant for grant in _grants if grant.title.lower() != keyword.lower()
+    #     ]
+    #     _grants = exact_matches + non_exact_matches
 
     if collection_id and collection_id.isnumeric():
         # 4.1 Fetch grants by collection
@@ -784,11 +784,11 @@ def get_grants_by_filters(
 
     if keyword:
         # 13. Grant search by title & description
-        _grants = _grants.annotate(search=SearchVector('description'))
-        keyword_query = Q(title__icontains=keyword)
-        keyword_query |= Q(search=keyword)
+        # _grants = _grants.annotate(search=SearchVector('description'))
+        # keyword_query = Q(title__icontains=keyword)
+        # keyword_query |= Q(search=keyword)
 
-        _grants = _grants.filter(keyword_query)
+        _grants = _grants.filter(title__icontains=keyword)
 
     if sort:
         # 14. Sort filtered grants
