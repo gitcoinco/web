@@ -1,12 +1,14 @@
+import json
 import traceback
 from decimal import Decimal
+from pprint import pprint
 
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
 import numpy as np
 import pandas as pd
-from dashboard.models import PassportStamp, Profile
+from dashboard.models import Passport, PassportStamp, Profile
 from passport_score.gr15_providers import providers
 from passport_score.models import GR15TrustScore
 
@@ -65,6 +67,138 @@ def get_apu_min():
     """Calculate the min APU from the records in GR15TrustScore"""
     df_gr15_calculations = pd.DataFrame(GR15TrustScore.objects.values("last_apu_score"))
     return df_gr15_calculations.last_apu_score.min()
+
+
+def handle_submitted_passport(user_id, did, passport):
+    # Verify that this DID is not associated to any other profile.
+    # We want to avoid the same user creating multiple accounts and re-using the same did
+    duplicates = Passport.objects.exclude(user_id=user_id).filter(did=did)
+
+    # Duplicate DID
+    if len(duplicates) > 0:
+        # Unlink other accounts from this did
+        # See https://github.com/gitcoinco/passport/issues/496
+        for dup in duplicates:
+            gr15_trustbonus = (
+                dup.user.gr15_trustbonus_set[0]
+                if dup.user.gr15_trustbonus_set.count() > 0
+                else None
+            )
+
+            if not gr15_trustbonus:
+                gr15_trustbonus = GR15TrustScore(
+                    user_id=dup.user_id,
+                    last_apu_score=0,
+                    max_apu_score=0,
+                    trust_bonus=0,
+                    last_apu_calculation_time=timezone.now(),
+                    max_apu_calculation_time=timezone.now(),
+                    trust_bonus_calculation_time=timezone.now(),
+                    stamps=[],
+                    notes=[],
+                )
+
+            if gr15_trustbonus.notes is None:
+                gr15_trustbonus.notes = []
+
+            gr15_trustbonus.is_sybil = True
+            gr15_trustbonus.notes.append(
+                {
+                    "timestamp": timezone.now().isoformat(),
+                    "note": f"Marking as sybil. Duplicate did: {did}",
+                }
+            )
+            gr15_trustbonus.trust_bonus = 0
+            gr15_trustbonus.last_apu_score = 0
+            gr15_trustbonus.save()
+        duplicates.delete()
+
+    # We verify if the user has a paspsort or not
+    # If yes, and the passport has a different DID we delete it (this will also delete the linked stamps)
+    # else we update the existing passport
+    db_passport = None
+    try:
+        db_passport = Passport.objects.get(user_id=user_id)
+
+        if db_passport.did != did:
+            # The user is linking his passport to a new did (new ETH account)
+            db_passport.delete()
+            db_passport = None
+    except Passport.DoesNotExist:
+        pass
+
+    if not db_passport:
+        db_passport = Passport(user_id=user_id, did=did, passport=passport)
+        db_passport.save()
+    else:
+        db_passport.did = did
+        db_passport.passport = passport
+        db_passport.save()
+
+    return db_passport
+
+
+def handle_submitted_stamps(db_passport, user_id, stamp_list):
+
+    stamps_ids = [stamp["credential"]["credentialSubject"]["hash"] for stamp in stamp_list]
+
+    # Delete stamps that the user is not submitting any more
+    PassportStamp.objects.filter(passport=db_passport).exclude(stamp_id__in=stamps_ids).delete()
+
+    for stamp in stamp_list:
+        # Get the stamp ID, and register it with our records
+        # This will be used to ensure that this stamp is not linked to any other user profile
+        stamp_credential = stamp["credential"]
+        stamp_id = stamp_credential["credentialSubject"]["hash"]
+        stamp_provider = stamp_credential["credentialSubject"]["provider"]
+
+        # if the hash exists in PassportStamps assigned to another user, then this user cannot use it
+        duplicate_stamps = PassportStamp.objects.exclude(user_id=user_id).filter(
+            stamp_id=stamp_id
+        )
+
+        if len(duplicate_stamps) > 0:
+            for dup in duplicate_stamps:
+                gr15_trustbonus = (
+                    dup.user.gr15_trustbonus_set[0]
+                    if dup.user.gr15_trustbonus_set.count() > 0
+                    else None
+                )
+
+                if not gr15_trustbonus:
+                    gr15_trustbonus = GR15TrustScore(
+                        user_id=dup.user_id,
+                        last_apu_score=0,
+                        max_apu_score=0,
+                        trust_bonus=0,
+                        last_apu_calculation_time=timezone.now(),
+                        max_apu_calculation_time=timezone.now(),
+                        trust_bonus_calculation_time=timezone.now(),
+                        stamps=[],
+                        notes=[],
+                    )
+                    
+                gr15_trustbonus.is_sybil = True
+                gr15_trustbonus.notes.append(
+                    {
+                        "timestamp": timezone.now().isoformat(),
+                        "note": f"Marking as sybil. Duplicate stamp id: {stamp_id}",
+                    }
+                )
+                gr15_trustbonus.save()
+            duplicate_stamps.delete()
+
+        # Save the stamp id and associate it with the Passport entry
+        PassportStamp.objects.update_or_create(
+            user_id=user_id,
+            stamp_id=stamp_id,
+            defaults={
+                "passport": db_passport,
+                "stamp_credential": stamp_credential,
+                "stamp_provider": stamp_provider,
+            },
+        )
+
 
 
 def load_passport_stamps():
@@ -403,7 +537,9 @@ def save_gr15_trustbonus_records(df_gr15_scores):
             last_apu_calculation_time=data.last_apu_calculation_time,
             max_apu_calculation_time=data.max_apu_calculation_time,
             trust_bonus_calculation_time=data.trust_bonus_calculation_time,
-            stamps=data.current_stamps,
+            stamps=[
+                stamp for stamp in data.current_stamps if stamp
+            ],  # TODO: doe to an issue, this array is acumulating ampty string stamps ...
         )
         for user_id, data in df_gr15_scores.loc[
             df_gr15_scores.from_db != True
@@ -420,7 +556,9 @@ def save_gr15_trustbonus_records(df_gr15_scores):
             last_apu_calculation_time=data.last_apu_calculation_time,
             max_apu_calculation_time=data.max_apu_calculation_time,
             trust_bonus_calculation_time=data.trust_bonus_calculation_time,
-            stamps=data.current_stamps,
+            stamps=[
+                stamp for stamp in data.current_stamps if stamp
+            ],  # TODO: doe to an issue, this array is acumulating ampty string stamps ...
         )
         for user_id, data in df_gr15_scores.loc[
             df_gr15_scores.from_db == True

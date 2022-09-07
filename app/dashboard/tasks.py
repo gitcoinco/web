@@ -25,7 +25,7 @@ from dashboard.utils import get_tx_status_and_details
 from economy.models import EncodeAnything
 from marketing.mails import func_name, grant_update_email, send_mail
 from passport_score.models import GR15TrustScore
-from passport_score.utils import compute_min_trust_bonus_for_user
+from passport_score.utils import compute_min_trust_bonus_for_user, handle_submitted_passport, handle_submitted_stamps
 from passport_score.views import compute_gr15_apu
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
@@ -518,28 +518,6 @@ def calculate_trust_bonus(user_id, did, address):
     import didkit
 
     try:
-        # Verify that this DID is not associated to any other profile.
-        # We want to avoid the same user creating multiple accounts and re-using the same did
-        duplicates = Passport.objects.exclude(user_id=user_id).filter(did=did)
-        
-        # Duplicate DID
-        if len(duplicates) > 0:
-            # See https://github.com/gitcoinco/passport/issues/496
-            for dup in duplicates:
-                gr15_trustbonus = dup.user.gr15_trustbonus
-
-                if not gr15_trustbonus.notes:
-                    gr15_trustbonus.notes = []
-
-                gr15_trustbonus.is_sybil = True
-                gr15_trustbonus.notes.append({
-                    "timestamp": timezone.now().isoformat(),
-                    "note": f"Marking as sybil. Duplicate did: {did}"
-                })
-                gr15_trustbonus.trust_bonus = 0
-                gr15_trustbonus.last_apu_score = 0
-                gr15_trustbonus.save()
-            duplicates.delete()
 
         # Pull streamIds from Ceramic Account associated with DID
         stream_ids = get_stream_ids(did)
@@ -562,30 +540,11 @@ def calculate_trust_bonus(user_id, did, address):
         if not passport:
             raise Exception(f"No Passport discovered for '{did}'")
 
-        # We verify if the user has a paspsort or not
-        # If yes, and the passport has a different DID we delete it (this will also delete the linked stamps)
-        # else we update the existing passport
-        db_passport = None
-        try:
-            db_passport = Passport.objects.get(user_id=user_id)
-
-            if db_passport.did != did:
-                # The user is linking his passport to a new did (new ETH account)
-                db_passport.delete()
-                db_passport = None
-        except Passport.DoesNotExist:
-            pass
-
-        if not db_passport:
-            db_passport = Passport(user_id=user_id, did=did, passport=passport)
-            db_passport.save()
-        else:
-            db_passport.did = did
-            db_passport.passport = passport
-            db_passport.save()
-
+        db_passport = handle_submitted_passport(user_id, did, passport)
         stamp_validation_list = []
+
         # Check the validity of each stamp in the passport
+        valid_stamps = []
         for stamp in passport['stamps']:
             try:
                 if stamp and stamp['credential'] and stamp["provider"]:
@@ -638,41 +597,6 @@ def calculate_trust_bonus(user_id, did, address):
                         logger.error(msg)
 
                     if is_subject_valid and not is_stamp_expired and is_issued_by_iam and is_for_provider:
-                        # Get the stamp ID, and register it with our records
-                        # This will be used to ensure that this stamp is not linked to any other user profile
-                        stamp_credential = stamp["credential"]
-                        stamp_id = stamp_credential["credentialSubject"]["hash"]
-                        stamp_provider = stamp_credential["credentialSubject"]["provider"]
-
-                        # if the hash exists in PassportStamps assigned to another user, then this user cannot use it
-                        duplicate_stamps = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
-
-                        if len(duplicate_stamps) > 0:
-                            for dup in duplicate_stamps:
-                                gr15_trustbonus = dup.user.gr15_trustbonus
-
-                                if not gr15_trustbonus.notes:
-                                    gr15_trustbonus.notes = []
-
-                                gr15_trustbonus.is_sybil = True
-                                gr15_trustbonus.notes.append({
-                                    "timestamp": timezone.now().isoformat(),
-                                    "note": f"Marking as sybil. Duplicate stamp id: {stamp_id}"
-                                })
-                                gr15_trustbonus.save()
-                            duplicate_stamps.delete()
-
-                        # Save the stamp id and associate it with the Passport entry
-                        PassportStamp.objects.update_or_create(
-                            user_id=user_id,
-                            stamp_id=stamp_id,
-                            defaults={
-                                "passport": db_passport,
-                                "stamp_credential": stamp_credential,
-                                "stamp_provider": stamp_provider
-                            }
-                        )
-
                         # Proceed with verifying the credential
                         verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
                         verification = json.loads(verification)
@@ -683,6 +607,11 @@ def calculate_trust_bonus(user_id, did, address):
                         # Given a valid stamp - set is_verified and add stamp to returns
                         if stamp['is_verified']:
                             stamp_validation['is_verified'] = True
+
+                            valid_stamps.append(stamp)
+
+                handle_submitted_stamps(db_passport, user_id, valid_stamps)
+
             except Exception as e:
                 logger.error("Error verifying the stamp: %s. Error: %s", stamp, e, exc_info=True)
 
