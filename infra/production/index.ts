@@ -422,7 +422,7 @@ let environment = [
     },
     {
         name: "DEBUG",
-        value: "on"
+        value: "off"
     },
     {
         name: "BASE_URL",
@@ -897,3 +897,130 @@ export const dockerConnectCmd = pulumi.interpolate`docker run -it \
 -e ENV=test \
 ${dockerGtcWebImage} bash \
 `
+
+////// SECONDARY PRODUCTION //////
+//////////////////////////////////////////////////////////////
+// Set up Redis
+//////////////////////////////////////////////////////////////
+
+const redisSubnetGroupSecondary = new aws.elasticache.SubnetGroup("gitcoin-cache-subnet-group-secondary", {
+    subnetIds: vpcPrivateSubnetIds
+});
+
+const secgrp_redis_secondary = new aws.ec2.SecurityGroup("secgrp_redis-secondary", {
+    description: "gitcoin",
+    vpcId: vpc.id,
+    ingress: [
+        { protocol: "tcp", fromPort: 6379, toPort: 6379, cidrBlocks: ["0.0.0.0/0"] },
+    ],
+    egress: [{
+        protocol: "-1",
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["0.0.0.0/0"],
+    }],
+});
+
+const redisSecondary = new aws.elasticache.Cluster("gitcoin-cache-secondary", {
+    engine: "redis",
+    engineVersion: "4.0.10",
+    nodeType: "cache.t2.micro",
+    numCacheNodes: 1,
+    port: 6379,
+    subnetGroupName: redisSubnetGroup.name,
+    securityGroupIds: [secgrp_redis.id]
+});
+
+
+export const redisPrimaryNodeSecondary = redisSecondary.cacheNodes[0];
+export const redisConnectionUrlSecondary = pulumi.interpolate`rediscache://${redisPrimaryNodeSecondary.address}:${redisPrimaryNodeSecondary.port}/0?client_class=django_redis.client.DefaultClient`
+export const redisCacheOpsConnectionUrlSecondary = pulumi.interpolate`redis://${redisPrimaryNodeSecondary.address}:${redisPrimaryNodeSecondary.port}/0`
+
+const clusterSecondary = new awsx.ecs.Cluster("gitcoin-secondary", { vpc });
+// export const clusterInstance = cluster;
+export const clusterIdSecondary = clusterSecondary.id;
+
+// Generate an SSL certificate
+const certificateSecondary = new aws.acm.Certificate("cert-secondary", {
+    domainName: "prod-secondary.gitcoin.co",
+    tags: {
+      Environment: "production",
+    },
+    validationMethod: "DNS",
+  });
+
+const certificateValidationDomainSecondary = new aws.route53.Record(`${domain}-validation-secondary`, {
+    name: certificateSecondary.domainValidationOptions[0].resourceRecordName,
+    zoneId: route53Zone,
+    type: certificateSecondary.domainValidationOptions[0].resourceRecordType,
+    records: [certificateSecondary.domainValidationOptions[0].resourceRecordValue],
+    ttl: 600,
+});
+
+const certificateValidationSecondary = new aws.acm.CertificateValidation("certificateValidationSecondary", {
+    certificateArn: certificateSecondary.arn,
+    validationRecordFqdns: [certificateValidationDomainSecondary.fqdn],
+  });
+
+// Creates an ALB associated with our custom VPC.
+const albSecondary = new awsx.lb.ApplicationLoadBalancer(
+    `gitcoin-service-secondary`, { vpc }
+  );
+
+// Listen to HTTP traffic on port 80 and redirect to 443
+const httpListenerSecondary = alb.createListener("web-listener", {
+    port: 80,
+    protocol: "HTTP",
+    defaultAction: {
+        type: "redirect",
+        redirect: {
+        protocol: "HTTPS",
+        port: "443",
+        statusCode: "HTTP_301",
+        },
+    },
+});
+
+// Target group with the port of the Docker image
+const target = alb.createTargetGroup(
+    "web-target", { vpc, port: 80 }
+);
+
+// Listen to traffic on port 443 & route it through the target group
+const httpsListener = target.createListener("web-listener", {
+    port: 443,
+    certificateArn: certificateValidation.certificateArn
+}); 
+
+const staticBucket = new aws.lb.ListenerRule("static", {
+    listenerArn: httpsListener.listener.arn,
+    priority: 100,
+    actions: [{
+        type: "redirect",
+        redirect: {
+            host: "s.gitcoin.co",
+            port: "443",
+            protocol: "HTTPS",
+            statusCode: "HTTP_301",
+        },
+    }],
+    conditions: [
+        {
+            pathPattern: {
+                values: ["/static/*"],
+            },
+        },
+    ],
+});
+
+// Create a DNS record for the load balancer
+const www = new aws.route53.Record("www", {
+    zoneId: route53Zone,
+    name: domain,
+    type: "A",
+    aliases: [{
+        name: httpsListener.endpoint.hostname,
+        zoneId: httpsListener.loadBalancer.loadBalancer.zoneId,
+        evaluateTargetHealth: true,
+    }]
+});
