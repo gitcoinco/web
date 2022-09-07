@@ -79,13 +79,10 @@ def handle_submitted_passport(user_id, did, passport):
         # Unlink other accounts from this did
         # See https://github.com/gitcoinco/passport/issues/496
         for dup in duplicates:
-            gr15_trustbonus = (
-                dup.user.gr15_trustbonus_set[0]
-                if dup.user.gr15_trustbonus_set.count() > 0
-                else None
-            )
-
-            if not gr15_trustbonus:
+            trust_score_list = GR15TrustScore.objects.filter(user_id=dup.user_id)
+            if len(trust_score_list) > 0:
+                gr15_trustbonus = trust_score_list[0]                
+            else:
                 gr15_trustbonus = GR15TrustScore(
                     user_id=dup.user_id,
                     last_apu_score=0,
@@ -159,13 +156,10 @@ def handle_submitted_stamps(db_passport, user_id, stamp_list):
 
         if len(duplicate_stamps) > 0:
             for dup in duplicate_stamps:
-                gr15_trustbonus = (
-                    dup.user.gr15_trustbonus_set[0]
-                    if dup.user.gr15_trustbonus_set.count() > 0
-                    else None
-                )
-
-                if not gr15_trustbonus:
+                trust_score_list = GR15TrustScore.objects.filter(user_id=dup.user_id)
+                if len(trust_score_list) > 0:
+                    gr15_trustbonus = trust_score_list[0]
+                else:
                     gr15_trustbonus = GR15TrustScore(
                         user_id=dup.user_id,
                         last_apu_score=0,
