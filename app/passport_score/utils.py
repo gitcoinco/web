@@ -506,6 +506,8 @@ def get_new_trust_bonus():
                 }
             )
 
+        # TODO: investigate why we might get duplicate user_id values
+        df_existing_gr15_scores.drop_duplicates(subset=['user_id'], inplace=True)
         df_existing_gr15_scores.set_index("user_id", inplace=True)
         df_existing_gr15_scores[
             "original_last_apu_score"
