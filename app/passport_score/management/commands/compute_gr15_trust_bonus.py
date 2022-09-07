@@ -16,11 +16,12 @@ class Command(BaseCommand):
 
             df_gr15_trust_bonus = get_new_trust_bonus().round(18)
 
-            df_gr15_trust_bonus_changed = df_gr15_trust_bonus.loc[
-                df_gr15_trust_bonus.original_trust_bonus != df_gr15_trust_bonus.trust_bonus
-            ]
+            # df_gr15_trust_bonus_changed = df_gr15_trust_bonus.loc[
+            #     df_gr15_trust_bonus.original_trust_bonus != df_gr15_trust_bonus.trust_bonus
+            # ]
 
-            save_gr15_trustbonus_records(df_gr15_trust_bonus_changed)
+            # save_gr15_trustbonus_records(df_gr15_trust_bonus_changed)
+            save_gr15_trustbonus_records(df_gr15_trust_bonus)
 
             self.stdout.write(self.style.SUCCESS("=" * 80))
             self.stdout.write(self.style.SUCCESS("%s" % df_gr15_trust_bonus))
