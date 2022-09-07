@@ -155,7 +155,9 @@ def handle_submitted_stamps(db_passport, user_id, stamp_list):
         )
 
         if len(duplicate_stamps) > 0:
+            affected_users = set()
             for dup in duplicate_stamps:
+                affected_users.add(dup.user_id)
                 trust_score_list = GR15TrustScore.objects.filter(user_id=dup.user_id)
                 if len(trust_score_list) > 0:
                     gr15_trustbonus = trust_score_list[0]
@@ -180,7 +182,11 @@ def handle_submitted_stamps(db_passport, user_id, stamp_list):
                     }
                 )
                 gr15_trustbonus.save()
+
             duplicate_stamps.delete()
+
+            for user_id_to_delete in affected_users:
+                compute_min_trust_bonus_for_user(user_id_to_delete)
 
         # Save the stamp id and associate it with the Passport entry
         PassportStamp.objects.update_or_create(
