@@ -615,7 +615,7 @@ Vue.component('grant-details', {
     vm.grant_salected_tags = vm.grant.grant_tags ? vm.grant.grant_tags.map(tag => tag.pk) : [];
     vm.chainId = vm.grant.tenants.length > 0 ? vm.grant.tenants[0].toLowerCase() : '';
 
-    const amount_received = Number(vm.grant.amount_received.replace(',', ''));
+    const amount_received = isNaN(vm.grant.amount_received) ? Number(vm.grant.amount_received.replace(',', '')) : Number(vm.grant.amount_received);
     const rounded_lifetime_amount = Math.round(amount_received / 1000) * 1000;
 
     vm.grant.rounded_lifetime_amount = (rounded_lifetime_amount > 1000) ?
