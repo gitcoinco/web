@@ -185,8 +185,8 @@ def handle_submitted_stamps(db_passport, user_id, stamp_list):
 
             duplicate_stamps.delete()
 
-            for user_id_to_delete in affected_users:
-                compute_min_trust_bonus_for_user(user_id_to_delete)
+            for user_id_to_recalc in affected_users:
+                compute_min_trust_bonus_for_user(user_id_to_recalc)
 
         # Save the stamp id and associate it with the Passport entry
         PassportStamp.objects.update_or_create(
