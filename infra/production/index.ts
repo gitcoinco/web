@@ -968,7 +968,7 @@ const albSecondary = new awsx.lb.ApplicationLoadBalancer(
   );
 
 // Listen to HTTP traffic on port 80 and redirect to 443
-const httpListenerSecondary = alb.createListener("web-listener", {
+const httpListenerSecondary = alb.createListener("web-listener-secondary", {
     port: 80,
     protocol: "HTTP",
     defaultAction: {
@@ -982,45 +982,417 @@ const httpListenerSecondary = alb.createListener("web-listener", {
 });
 
 // Target group with the port of the Docker image
-const target = alb.createTargetGroup(
-    "web-target", { vpc, port: 80 }
+const targetSecondary = alb.createTargetGroup(
+    "web-target-secondary", { vpc, port: 80 }
 );
 
 // Listen to traffic on port 443 & route it through the target group
-const httpsListener = target.createListener("web-listener", {
+const httpsListenerSecondary = target.createListener("web-listener-secondary", {
     port: 443,
-    certificateArn: certificateValidation.certificateArn
+    certificateArn: certificateValidationSecondary.certificateArn
 }); 
 
-const staticBucket = new aws.lb.ListenerRule("static", {
-    listenerArn: httpsListener.listener.arn,
-    priority: 100,
-    actions: [{
-        type: "redirect",
-        redirect: {
-            host: "s.gitcoin.co",
-            port: "443",
-            protocol: "HTTPS",
-            statusCode: "HTTP_301",
-        },
-    }],
-    conditions: [
-        {
-            pathPattern: {
-                values: ["/static/*"],
-            },
-        },
-    ],
-});
-
 // Create a DNS record for the load balancer
-const www = new aws.route53.Record("www", {
+const wwwSecondary = new aws.route53.Record("www-secondary", {
     zoneId: route53Zone,
-    name: domain,
+    name: "prod-secondary.gitcoin.co",
     type: "A",
     aliases: [{
-        name: httpsListener.endpoint.hostname,
-        zoneId: httpsListener.loadBalancer.loadBalancer.zoneId,
+        name: httpListenerSecondary.endpoint.hostname,
+        zoneId: httpListenerSecondary.loadBalancer.loadBalancer.zoneId,
         evaluateTargetHealth: true,
     }]
+});
+
+let environmentSecondary = [
+    {
+        name: "ENV",
+        value: "prod"
+    },
+    // read me to understand this file:
+    // https://github.com/gitcoinco/web/blob/master/docs/ENVIRONMENT_VARIABLES.md
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // BASIC PARAMS
+    ///////////////////////////////////////////////////////////////////////////////
+    {
+        name: "CACHE_URL",
+        value: "dbcache://my_cache_table"
+    },
+    {
+        name: "REDIS_URL",
+        value: redisConnectionUrlSecondary
+    },
+    {
+        name: "CACHEOPS_REDIS",
+        value: redisCacheOpsConnectionUrlSecondary
+    },
+    {   // TODO: drop this
+        name: "COLLECTFAST_CACHE_URL",
+        value: "dbcache://collectfast"
+    },
+    {
+        name: "DATABASE_URL",
+        value: databaseURL
+    },
+    {
+        name: "READ_REPLICA_1_DATABASE_URL",
+        value: readReplica1
+    },
+    {
+        name: "READ_REPLICA_2_DATABASE_URL",
+        value: readReplica2
+    },
+    {
+        name: "READ_REPLICA_3_DATABASE_URL",
+        value: readReplica3
+    },
+    {
+        name: "READ_REPLICA_4_DATABASE_URL",
+        value: readReplica4
+    },
+    {
+        name: "DEBUG",
+        value: "on"
+    },
+    {
+        name: "BASE_URL",
+        value: baseUrl
+    },
+    {
+        name: "SENTRY_DSN",
+        value: sentryDSN
+    },
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // DOCKER PROVISIONING PARAMS
+    ///////////////////////////////////////////////////////////////////////////////
+    // {
+    // name: "FORCE_PROVISION",
+    // value: "on"
+    // },
+    {
+        name: "DISABLE_PROVISION",
+        value: "on"
+    },
+    {
+        name: "DISABLE_INITIAL_CACHETABLE",
+        value: "on"
+    },
+    {
+        name: "DISABLE_INITIAL_COLLECTSTATIC",
+        value: "on"
+    },
+    {
+        name: "DISABLE_INITIAL_LOADDATA",
+        value: "off"
+    },
+    {
+        name: "DISABLE_INITIAL_MIGRATE",
+        value: "off"
+    },
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // ADVANCED NOTIFICATION PARAMS
+    ///////////////////////////////////////////////////////////////////////////////
+    // Be VERY CAREFUL when changing this setting.  You don't want to accidentally
+    // spam a bunch of github notifications :)
+    {
+        name: "ENABLE_NOTIFICATIONS_ON_NETWORK",
+        value: "rinkeby"
+    },
+
+    // Please checkout [Integration Docs](https://github.com/gitcoinco/web/blob/master/docs/THIRD_PARTY_SETUP.md)
+    {
+        name: "GITHUB_API_USER",
+        value: githubApiUser
+    },
+    {
+        name: "GITHUB_API_TOKEN",
+        value: githubApiToken
+    },
+
+    // For Login integration with Github (login button in top right)
+    {
+        name: "GITHUB_CLIENT_ID",
+        value: githubClientId
+    },
+    {
+        name: "GITHUB_CLIENT_SECRET",
+        value: githubClientSecret
+    },
+    {
+        name: "GITHUB_APP_NAME",
+        value: githubAppName
+    },
+    {
+        name: "CHAT_SERVER_URL",
+        value: "chat"
+    },
+    {
+        name: "CHAT_URL",
+        value: "localhost"
+    },
+
+    // To enable Google verification(in profile's trust tab)
+    {
+        name: "GOOGLE_CLIENT_ID",
+        value: ""
+    },
+    {
+        name: "GOOGLE_CLIENT_SECRET",
+        value: ""
+    },
+
+    // For Facebook integration (in profile's trust tab)
+    {
+        name: "FACEBOOK_CLIENT_ID",
+        value: ""
+    },
+    {
+        name: "FACEBOOK_CLIENT_SECRET",
+        value: ""
+    },
+
+    // For notion integration (on grant creation)
+    {
+        name: "NOTION_API_KEY",
+        value: ""
+    },
+    {
+        name: "NOTION_SYBIL_DB",
+        value: ""
+    },
+
+    {
+        name: "INFURA_USE_V3",
+        value: "True"
+    },
+
+    {
+        name: "SUPRESS_DEBUG_TOOLBAR",
+        value: "1"
+    },
+
+    {
+        name: "SENDGRID_API_KEY",
+        value: ""
+    },
+    {
+        name: "CONTACT_EMAIL",
+        value: ""
+    },
+
+    {
+        name: "FEE_ADDRESS",
+        value: ""
+    },
+    {
+        name: "FEE_ADDRESS_PRIVATE_KEY",
+        value: ""
+    },
+    {
+        name: "GIPHY_KEY",
+        value: ""
+    },
+    {
+        name: "YOUTUBE_API_KEY",
+        value: ""
+    },
+    {
+        name: "VIEW_BLOCK_API_KEY",
+        value: ""
+    },
+    {
+        name: "ETHERSCAN_API_KEY",
+        value: ""
+    },
+    {
+        name: "POLYGONSCAN_API_KEY",
+        value: "K2FQK241WVVIQ66YJRK3NIMYPR8ZX3GM6D"
+    },
+    {
+        name: "FORTMATIC_LIVE_KEY",
+        value: ""
+    },
+    {
+        name: "FORTMATIC_TEST_KEY",
+        value: ""
+    },
+    {
+        name: "XINFIN_API_KEY",
+        value: ""
+    },
+    {
+        name: "ALGORAND_API_KEY",
+        value: ""
+    },
+
+    {
+        name: "PYPL_CLIENT_ID",
+        value: ""
+    },
+
+    {
+        name: "BRIGHTID_PRIVATE_KEY",
+        value: ""
+    },
+
+    {
+        name: "PREMAILER_CACHE",
+        value: "LRU"
+    },
+    {
+        name: "PREMAILER_CACHE_MAXSIZE",
+        value: "4096"
+    },
+
+    {
+        name: "GTC_DIST_API_URL",
+        value: ""
+    },
+    {
+        name: "GTC_DIST_KEY",
+        value: ""
+    },
+
+    // CYPRESS METAMASK VARIABLES
+    {
+        name: "NETWORK_NAME",
+        value: "localhost"
+    },
+    {
+        name: "SECRET_WORDS",
+        value: ""
+    },
+    {
+        name: "PASSWORD",
+        value: ""
+    },
+    {
+        name: "CYPRESS_REMOTE_DEBUGGING_PORT",
+        value: "9222"
+    },
+
+    {
+        name: "TEST_MNEMONIC",
+        value: "chief loud snack trend chief net field husband vote message decide replace"
+    },
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Specific for review env test
+    ///////////////////////////////////////////////////////////////////////////////
+    {
+        name: "AWS_ACCESS_KEY_ID",
+        value: usrLoggerKey
+    },
+    {
+        name: "AWS_SECRET_ACCESS_KEY",
+        value: usrLoggerSecret
+    },
+    {
+        name: "AWS_DEFAULT_REGION",
+        value: "us-west-2"          // TODO: configure this
+    },
+
+    {
+        name: "AWS_STORAGE_BUCKET_NAME",
+        value: bucketName
+    },
+    {
+        name: "STATIC_HOST",
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
+    },
+    {
+        name: "AWS_S3_CUSTOM_DOMAIN",
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
+    },
+    {
+        name: "STATIC_URL",
+        value: "static/"
+    },
+    {
+        name: "MEDIAFILES_LOCATION",
+        value: "" // empty on purpose
+    },
+    // This is used for prod: STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
+    // STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
+    // Going with this for the time being:  django.contrib.staticfiles.storage.StaticFilesStorage 
+    {
+        name: "STATICFILES_STORAGE",
+        value: "django.contrib.staticfiles.storage.StaticFilesStorage"
+    },
+    {
+        name: "BUNDLE_USE_CHECKSUM",
+        value: "false",
+    },
+    {
+        name: "MEDIA_URL",
+        value: bucketWebURL
+    }
+
+];
+
+const taskSecondary = new awsx.ecs.FargateTaskDefinition("task-secondary", {
+    containers: {
+        web: {
+            image: dockerGtcWebImage,
+            command: ["/bin/review-env-initial-data.bash"],
+            memory: 4096,
+            cpu: 2000,
+            portMappings: [],
+            environment: environmentSecondary,
+            dependsOn: [],
+            links: []
+        },
+    },
+});
+
+export const taskDefinitionSecondary = taskSecondary.taskDefinition.id;
+
+const serviceSecondary = new awsx.ecs.FargateService("app-secondary", {
+    cluster: clusterSecondary,
+    desiredCount: 1,
+    subnets: vpc.privateSubnetIds,
+    taskDefinitionArgs: {
+        containers: {
+            web: {
+                image: dockerGtcWebImage,
+                memory: 4096,
+                portMappings: [httpsListenerSecondary],
+                environment: environmentSecondary,
+                links: []
+            },
+        },
+    },
+});
+
+const celerySecondary = new awsx.ecs.FargateService("celery-secondary", {
+    cluster: clusterSecondary,
+    desiredCount: 1,
+    subnets: vpc.privateSubnetIds,
+    taskDefinitionArgs: {
+        containers: {
+            celery: {
+                image: "gitcoin/web:0b8eae8cd2",
+                command: ["celery", "-A", "taskapp", "-n", "worker1", "worker", "-Q", "gitcoin_passport, celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environmentSecondary,
+                dependsOn: [],
+                links: []
+            },
+            celeryHighPriority: {
+                image: "gitcoin/web:0b8eae8cd2",
+                command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environmentSecondary,
+                dependsOn: [],
+                links: []
+            },
+        },
+    },
 });
