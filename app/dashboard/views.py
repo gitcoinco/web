@@ -3120,7 +3120,7 @@ def get_passport_trust_bonus(request, handle):
     return JsonResponse({
         "passport_did": did,
         "passport_trust_bonus": gr15_trust_bonus.trust_bonus if gr15_trust_bonus else 0.5,
-        "passport_trust_bonus_status": gr15_trust_bonus.trust_bonus_status if gr15_trust_bonus else "saved",
+        "passport_trust_bonus_status": gr15_trust_bonus.trust_bonus_status if gr15_trust_bonus and gr15_trust_bonus.trust_bonus_status else "saved",
         "passport_stamps": gr15_trust_bonus.stamps if gr15_trust_bonus else [],
         "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated,
         "passport_trust_bonus_stamp_validation": profile.passport_trust_bonus_stamp_validation
