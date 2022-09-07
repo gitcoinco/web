@@ -940,11 +940,13 @@ def grants_landing(request):
         twitterUnfurlURL = request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png'))
 
     if request.user.is_authenticated and request.user.profile:
-        gr15_trust_bonus = GR15TrustScore.objects.get(user_id=request.user.id)
-        gr15_trust_bonus_score = gr15_trust_bonus.trust_bonus
-
+        try:
+            gr15_trust_bonus = GR15TrustScore.objects.get(user_id=request.user.id)
+            gr15_trust_bonus_score = gr15_trust_bonus.trust_bonus
+        except:
+            gr15_trust_bonus_score = 0.5
     else:
-        gr15_trust_bonus_score = 50
+        gr15_trust_bonus_score = 0.5
     
     gr15_trust_bonus_score = round(gr15_trust_bonus_score, 1) * 100
 
