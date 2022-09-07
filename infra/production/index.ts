@@ -422,7 +422,7 @@ let environment = [
     },
     {
         name: "DEBUG",
-        value: "on"
+        value: "off"
     },
     {
         name: "BASE_URL",
