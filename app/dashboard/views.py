@@ -3105,23 +3105,23 @@ def check_passport_stamps(request, handle):
 def get_passport_trust_bonus(request, handle):
     user = request.user
     profile = user.profile
-    did = None
+    gr15_trust_bonus = None
+    db_passport = None
+    did = "null"
     try:
         gr15_trust_bonus = GR15TrustScore.objects.get(user_id=user.id)
         db_passport = Passport.objects.get(user_id=user.id)
         did = db_passport.did
     except Passport.DoesNotExist:
-        # This should not occur
-        raise
+        pass
     except GR15TrustScore.DoesNotExist:
-        # This should not occur
-        raise
+        pass
 
     return JsonResponse({
         "passport_did": did,
-        "passport_trust_bonus": gr15_trust_bonus.trust_bonus,
-        "passport_trust_bonus_status": gr15_trust_bonus.trust_bonus_status,
-        "passport_stamps": gr15_trust_bonus.stamps,
+        "passport_trust_bonus": gr15_trust_bonus.trust_bonus if gr15_trust_bonus else 0.5,
+        "passport_trust_bonus_status": gr15_trust_bonus.trust_bonus_status if gr15_trust_bonus else "saved",
+        "passport_stamps": gr15_trust_bonus.stamps if gr15_trust_bonus else [],
         "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated,
         "passport_trust_bonus_stamp_validation": profile.passport_trust_bonus_stamp_validation
     })
