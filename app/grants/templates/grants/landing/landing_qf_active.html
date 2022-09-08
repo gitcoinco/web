@@ -2,7 +2,7 @@
 <div class="container bg-white">
 
   <!--  Header section -->
-  {% if has_active_rounds %}
+  {% if has_active_rounds and profile_url %}
   <div class="row">
     <div v-if="{{trust_bonus}} < 150" class="alert alert-primary spacer-mt-4 border-1 border-primary">
       <div class="row">
