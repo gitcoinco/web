@@ -67,6 +67,7 @@ from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3
 from economy.models import Token
+from passport_score.models import GR15TrustScore
 from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.ingest import process_bulk_checkout_tx
@@ -938,6 +939,16 @@ def grants_landing(request):
     except:
         twitterUnfurlURL = request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png'))
 
+    if request.user.is_authenticated and request.user.profile:
+        try:
+            gr15_trust_bonus = GR15TrustScore.objects.get(user_id=request.user.id)
+            gr15_trust_bonus_score = gr15_trust_bonus.trust_bonus
+        except:
+            gr15_trust_bonus_score = 0.5
+    else:
+        gr15_trust_bonus_score = 0.5
+    
+    gr15_trust_bonus_score = round(gr15_trust_bonus_score, 1) * 100
 
     params = dict(
         {
@@ -958,8 +969,7 @@ def grants_landing(request):
             'active_ecosystem_rounds': active_ecosystem_rounds,
             'featured': True,
             'now': now,
-            'trust_bonus': round(
-                request.user.profile.final_trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
+            'trust_bonus': gr15_trust_bonus_score
         },
         **clr_rounds_metadata
     )

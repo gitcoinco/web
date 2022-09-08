@@ -224,7 +224,7 @@ Vue.component('active-trust-manager', {
     this.visitGitcoinPassport = `</br>Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
 
     // on account change/connect etc... (get Passport state for wallet -- if verified, ensure that the passport connect button has been clicked first)
-    document.addEventListener('dataWalletReady', () => ((!this.pyVerificationError && !this.passportVerified) || this.loading) && this.connectPassport(true));
+    document.addEventListener('dataWalletReady', () => (!this.pyVerificationError && this.loading) && this.checkForPassport());
 
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
@@ -314,27 +314,6 @@ Vue.component('active-trust-manager', {
       // check again in x number of seconds
       setTimeout(this.checkCeramicConnection, this.healthCheckTimeout);
     },
-    async passportActionHandlerConnect(forceRefresh) {
-      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action connect`);
-
-      // We can call the same handler to step through each operation...
-      // connect and read the passport...
-      await this.connectPassport();
-      // when forceRefreshing we want to go straight to scoring
-      if (forceRefresh) {
-        // move to step 2 to immediately score the passport
-        await this.passportActionHandlerRefresh();
-      }
-    },
-    async passportActionHandlerRefresh() {
-      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action refresh`);
-      await this.verifyPassport().then(() => {
-        // move to step 3 (saving)
-        this.step = 3;
-        // store passport into state after verifying content to avoid displaying the scoring until ready
-        this.passport = this.rawPassport;
-      });
-    },
     async passportActionHandlerSave() {
       window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action save`);
       await this.savePassport();
@@ -409,89 +388,6 @@ Vue.component('active-trust-manager', {
     lintToPassport() {
       this.noPassportShow = false;
       window.open('https://passport.gitcoin.co/#/', '_blank');
-    },
-    /*
-     * The ignoreErrors attribute is intended to be used when calling this function automatically on page
-     * load and not expecting this to trigger an error.
-     */
-    async connectPassport(ignoreErrors) {
-      DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle}`);
-
-      // enter loading state
-      this.loading = true;
-      // clear error state
-      this.verificationError = false;
-      this.saveSuccessMsg = false;
-
-      // clear all state
-      this.reset(true);
-
-      // ensure selected account is known
-      if (!selectedAccount) {
-        if (!web3Modal) {
-          // set-up call to onConnect on walletReady events
-          const ret = await needWalletConnection();
-
-          // will setup wallet and emit walletReady event
-          let ret1 = await initWallet();
-
-          window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no web3`);
-          this.loading = false;
-          return;
-        }
-
-        // call onConnect directly after first load to force web3Modal to display every time its called
-        const ret = await onConnect();
-
-        window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no selected account`);
-        this.loading = false;
-        return;
-      }
-
-      window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for handle ${document.contxt.github_handle} and address ${selectedAccount}`);
-
-      try {
-        // read the genesis from the selectedAccount (pulls the associated stream index)
-        const genesis = await this.reader.getGenesis(selectedAccount);
-
-        // grab all the streams at once to reduce the required number of reqs
-        const streams = genesis && genesis.streams;
-
-        // if loaded then the user has a ceramicAccount
-        if (streams && Object.keys(streams).length > 0) {
-          // reset py error
-          this.pyVerificationError = false;
-
-          // get the selectedAccounts ceramic DID
-          this.did = genesis.did;
-
-          // read passport from reader each refresh to ensure we catch any newly created streams/updated stamps
-          const passport = await this.reader.getPassport(selectedAccount, streams);
-
-          // if we find a passport verify it and create a trust_bonus score
-          if (passport) {
-            // move to step 2
-            this.step = 2;
-            // store the passport so that we can verify its content in step-2 (before saving to this.passport)
-            this.rawPassport = passport;
-          } else {
-            // error if no passport found
-            window.DD_LOGS && DD_LOGS.logger.info(`There is no Passport associated with this wallet, did: ${this.did}`);
-            this.verificationError = ignoreErrors ? false : `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
-          }
-        } else {
-          // error if no ceramic account found
-          window.DD_LOGS && DD_LOGS.logger.info(`There is no Ceramic Account associated with this wallet, address: ${selectedAccount}`);
-          this.verificationError = ignoreErrors ? false : `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
-        }
-      } catch (error) {
-        window.DD_LOGS && DD_LOGS.logger.error(`Error when connecting passport, account: '${selectedAccount}'. Error: ${error}`);
-      } finally {
-        // done with loading state
-        this.loading = false;
-      }
-
-      window.DD_LOGS && DD_LOGS.logger.info(`DONE - Connecting passport for ${selectedAccount}`);
     },
     async verifyPassport() {
       // pull the raw passport...
@@ -630,6 +526,29 @@ Vue.component('active-trust-manager', {
       this.loading = false;
     },
     async checkForPassport() {
+      this.loading = true;
+      // ensure selected account is known
+      console.log({ selectedAccount, web3Modal });
+      if (!selectedAccount) {
+        if (!web3Modal) {
+          // set-up call to onConnect on walletReady events
+          const ret = await needWalletConnection();
+
+          // will setup wallet and emit walletReady event
+          let ret1 = await initWallet();
+
+          window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no web3`);
+          this.loading = false;
+          return;
+        }
+
+        // call onConnect directly after first load to force web3Modal to display every time its called
+        const ret = await onConnect();
+
+        window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no selected account`);
+        this.loading = false;
+        return;
+      }
       try {
         const genesis = await this.reader.getGenesis(selectedAccount);
         const streams = genesis && genesis.streams;

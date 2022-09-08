@@ -51,6 +51,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 import pytz
+from passport_score.models import GR15TrustScore
 from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
@@ -3188,7 +3189,11 @@ class Profile(SuperModel):
 
     @property
     def final_trust_bonus(self):
-        return self.trust_bonus if self.passport_trust_bonus is None else self.passport_trust_bonus
+        try:
+            return GR15TrustScore.objects.get(user_id=self.user_id).trust_bonus
+        except:
+            pass
+        return 0.5
 
     @property
     def shadowbanned(self):

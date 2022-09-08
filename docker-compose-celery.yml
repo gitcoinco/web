@@ -9,7 +9,7 @@ services:
         max-file: '10'
       driver: json-file
 
-    image: gitcoin/web:2a232aef21
+    image: gitcoin/web:0dee5443b8
 
     volumes:
       # - .:/code
