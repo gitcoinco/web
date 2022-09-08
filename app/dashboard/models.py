@@ -51,7 +51,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 import pytz
-from app.passport_score.models import GR15TrustScore
+from passport_score.models import GR15TrustScore
 from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
