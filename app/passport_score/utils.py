@@ -239,11 +239,13 @@ def load_passport_stamps():
             }
         )
 
-    df_user_stamp_list = df.groupby("user_id")["stamp_provider"].apply(list)
-    print("User stamp list:\n", df_user_stamp_list)
+    # df_user_stamp_list = df.groupby("user_id")["stamp_provider"].apply(list)
+    # print("User stamp list:\n", df_user_stamp_list)
 
     df_stamps = df.copy()
     df_stamps["is_stamp_preserved"] = 1
+    # TODO: removed duplicate stamps
+    df_stamps_processed_last_calculation_round['stamps'] = df_stamps_processed_last_calculation_round.stamps.apply(set).apply(list)
     df_stamps_processed_last_calculation_round = (
         df_stamps_processed_last_calculation_round.explode("stamps")
     )
@@ -315,6 +317,7 @@ def load_passport_stamps():
     # we want to identify the users that had a stamp removed (we will recalculate the trust bonus even this means lowering the score)
     # By applying min, we identify thoses users (as they end up having 0)
     aggregation_rule["is_stamp_preserved"] = min
+    print("grouping ...")
     prepared_df = df_stamp_overview.groupby(["user_id"]).agg(aggregation_rule)
     print("prepared_df\n", prepared_df)
     prepared_df.reset_index(inplace=True)
@@ -540,7 +543,7 @@ def save_gr15_trustbonus_records(df_gr15_scores):
             max_apu_calculation_time=data.max_apu_calculation_time,
             trust_bonus_calculation_time=data.trust_bonus_calculation_time,
             stamps=[
-                stamp for stamp in data.current_stamps if stamp
+                stamp for stamp in list(set(data.current_stamps)) if stamp
             ],  # TODO: doe to an issue, this array is acumulating ampty string stamps ...
         )
         for user_id, data in df_gr15_scores.loc[
@@ -559,7 +562,7 @@ def save_gr15_trustbonus_records(df_gr15_scores):
             max_apu_calculation_time=data.max_apu_calculation_time,
             trust_bonus_calculation_time=data.trust_bonus_calculation_time,
             stamps=[
-                stamp for stamp in data.current_stamps if stamp
+                stamp for stamp in list(set(data.current_stamps)) if stamp
             ],  # TODO: doe to an issue, this array is acumulating ampty string stamps ...
         )
         for user_id, data in df_gr15_scores.loc[
@@ -572,7 +575,7 @@ def save_gr15_trustbonus_records(df_gr15_scores):
 
     # Bulk creating new records
     print("\nBulk creating new records (count=%s)\n" % len(new_records))
-    GR15TrustScore.objects.bulk_create(new_records)
+    GR15TrustScore.objects.bulk_create(new_records, batch_size=10000)
 
     # Bulk updating existing records
     print("\nBulk updating existing records (count=%s)\n" % len(records_from_db))
@@ -589,4 +592,5 @@ def save_gr15_trustbonus_records(df_gr15_scores):
             "trust_bonus_calculation_time",
             "stamps",
         ],
+        batch_size=10000
     )
