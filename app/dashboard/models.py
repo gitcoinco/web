@@ -3193,7 +3193,7 @@ class Profile(SuperModel):
             return GR15TrustScore.objects.get(user_id=self.user_id).trust_bonus
         except:
             pass
-        return 0
+        return 0.5
 
     @property
     def shadowbanned(self):
