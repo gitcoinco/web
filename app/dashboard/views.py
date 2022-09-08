@@ -3128,9 +3128,9 @@ def get_passport_trust_bonus(request, handle):
 
 @require_GET
 def passport(request):
-    url = 'https://gitcoin.notion.site/gitcoin/Your-digital-citizenship-pass-in-a-decentralized-society-541ce3929afc4f9cb1cdc4c44db12c68'
+    url = 'https://go.gitcoin.co/gitcoin-passport-0?utm_source=gitcoinco&utm_medium=referral&utm_campaign=topnav&utm_content=Passport'
     return redirect(url)
-    
+
 
 
 @login_required
@@ -3190,7 +3190,7 @@ def verify_passport(request, handle):
         pass
 
     if not gr15_trust_bonus:
-        gr15_trust_bonus = GR15TrustScore(user_id=user.id, 
+        gr15_trust_bonus = GR15TrustScore(user_id=user.id,
                                 stamps=[],
                                 last_apu_score = 0,
                                 max_apu_score = 0,
