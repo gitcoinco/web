@@ -344,9 +344,11 @@ Vue.component('grantsCartEthereumPolygon', {
       // Send transaction
       appCart.$refs.cart.showConfirmationModal = true;
 
+      const bnGasPrice = web3.utils.toWei(document.polygonGasPrice, 'gwei');
+
       bulkTransaction.methods
         .donate(donationInputsFiltered)
-        .send({ from: userAddress, value: this.donationInputsNativeAmount })
+        .send({ from: userAddress, value: this.donationInputsNativeAmount, gasPrice: bnGasPrice })
         .on('transactionHash', async(txHash) => {
           indicateMetamaskPopup(true);
           console.log('Donation transaction hash: ', txHash);
