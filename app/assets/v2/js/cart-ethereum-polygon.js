@@ -346,7 +346,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       bulkTransaction.methods
         .donate(donationInputsFiltered)
-        .send({ from: userAddress, gas: this.polygon.estimatedGasCost, value: this.donationInputsNativeAmount })
+        .send({ from: userAddress, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
           indicateMetamaskPopup(true);
           console.log('Donation transaction hash: ', txHash);
