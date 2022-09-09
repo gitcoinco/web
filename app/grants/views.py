@@ -3361,6 +3361,13 @@ class GrantSubmissionView(View):
             except Exception as e:
                 pass
 
+        if eth_payout_address and eth_payout_address != '0x0':
+            try:
+                tag = GrantTag.objects.get(name="* Main Round")
+                grant.tags_requested.add(tag)
+            except Exception as e:
+                pass
+
         grant.save()
         grant.calc_clr_round()
         grant.save()
