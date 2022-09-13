@@ -3380,7 +3380,7 @@ class GrantSubmissionView(View):
         process_grant_creation_admin_email.delay(grant.pk)
 
         # record to notion for sybil-hunters
-        process_notion_db_write.delay(grant.pk)
+        process_notion_db_write
 
         response = {
             'status': 200,
