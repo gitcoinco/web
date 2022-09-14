@@ -744,8 +744,8 @@ const celery = new awsx.ecs.FargateService("celery", {
     taskDefinitionArgs: {
         containers: {
             celery: {
-                image: "gitcoin/web:0b8eae8cd2",
-                command: ["celery", "-A", "taskapp", "-n", "worker1", "worker", "-Q", "gitcoin_passport, celery"],
+                image: dockerGtcWebImage,
+                command: ["celery", "-A", "taskapp", "-n", "worker1", "worker", "-Q", "high_priority,default,marketing,celery"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
@@ -754,8 +754,8 @@ const celery = new awsx.ecs.FargateService("celery", {
                 links: []
             },
             celeryHighPriority: {
-                image: "gitcoin/web:0b8eae8cd2",
-                command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+                image: dockerGtcWebImage,
+                command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "high_priority"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
