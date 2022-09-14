@@ -250,6 +250,7 @@ jobs:
           GITHUB_API_TOKEN: ${{ secrets.GTC_GITHUB_API_TOKEN }}
           GITHUB_API_USER: ${{ secrets.GTC_GITHUB_API_USER }}
           GITHUB_APP_NAME: ${{ secrets.GTC_GITHUB_APP_NAME }}
+          OLD_REDIS_URL: ${{ OLD_REDIS_URL }}
 
       # The static files are already bundled and located in the folder /code/app/static in the container
       - name: Copy static files to bucket
