@@ -31,4 +31,4 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f"DURATION {end - start}"))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"{e}"))
-            traceback.print_tb()
+            traceback.print_exc()
