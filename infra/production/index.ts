@@ -25,6 +25,7 @@ let readReplica1 = `${process.env["READ_REPLICA_1_DATABASE_URL"]}`
 let readReplica2 = `${process.env["READ_REPLICA_2_DATABASE_URL"]}`
 let readReplica3 = `${process.env["READ_REPLICA_3_DATABASE_URL"]}`
 let readReplica4 = `${process.env["READ_REPLICA_4_DATABASE_URL"]}`
+let oldProdRedisURL = `${process.env["OLD_REDIS_URL"]}`
 
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
@@ -394,7 +395,7 @@ let environment = [
     },
     {
         name: "CACHEOPS_REDIS",
-        value: redisCacheOpsConnectionUrl
+        value: oldProdRedisURL
     },
     {   // TODO: drop this
         name: "COLLECTFAST_CACHE_URL",
