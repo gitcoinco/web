@@ -218,6 +218,7 @@ class GrantAdmin(GeneralAdmin):
             obj.active = True
             obj.is_clr_eligible = True
             obj.hidden = False
+            obj.calc_clr_round()
             obj.save()
             record_grant_activity_helper('new_grant', obj, obj.admin_profile)
             new_grant_approved(obj, obj.admin_profile)
