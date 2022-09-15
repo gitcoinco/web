@@ -34,7 +34,6 @@ from grants.models import (
     GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType,
     PhantomFunding, Subscription,
 )
-from grants.tasks import update_grant_metadata
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
 from web3 import Web3
@@ -220,7 +219,8 @@ class GrantAdmin(GeneralAdmin):
             obj.is_clr_eligible = True
             obj.hidden = False
             obj.save()
-            update_grant_metadata(obj.id)
+            obj.calc_clr_round()
+            obj.save()
             record_grant_activity_helper('new_grant', obj, obj.admin_profile)
             new_grant_approved(obj, obj.admin_profile)
             self.message_user(request, "Grant has been successfully approved")
