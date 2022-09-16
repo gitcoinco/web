@@ -21,7 +21,7 @@ class GrantContributionIndex(SuperModel):
         on_delete=models.CASCADE,
     )
     round_num = models.IntegerField(
-        help_text=_("The round number a user contributed to")
+        help_text=_("The round number a user contributed to"), null=True, blank=True
     )
     amount = models.DecimalField(
         default=0,

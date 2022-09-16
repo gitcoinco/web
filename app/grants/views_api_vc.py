@@ -140,7 +140,7 @@ def grantee_statistics(request):
         is_clr_eligible=True,
     ).count()
 
-    # Get the total amount of contrinutors for ane users grants that where not squelched and are not the owner himself
+    # Get the total amount of contrinutors for one users grants that where not squelched and are not the owner himself
     all_squelched = SquelchProfile.objects.filter(active=True).values_list(
         "profile_id", flat=True
     )
