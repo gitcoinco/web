@@ -15,6 +15,14 @@ class GrantContributionIndex(SuperModel):
         on_delete=models.CASCADE,
         db_index=True,
     )
+    contribution = models.ForeignKey(
+        "grants.Contribution",
+        help_text=_("Contribution"),
+        on_delete=models.CASCADE,
+        db_index=True,
+        null=True,
+        blank=True,
+    )
     grant = models.ForeignKey(
         "grants.Grant",
         help_text=_("The grant a user contributed to"),

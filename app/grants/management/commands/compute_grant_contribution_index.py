@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import F
 import pytz
 
-from app.grants.models.grant import GrantCLR
+from grants.models.grant import GrantCLR
 from grants.models import Contribution, Grant, GrantContributionIndex, Subscription
 
 
@@ -36,13 +36,13 @@ class Command(BaseCommand):
             Contribution.objects.filter(
                 success=True,
                 subscription__network="mainnet",
-                subscription__grant__clr_calculations__latest=True,
                 subscription__contributor_profile__isnull=False,
                 created_on__lt=to_date,
             )
             .order_by("id")
             .distinct("id")
             .values_list(
+                "id",
                 "profile_for_clr_id",
                 "subscription__grant__id",
                 "amount_per_period_usdt",
@@ -53,20 +53,21 @@ class Command(BaseCommand):
         # Determine the round number (if any) of each contribution
         self.stdout.write(f"{datetime.now()} Adding round_num to results")
         contributions = [
-            (c1, c2, c3, created_on, get_round_num(created_on))
-            for (c1, c2, c3, created_on) in contributions
+            (c0, c1, c2, c3, created_on, get_round_num(created_on))
+            for (c0, c1, c2, c3, created_on) in contributions
         ]
         self.stdout.write(f"{datetime.now()} Got {len(contributions)} contributions")
 
         self.stdout.write(f"{datetime.now()} Building contribIndexList ...")
         contribIndexList = [
             GrantContributionIndex(
-                profile_id=contribInfo[0],
-                round_num=contribInfo[1],
-                grant_id=contribInfo[2],
-                amount=contribInfo[4],
+                contribution_id=contribution_id,
+                profile_id=profile_id,
+                round_num=round_num,
+                grant_id=grant_id,
+                amount=amount,
             )
-            for contribInfo in contributions
+            for contribution_id, profile_id, grant_id, amount, _, round_num  in contributions
         ]
 
         count = len(contribIndexList)
