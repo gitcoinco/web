@@ -25,6 +25,7 @@ let readReplica1 = `${process.env["READ_REPLICA_1_DATABASE_URL"]}`
 let readReplica2 = `${process.env["READ_REPLICA_2_DATABASE_URL"]}`
 let readReplica3 = `${process.env["READ_REPLICA_3_DATABASE_URL"]}`
 let readReplica4 = `${process.env["READ_REPLICA_4_DATABASE_URL"]}`
+let oldProdRedisURL = `${process.env["OLD_REDIS_URL"]}`;
 
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
@@ -394,7 +395,7 @@ let environment = [
     },
     {
         name: "CACHEOPS_REDIS",
-        value: redisCacheOpsConnectionUrl
+        value: oldProdRedisURL
     },
     {   // TODO: drop this
         name: "COLLECTFAST_CACHE_URL",
@@ -743,8 +744,8 @@ const celery = new awsx.ecs.FargateService("celery", {
     taskDefinitionArgs: {
         containers: {
             celery: {
-                image: "gitcoin/web:0b8eae8cd2",
-                command: ["celery", "-A", "taskapp", "-n", "worker1", "worker", "-Q", "gitcoin_passport, celery"],
+                image: dockerGtcWebImage,
+                command: ["celery", "-A", "taskapp", "-n", "worker1", "worker", "-Q", "high_priority,default,marketing,celery"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
@@ -753,8 +754,8 @@ const celery = new awsx.ecs.FargateService("celery", {
                 links: []
             },
             celeryHighPriority: {
-                image: "gitcoin/web:0b8eae8cd2",
-                command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+                image: dockerGtcWebImage,
+                command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "high_priority"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
