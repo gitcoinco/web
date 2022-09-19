@@ -189,14 +189,14 @@
                   <!-- Logo -->
                   <div class="mb-4">
                     <label class="font-subheader font-weight-light letter-spacing" for="logo">
-                      Project Logo
+                      Project Banner
                     </label>
 
                     <div class="form__drop mt-0" id="js-drop">
                       <span class="text-center">
                         Drag and Drop or Browse File
                         </br>
-                        Recommended: 348x200 px in jpg or png
+                        Recommended: 905 X 290 px in jpg or png
                       </span>
                       <b-form-file id="img-project" v-model="logo" @change="onFileChange($event)" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
                       <b-img-lazy v-if="logoPreview" id="preview" style="width:100%;" :src="logoPreview"></b-img-lazy>
