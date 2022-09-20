@@ -84,7 +84,7 @@ def contributor_statistics(request):
 
     # Get number of rounds the user contributed to
     num_rounds_contribute_to = (
-        GrantContributionIndex.objects.filter(profile__handle=handle)
+        GrantContributionIndex.objects.filter(profile__handle=handle, round_num__isnull=False)
         .order_by("round_num")
         .distinct("round_num")
         .count()
