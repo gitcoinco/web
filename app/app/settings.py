@@ -542,6 +542,7 @@ CELERY_ROUTES = [
     ('dashboard.tasks.calculate_trust_bonus', {'queue': 'gitcoin_passport'}),
     ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
     ('grants.tasks.batch_process_grant_contributions', {'queue': 'high_priority'}),
+    ('grants.tasks.handle_zksync_ingestion_task', {'queue': 'high_priority'}),
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
     ('dashboard.tasks.increment_view_count', {'queue': 'analytics'}),
     ('dashboard.tasks.record_visit', {'queue': 'analytics'}),
