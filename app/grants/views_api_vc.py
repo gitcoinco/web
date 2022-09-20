@@ -84,7 +84,7 @@ def contributor_statistics(request):
 
     # Get number of rounds the user contributed to
     num_rounds_contribute_to = (
-        GrantContributionIndex.objects.filter(profile__handle=handle)
+        GrantContributionIndex.objects.filter(profile__handle=handle, round_num__isnull=False)
         .order_by("round_num")
         .distinct("round_num")
         .count()
@@ -140,7 +140,7 @@ def grantee_statistics(request):
         is_clr_eligible=True,
     ).count()
 
-    # Get the total amount of contrinutors for ane users grants that where not squelched and are not the owner himself
+    # Get the total amount of contrinutors for one users grants that where not squelched and are not the owner himself
     all_squelched = SquelchProfile.objects.filter(active=True).values_list(
         "profile_id", flat=True
     )

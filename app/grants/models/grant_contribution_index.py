@@ -15,13 +15,21 @@ class GrantContributionIndex(SuperModel):
         on_delete=models.CASCADE,
         db_index=True,
     )
+    contribution = models.ForeignKey(
+        "grants.Contribution",
+        help_text=_("Contribution"),
+        on_delete=models.CASCADE,
+        db_index=True,
+        null=True,
+        blank=True,
+    )
     grant = models.ForeignKey(
         "grants.Grant",
         help_text=_("The grant a user contributed to"),
         on_delete=models.CASCADE,
     )
     round_num = models.IntegerField(
-        help_text=_("The round number a user contributed to")
+        help_text=_("The round number a user contributed to"), null=True, blank=True
     )
     amount = models.DecimalField(
         default=0,
