@@ -395,7 +395,7 @@ let environment = [
     },
     {
         name: "CACHEOPS_REDIS",
-        value: oldProdRedisURL
+        value: redisCacheOpsConnectionUrl
     },
     {   // TODO: drop this
         name: "COLLECTFAST_CACHE_URL",
