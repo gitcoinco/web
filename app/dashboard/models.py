@@ -51,7 +51,6 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 import pytz
-from passport_score.models import GR15TrustScore
 from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
@@ -64,6 +63,7 @@ from economy.utils import ConversionRateNotFoundError, convert_amount, convert_t
 from git.utils import get_issue_comments, get_issue_details, issue_number, org_name, repo_name
 from marketing.mails import fund_request_email, start_work_approved
 from marketing.models import EmailSupressionList, LeaderboardRank
+from passport_score.models import GR15TrustScore
 from rest_framework import serializers
 from townsquare.models import PinnedPost
 from unidecode import unidecode

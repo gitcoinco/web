@@ -2,10 +2,10 @@ from datetime import datetime
 
 from django.core.management.base import BaseCommand
 from django.db.models import F
-import pytz
 
-from grants.models.grant import GrantCLR
+import pytz
 from grants.models import Contribution, Grant, GrantContributionIndex, Subscription
+from grants.models.grant import GrantCLR
 
 
 class Command(BaseCommand):
