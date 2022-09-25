@@ -8,6 +8,9 @@ on:
         default: "origin/master"
         type: string
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   build-and-test:
     name: Build and Test
