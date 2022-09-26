@@ -1232,7 +1232,7 @@
                           {% for profile, num_times in works_with_org.items %}
                           {% if forloop.counter < 9 %}
                           <a href="{% url 'profile' profile %} ">
-                            <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                            <img src='{% avatar_url profile %}' title="{{ profile }}: {{ num_times }} times">
                           </a>
                           {% endif %}
                           {% endfor %}
