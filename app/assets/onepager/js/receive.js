@@ -132,7 +132,7 @@ $(document).ready(function() {
     var token_address = document.tip['token_address'];
     var token_contract = new web3.eth.Contract(token_abi, token_address);
     var holding_address = document.tip['holding_address'];
-    var amount_in_wei = new web3.utils.BN(String(document.tip['amount_in_wei']));
+    var amount_in_wei = BigInt(document.tip['amount_in_wei']).toString();
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
       var nonce = result;
@@ -156,7 +156,7 @@ $(document).ready(function() {
             nonce: web3.utils.toHex(nonce),
             to: forwarding_address,
             from: holding_address,
-            value: amount_in_wei.toString()
+            value: amount_in_wei
           };
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
             var buffer = new web3.utils.BN(0);
@@ -188,7 +188,7 @@ $(document).ready(function() {
         } else {
 
           // send ERC20
-          var encoded_amount = new web3.utils.BN(BigInt(document.tip['amount_in_wei'])).toString();
+          var encoded_amount = amount_in_wei;
           var data = token_contract.methods.transfer(forwarding_address, encoded_amount).encodeABI();
 
           rawTx = {
