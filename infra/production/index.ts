@@ -362,6 +362,27 @@ const staticBucket = new aws.lb.ListenerRule("static", {
     ],
 });
 
+const blog = new aws.lb.ListenerRule("blog", {
+    listenerArn: httpsListener.listener.arn,
+    priority: 100,
+    actions: [{
+        type: "redirect",
+        redirect: {
+            host: "go.gitcoin.co",
+            port: "443",
+            protocol: "HTTPS",
+            statusCode: "HTTP_301",
+        },
+    }],
+    conditions: [
+        {
+            pathPattern: {
+                values: ["/blog/*"],
+            },
+        },
+    ],
+});
+
 // Create a DNS record for the load balancer
 const www = new aws.route53.Record("www", {
     zoneId: route53Zone,
@@ -722,7 +743,7 @@ export const taskDefinition = task.taskDefinition.id;
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
-    desiredCount: 2,
+    desiredCount: 6,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
@@ -739,7 +760,7 @@ const service = new awsx.ecs.FargateService("app", {
 
 const celery = new awsx.ecs.FargateService("celery", {
     cluster,
-    desiredCount: 1,
+    desiredCount: 6,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
