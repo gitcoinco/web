@@ -722,7 +722,7 @@ export const taskDefinition = task.taskDefinition.id;
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
-    desiredCount: 2,
+    desiredCount: 6,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
@@ -739,7 +739,7 @@ const service = new awsx.ecs.FargateService("app", {
 
 const celery = new awsx.ecs.FargateService("celery", {
     cluster,
-    desiredCount: 1,
+    desiredCount: 6,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
