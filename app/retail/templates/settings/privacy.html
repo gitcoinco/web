@@ -34,12 +34,6 @@
           <br>
           <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, we will remove your profile altogether" %}</small>
       </div>
-      <div>
-          <input type="checkbox" name="anonymize_gitcoin_grants_contributions" id=anonymize_gitcoin_grants_contributions value="1" {% if profile.anonymize_gitcoin_grants_contributions %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
-          <label class="form__label" for="anonymize_gitcoin_grants_contributions">{% trans "Anonymize my gitcoin Grants contributions" %}</label>
-          <br>
-          <small id="anonymize_gitcoin_grants_contributions_help" class="form__input-help">{% trans "If this option is chosen, we will anonymize your gitcoin grants contributions from now on." %}</small>
-      </div>
       <h6 class="mt-2 pt-2">Account Privacy</h6>
       <div>
           <input type="checkbox" name="pref_do_not_track" id=pref_do_not_track value="1" {% if profile.pref_do_not_track %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
