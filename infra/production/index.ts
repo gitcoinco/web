@@ -364,7 +364,7 @@ const staticBucket = new aws.lb.ListenerRule("static", {
 
 const blog = new aws.lb.ListenerRule("blog", {
     listenerArn: httpsListener.listener.arn,
-    priority: 100,
+    priority: 150,
     actions: [{
         type: "redirect",
         redirect: {
