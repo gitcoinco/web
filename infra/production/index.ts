@@ -749,7 +749,9 @@ const service = new awsx.ecs.FargateService("app", {
         containers: {
             web: {
                 image: dockerGtcWebImage,
+                command: ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "app.wsgi:application", "--max-requests", "100", "--max-requests-jitter", "10", "--timeout", "60"],
                 memory: 4096,
+                cpu: 1024,
                 portMappings: [httpsListener],
                 environment: environment,
                 links: []
