@@ -21,6 +21,7 @@ def grant_payout():
 def payout_logs():
     return [
         {
+            'claimee': '0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f',
             'recipient': '0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f',
             'tx_hash': '0x8b5def65058838c52a72efb48b62b251eb8c5e91334fbc65a3b9bd4b5f0182d1',
         }
