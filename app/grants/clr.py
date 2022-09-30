@@ -297,7 +297,6 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, curr_agg_sqrts, v_threshold
                     except Exception as e:
                         print(sqrts[u_k1], sqrts[u_k2], pair_totals[u_k1][u_k2], v_threshold, trust_dict[u_k1], trust_dict[u_k2] )
                         print(f"error: calculate_clr {e}")
-                        continue
 
             # record each item in the dict to a copy
             contributors.append(k1)
