@@ -448,7 +448,7 @@ let environment = [
     },
     {
         name: "BASE_URL",
-        value: baseUrl
+        value: "https://gitcoin.co/"
     },
     {
         name: "SENTRY_DSN",
@@ -719,7 +719,7 @@ let environment = [
     },
     {
         name: "MEDIA_URL",
-        value: bucketWebURL
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     }
 
 ];
