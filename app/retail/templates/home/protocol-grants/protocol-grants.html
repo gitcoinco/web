@@ -4,6 +4,7 @@
   #protocol-grants {
     position: relative;
     max-width: 1440px;
+    overflow: hidden;
   }
 
   #protocol-grants a.button {
@@ -20,7 +21,7 @@
   }
 
   #protocol-grants .text {
-    width: 330px;
+    width: 380px;
   }
 
   #protocol-grants .protocol .text {
@@ -81,13 +82,111 @@
     top: 3%;
     width: 500px;
     height: 382px;
+    z-index: 99;
+  }
+
+  @media only screen and (max-width: 1100px) {
+    #protocol-grants .circle {
+      --reducedWidth: 80;
+      background-size: calc(480px * (var(--reducedWidth) / 100))
+        calc(480px * (var(--reducedWidth) / 100));
+      width: calc(480px * (var(--reducedWidth) / 100));
+      height: calc(480px * (var(--reducedWidth) / 100));
+      margin-left: calc(0px - (240px * (var(--reducedWidth) / 100)));
+      margin-top: calc(0px - (240px * (var(--reducedWidth) / 100)));
+    }
+
+    #protocol-grants .protocol-img {
+      background: url("{{ STATIC_URL }}v2/images/home/protocol-grants/home-banner-protocol-mobile.svg")
+        no-repeat;
+      --reducedWidth: 130;
+      background-size: calc(235px * (var(--reducedWidth) / 100))
+        calc(122px * (var(--reducedWidth) / 100));
+      width: calc(235px * (var(--reducedWidth) / 100));
+      height: calc(122px * (var(--reducedWidth) / 100));
+      margin-left: calc(0px - 117px * (var(--reducedWidth) / 100));
+    }
+
+    #protocol-grants .grants-img {
+      background: url("{{ STATIC_URL }}v2/images/home/protocol-grants/home-banner-grants-mobile.svg")
+        no-repeat;
+      --reducedWidth: 140;
+      background-size: calc(217px * (var(--reducedWidth) / 100))
+        calc(217px * (var(--reducedWidth) / 100));
+      width: calc(217px * (var(--reducedWidth) / 100));
+      height: calc(217px * (var(--reducedWidth) / 100));
+      left: 50%;
+      top: -59px;
+      margin-left: calc(0px - 108px * (var(--reducedWidth) / 100));
+    }
+
+    @media only screen and (max-width: 1000px) {
+    #protocol-grants .bg-light, #protocol-grants .bg-dark { height: 380px; }
+    #protocol-grants .circle {
+      --reducedWidth: 60;
+      background-size: calc(480px * (var(--reducedWidth) / 100))
+        calc(480px * (var(--reducedWidth) / 100));
+      width: calc(480px * (var(--reducedWidth) / 100));
+      height: calc(480px * (var(--reducedWidth) / 100));
+      margin-left: calc(0px - (240px * (var(--reducedWidth) / 100)));
+      margin-top: calc(0px - (240px * (var(--reducedWidth) / 100)));
+    }
+
+    #protocol-grants .protocol-img {
+      background: url("{{ STATIC_URL }}v2/images/home/protocol-grants/home-banner-protocol-mobile.svg")
+        no-repeat;
+      --reducedWidth: 100;
+      background-size: calc(235px * (var(--reducedWidth) / 100))
+        calc(122px * (var(--reducedWidth) / 100));
+      width: calc(235px * (var(--reducedWidth) / 100));
+      height: calc(122px * (var(--reducedWidth) / 100));
+      margin-left: calc(0px - 117px * (var(--reducedWidth) / 100));
+    }
+
+    #protocol-grants .grants-img {
+      background: url("{{ STATIC_URL }}v2/images/home/protocol-grants/home-banner-grants-mobile.svg")
+        no-repeat;
+      --reducedWidth: 110;
+      background-size: calc(217px * (var(--reducedWidth) / 100))
+        calc(217px * (var(--reducedWidth) / 100));
+      width: calc(217px * (var(--reducedWidth) / 100));
+      height: calc(217px * (var(--reducedWidth) / 100));
+      left: 50%;
+      top: -59px;
+      margin-left: calc(0px - 108px * (var(--reducedWidth) / 100));
+    }
+
+
+    @media only screen and (max-width: 950px) {
+      #protocol-grants .grants .text {
+        top: 80px;
+      }
+    }
+    @media only screen and (max-width: 900px) {
+      #protocol-grants .grants .text {
+        top: 100px;
+      }
+    }
+    @media only screen and (max-width: 780px) {
+      #protocol-grants .grants .text {
+        top: 120px;
+      }
+    }
+    @media only screen and (max-width: 580px) {
+      #protocol-grants .grants .text {
+        top: 180px;
+      }
+      #protocol-grants .text {
+        width: 100%;
+      }
+    }
   }
 </style>
 
 <section>
   <div class="container" id="protocol-grants">
     <div class="row bg-light protocol">
-      <div class="text pl-5 pt-5">
+      <div class="text p-sm-5 pl-2 pr-2 pb-2 pt-5">
         <h1 class="text-uppercase font-weight-bold">Grants Protocol</h1>
         <p>
           Grants Protocol aims to decentralize funding access, empowering any
@@ -95,7 +194,7 @@
         </p>
 
         <a
-          href="https://go.gitcoin.co/grants/protocol"
+          href="https://go.gitcoin.co/blog/introduction-to-grants-protocol"
           class="text-uppercase button"
           title="Explore Gitcoin Grants Protocol"
           >Explore Grants Protocol</a
@@ -105,7 +204,7 @@
       <div class="protocol-img"></div>
     </div>
     <div class="row bg-dark grants">
-      <div class="text pt-5 pr-5">
+      <div class="text p-sm-5 p-2">
         <h1 class="text-uppercase font-weight-bold">Gitcoin Grants</h1>
         <p>
           Gitcoin Grants is a canonical example of the Grants Protocol's
