@@ -14,8 +14,11 @@ class GR15TrustScoreAdmin(admin.ModelAdmin):
         "last_apu_calculation_time",
         "max_apu_calculation_time",
         "trust_bonus_calculation_time",
+        "is_sybil",
         "stamps",
     )
+
+    list_filter = ['is_sybil']
 
     search_fields = ["user__username"]
 

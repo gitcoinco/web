@@ -291,8 +291,12 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, curr_agg_sqrts, v_threshold
                 u_k1 = k1 if k2 > k1 else k2
                 u_k2 = k2 if k2 > k1 else k1
                 # never pair against matching contribs
-                if k2 != k1:
-                    tot += (sqrts[u_k1] * sqrts[u_k2]) / (pair_totals[u_k1][u_k2] / (v_threshold * float(max(trust_dict[u_k1], trust_dict[u_k2]))) + 1)
+                if k2 != k1 and pair_totals[u_k1][u_k2] > 0:
+                    try:
+                        tot += (sqrts[u_k1] * sqrts[u_k2]) / (pair_totals[u_k1][u_k2] / (v_threshold * float(max(trust_dict[u_k1], trust_dict[u_k2]))) + 1)
+                    except Exception as e:
+                        print(sqrts[u_k1], sqrts[u_k2], pair_totals[u_k1][u_k2], v_threshold, trust_dict[u_k1], trust_dict[u_k2] )
+                        print(f"error: calculate_clr {e}")
 
             # record each item in the dict to a copy
             contributors.append(k1)

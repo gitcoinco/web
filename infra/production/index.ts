@@ -362,6 +362,27 @@ const staticBucket = new aws.lb.ListenerRule("static", {
     ],
 });
 
+const blog = new aws.lb.ListenerRule("blog", {
+    listenerArn: httpsListener.listener.arn,
+    priority: 150,
+    actions: [{
+        type: "redirect",
+        redirect: {
+            host: "go.gitcoin.co",
+            port: "443",
+            protocol: "HTTPS",
+            statusCode: "HTTP_301",
+        },
+    }],
+    conditions: [
+        {
+            pathPattern: {
+                values: ["/blog/*"],
+            },
+        },
+    ],
+});
+
 // Create a DNS record for the load balancer
 const www = new aws.route53.Record("www", {
     zoneId: route53Zone,
@@ -395,7 +416,7 @@ let environment = [
     },
     {
         name: "CACHEOPS_REDIS",
-        value: oldProdRedisURL
+        value: redisCacheOpsConnectionUrl
     },
     {   // TODO: drop this
         name: "COLLECTFAST_CACHE_URL",
@@ -427,7 +448,7 @@ let environment = [
     },
     {
         name: "BASE_URL",
-        value: baseUrl
+        value: "https://gitcoin.co/"
     },
     {
         name: "SENTRY_DSN",
@@ -698,7 +719,7 @@ let environment = [
     },
     {
         name: "MEDIA_URL",
-        value: bucketWebURL
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     }
 
 ];
@@ -722,13 +743,15 @@ export const taskDefinition = task.taskDefinition.id;
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
-    desiredCount: 2,
+    desiredCount: 6,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
             web: {
                 image: dockerGtcWebImage,
+                command: ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "app.wsgi:application", "--max-requests", "100", "--max-requests-jitter", "10", "--timeout", "60"],
                 memory: 4096,
+                cpu: 1024,
                 portMappings: [httpsListener],
                 environment: environment,
                 links: []
@@ -739,7 +762,7 @@ const service = new awsx.ecs.FargateService("app", {
 
 const celery = new awsx.ecs.FargateService("celery", {
     cluster,
-    desiredCount: 1,
+    desiredCount: 6,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {

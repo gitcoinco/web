@@ -67,7 +67,6 @@ from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3
 from economy.models import Token
-from passport_score.models import GR15TrustScore
 from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.ingest import process_bulk_checkout_tx
@@ -86,6 +85,7 @@ from grants.utils import (
 )
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import ImageDropZone, Keyword, Stat
+from passport_score.models import GR15TrustScore
 from perftools.models import JSONStore, StaticJsonEnv
 from PIL import Image
 from ratelimit.decorators import ratelimit
@@ -3380,7 +3380,7 @@ class GrantSubmissionView(View):
         process_grant_creation_admin_email.delay(grant.pk)
 
         # record to notion for sybil-hunters
-        process_notion_db_write(grant.pk)
+        process_notion_db_write.delay(grant.pk)
 
         response = {
             'status': 200,
