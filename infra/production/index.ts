@@ -719,7 +719,7 @@ let environment = [
     },
     {
         name: "MEDIA_URL",
-        value: "https://d31ygswzsyecnt.cloudfront.net/"
+        value: "https://c.gitcoin.co/"
     }
 
 ];
