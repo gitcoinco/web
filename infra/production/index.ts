@@ -27,6 +27,8 @@ let readReplica3 = `${process.env["READ_REPLICA_3_DATABASE_URL"]}`
 let readReplica4 = `${process.env["READ_REPLICA_4_DATABASE_URL"]}`
 let oldProdRedisURL = `${process.env["OLD_REDIS_URL"]}`
 
+let secretKey = `${process.env["SECRET_KEY"]}`
+
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
 
@@ -720,8 +722,11 @@ let environment = [
     {
         name: "MEDIA_URL",
         value: "https://c.gitcoin.co/"
+    },
+    {
+        name: "SECRET_KEY",
+        value: secretKey
     }
-
 ];
 
 const task = new awsx.ecs.FargateTaskDefinition("task", {
