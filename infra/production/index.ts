@@ -28,6 +28,10 @@ let readReplica4 = `${process.env["READ_REPLICA_4_DATABASE_URL"]}`
 let oldProdRedisURL = `${process.env["OLD_REDIS_URL"]}`
 
 let secretKey = `${process.env["SECRET_KEY"]}`
+let etherscanApiKey = `${process.env["ETHERSCAN_API_KEY"]}`
+let gtcDistApiUrl = `${process.env["GTC_DIST_API_URL"]}`
+let gtcDistKey = `${process.env["GTC_DIST_KEY"]}`
+let brightIdPrivateKey = `${process.env["BRIGHTID_PRIVATE_KEY"]}`
 
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
@@ -598,7 +602,7 @@ let environment = [
     },
     {
         name: "ETHERSCAN_API_KEY",
-        value: ""
+        value: etherscanApiKey
     },
     {
         name: "POLYGONSCAN_API_KEY",
@@ -628,7 +632,7 @@ let environment = [
 
     {
         name: "BRIGHTID_PRIVATE_KEY",
-        value: ""
+        value: brightIdPrivateKey
     },
 
     {
@@ -642,11 +646,11 @@ let environment = [
 
     {
         name: "GTC_DIST_API_URL",
-        value: ""
+        value: gtcDistApiUrl
     },
     {
         name: "GTC_DIST_KEY",
-        value: ""
+        value: gtcDistKey
     },
 
     // CYPRESS METAMASK VARIABLES
