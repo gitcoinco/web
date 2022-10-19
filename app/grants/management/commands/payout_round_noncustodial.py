@@ -342,7 +342,7 @@ class Command(BaseCommand):
                 match.payout_tx = tx_id
                 match.payout_tx_date = timezone.now()
                 match.token_symbol = token_symbol
-                grant_match_distribution_final_txn(match, True)
+                # grant_match_distribution_final_txn(match, True)
                 match.save()
 
                 if not match.payout_contribution:

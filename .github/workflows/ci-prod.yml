@@ -251,6 +251,11 @@ jobs:
           GITHUB_API_USER: ${{ secrets.GTC_GITHUB_API_USER }}
           GITHUB_APP_NAME: ${{ secrets.GTC_GITHUB_APP_NAME }}
           OLD_REDIS_URL: ${{ secrets.OLD_REDIS_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          GTC_DIST_KEY: ${{ secrets.GTC_DIST_KEY }}
+          GTC_DIST_API_URL: ${{ secrets.GTC_DIST_API_URL }}
+          BRIGHTID_PRIVATE_KEY: ${{ secrets.BRIGHTID_PRIVATE_KEY }}
 
       # The static files are already bundled and located in the folder /code/app/static in the container
       - name: Copy static files to bucket
