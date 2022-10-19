@@ -59,7 +59,7 @@
                   <path d="M11.5858 1.58579C11.2107 1.96086 11 2.46957 11 3V5C11 5.53043 11.2107 6.03914 11.5858 6.41421C11.9609 6.78929 12.4696 7 13 7H15C15.5304 7 16.0391 6.78929 16.4142 6.41421C16.7893 6.03914 17 5.53043 17 5V3C17 2.46957 16.7893 1.96086 16.4142 1.58579C16.0391 1.21071 15.5304 1 15 1H13C12.4696 1 11.9609 1.21071 11.5858 1.58579Z" stroke="#664AEC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M1.58579 11.5858C1.21071 11.9609 1 12.4696 1 13V15C1 15.5304 1.21071 16.0391 1.58579 16.4142C1.96086 16.7893 2.46957 17 3 17H5C5.53043 17 6.03914 16.7893 6.41421 16.4142C6.78929 16.0391 7 15.5304 7 15V13C7 12.4696 6.78929 11.9609 6.41421 11.5858C6.03914 11.2107 5.53043 11 5 11H3C2.46957 11 1.96086 11.2107 1.58579 11.5858Z" stroke="#664AEC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M11.5858 11.5858C11.2107 11.9609 11 12.4696 11 13V15C11 15.5304 11.2107 16.0391 11.5858 16.4142C11.9609 16.7893 12.4696 17 13 17H15C15.5304 17 16.0391 16.7893 16.4142 16.4142C16.7893 16.0391 17 15.5304 17 15V13C17 12.4696 16.7893 11.9609 16.4142 11.5858C16.0391 11.2107 15.5304 11 15 11H13C12.4696 11 11.9609 11.2107 11.5858 11.5858Z" stroke="#664AEC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>              
+                </svg>
               </div>
             </div>
           </div>
@@ -151,10 +151,10 @@
               Trust Bonus is powered by <a href="https://passport.gitcoin.co/" target="_blank">Gitcoin Passport</a>, a decentralized identity verification application. Trust Bonus scores are calculated based on the identification stamps you complete.
               <br/>
               <br/>
-              If you’ve already created a Gitcoin Passport,  you’ll want to Refresh Passport an hour before the round ends to receive the maximum score. 
+              If you’ve already created a Gitcoin Passport,  you’ll want to Refresh Passport an hour before the round ends to receive the maximum score.
               <br/>
               <br/>
-              For more information check out, <a href="https://gitcoin.co/blog/wtf-is-trust-bonus/" target="_blank">"WTF is Trust Bonus?"</a>.
+              For more information check out, <a href="https://go.gitcoin.co/blog/wtf-is-trust-bonus/" target="_blank">"WTF is Trust Bonus?"</a>.
             </span>
             <b-button v-if="apuScoreStatus === 'complete'" :disabled="!isStaff && !isSubmissionEnabled" variant="primary" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3 refresh-button" @click="() => checkForPassport()">
               Resubmit Passport
@@ -162,7 +162,7 @@
             <b-button v-else variant="primary" :disabled="!isStaff && !isSubmissionEnabled" class="col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3" @click="() => checkForPassport()">
               Submit Passport
             </b-button>
-            
+
             <p v-if="!isSubmissionEnabled" class="text-grey-400 spacer-mt-2 text-left small">GR15 Countdown [[countDown]]</p>
             <p v-if="!isSubmissionEnabled" class="text-grey-400 spacer-mt-2 text-left small">You will be able to connect your Passport when the Round begins.</p>
           </div>
