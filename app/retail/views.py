@@ -1323,7 +1323,7 @@ def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
 def blog(request):
-    return redirect('https://gitcoin.co/blog')
+    return redirect('https://go.gitcoin.co/blog')
 
 def calendar(request):
     return redirect('https://calendar.google.com/calendar/embed?src=7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com')
