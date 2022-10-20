@@ -752,15 +752,15 @@ export const taskDefinition = task.taskDefinition.id;
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
-    desiredCount: 6,
+    desiredCount: 10,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
             web: {
                 image: dockerGtcWebImage,
                 command: ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "app.wsgi:application", "--max-requests", "100", "--max-requests-jitter", "10", "--timeout", "60"],
-                memory: 4096,
-                cpu: 1024,
+                memory: 8192,
+                cpu: 2048,
                 portMappings: [httpsListener],
                 environment: environment,
                 links: []
