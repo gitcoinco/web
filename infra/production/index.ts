@@ -725,7 +725,7 @@ let environment = [
     },
     {
         name: "MEDIA_URL",
-        value: "https://c.gitcoin.co/"
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     },
     {
         name: "SECRET_KEY",
