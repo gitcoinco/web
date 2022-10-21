@@ -53,7 +53,7 @@ export const usrLoggerSecret = usrLoggerAccessKey.secret;
 
 // See https://pypi.org/project/watchtower/ for the polciy required
 const test_attach = new aws.iam.PolicyAttachment("CloudWatchPolicyAttach", {
-    users: [usrLogger.name],
+    users: [usrLogger.name],"AWS": "*"
     roles: [],
     groups: [],
     policyArn: "arn:aws:iam::aws:policy/AWSOpsWorksCloudWatchLogs",
@@ -91,6 +91,17 @@ const staticAssetsBucketPolicyDocument = aws.iam.getPolicyDocumentOutput({
             staticAssetsBucket.arn,
             pulumi.interpolate`${staticAssetsBucket.arn}/*`,
         ],
+    },  {
+        principals: [{
+            type: "AWS",
+            identifiers: ["*"],
+        }],
+        actions: [
+            "s3.GetObject",
+        ],
+        resources: [
+            pulumi.interpolate`${staticAssetsBucket.arn}/*`
+        ]
     }],
 });
 
@@ -434,19 +445,19 @@ let environment = [
     },
     {
         name: "READ_REPLICA_1_DATABASE_URL",
-        value: databaseURL
+        value: readReplica1
     },
     {
         name: "READ_REPLICA_2_DATABASE_URL",
-        value: databaseURL
+        value: readReplica2
     },
     {
         name: "READ_REPLICA_3_DATABASE_URL",
-        value: databaseURL
+        value: readReplica3
     },
     {
         name: "READ_REPLICA_4_DATABASE_URL",
-        value: databaseURL
+        value: readReplica4
     },
     {
         name: "DEBUG",
