@@ -728,6 +728,10 @@ let environment = [
         value: "https://d31ygswzsyecnt.cloudfront.net/"
     },
     {
+        name: "MEDIA_CUSTOM_DOMAIN",
+        value: "d31ygswzsyecnt.cloudfront.net"
+    },
+    {
         name: "SECRET_KEY",
         value: secretKey
     }
