@@ -53,7 +53,7 @@ export const usrLoggerSecret = usrLoggerAccessKey.secret;
 
 // See https://pypi.org/project/watchtower/ for the polciy required
 const test_attach = new aws.iam.PolicyAttachment("CloudWatchPolicyAttach", {
-    users: [usrLogger.name],"AWS": "*"
+    users: [usrLogger.name],
     roles: [],
     groups: [],
     policyArn: "arn:aws:iam::aws:policy/AWSOpsWorksCloudWatchLogs",
