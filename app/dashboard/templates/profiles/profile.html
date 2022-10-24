@@ -84,15 +84,9 @@
                   {% include 'profiles/header_details.html' %}
                 </div>
 
-                <div class="col-12 col-lg-3"></div>
+                <div class="col-12 col-lg-1"></div>
 
-                {% if profile.is_org %}
-                  {% include 'profiles/organization.html' %}
-                {% elif profile.cascaded_persona == 'funder' %}
-                  {% include 'profiles/scorecard_funder.html' %}
-                {% else %}
-                  {% include 'profiles/scorecard_hunter.html' %}
-                {% endif %}
+                {% include 'profiles/activity_level.html' %}
               {% endif %}
             </div>
           </div>
