@@ -315,6 +315,10 @@ def get_web3(network, sockets=False, chain='std'):
                 provider = HTTPProvider(f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}')
             else:
                 provider = HTTPProvider(f'https://{network}.infura.io')
+        
+        # Infura is throwing 403 errors on polygon due to current plan. Using Polygon RPC instead
+        if network == 'polygon-mainnet':
+            provider = HTTPProvider('https://polygon-rpc.com')
 
         w3 = Web3(provider)
         if network == 'rinkeby':
