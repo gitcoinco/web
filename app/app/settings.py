@@ -825,6 +825,7 @@ GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
 INFURA_USE_V3 = env.bool('INFURA_USE_V3', False)
 INFURA_V3_PROJECT_ID = env('INFURA_V3_PROJECT_ID', default='1e0a90928efe4bb78bb1eeceb8aacc27')
+ALCHEMY_KEY = env('ALCHEMY_KEY', default='1e0a90928efe4bb78bb1eeceb8aacc27')
 
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO

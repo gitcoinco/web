@@ -32,6 +32,7 @@ let etherscanApiKey = `${process.env["ETHERSCAN_API_KEY"]}`
 let gtcDistApiUrl = `${process.env["GTC_DIST_API_URL"]}`
 let gtcDistKey = `${process.env["GTC_DIST_KEY"]}`
 let brightIdPrivateKey = `${process.env["BRIGHTID_PRIVATE_KEY"]}`
+let alchemyKey = `${process.env["ALCHEMY_KEY"]}`
 
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
@@ -745,6 +746,10 @@ let environment = [
     {
         name: "SECRET_KEY",
         value: secretKey
+    },
+    {
+        name: "ALCHEMY_KEY",
+        value: alchemyKey
     }
 ];
 
