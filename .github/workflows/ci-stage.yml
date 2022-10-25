@@ -162,6 +162,7 @@ jobs:
       GITHUB_CLIENT_SECRET: ${{ secrets.GTC_GITHUB_CLIENT_SECRET }}
       TEMP_DATABASE: ${{ secrets.TEMP_DATABASE }}
       ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
       - name: Checkout code

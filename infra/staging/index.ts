@@ -22,6 +22,8 @@ let alchemyKey = `${process.env["ALCHEMY_KEY"]}`
 
 let sentryDSN = `${process.env["SENTRY_DSN"]}`;
 
+let secretKey = `${process.env["SECRET_KEY"]}`
+
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
 
@@ -698,6 +700,11 @@ let environment = [
     {
         name: "ALCHEMY_KEY",
         value: alchemyKey
+    },
+    {
+        name: "SECRET_KEY",
+        value: secretKey
+
     }
 ];
 
