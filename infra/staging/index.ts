@@ -18,6 +18,7 @@ let tempDatabase = `${process.env["TEMP_DATABASE"]}`
 let route53Zone = `${process.env["ROUTE_53_ZONE"]}`;
 let domain = `${process.env["DOMAIN"]}`;
 let baseUrl = `http://${domain}/`;
+let alchemyKey = `${process.env["ALCHEMY_KEY"]}`
 
 let sentryDSN = `${process.env["SENTRY_DSN"]}`;
 
@@ -697,8 +698,13 @@ let environment = [
         value: "https://dpc6bywmosi9y.cloudfront.net/"
     },
     {
+        name: "ALCHEMY_KEY",
+        value: alchemyKey
+    },
+    {
         name: "SECRET_KEY",
         value: secretKey
+
     }
 ];
 
