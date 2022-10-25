@@ -169,7 +169,7 @@ Advanced
 Background
 
 * [Everything you need to know about Gitcoin](https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21)
-* [Our Vision: Open Source Money will BUIDL the OSS Ecosystem](https://gitcoin.co/blog/open-source-money-will-buidl-the-open-source-ecosystem/)
+* [Our Vision: Open Source Money will BUIDL the OSS Ecosystem](https://go.gitcoin.co/blog/open-source-money-will-buidl-the-open-source-ecosystem/)
 
 Testimonials & Case Studies
 
