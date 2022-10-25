@@ -18,8 +18,11 @@ let tempDatabase = `${process.env["TEMP_DATABASE"]}`
 let route53Zone = `${process.env["ROUTE_53_ZONE"]}`;
 let domain = `${process.env["DOMAIN"]}`;
 let baseUrl = `http://${domain}/`;
+let alchemyKey = `${process.env["ALCHEMY_KEY"]}`
 
 let sentryDSN = `${process.env["SENTRY_DSN"]}`;
+
+let secretKey = `${process.env["SECRET_KEY"]}`
 
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
@@ -693,8 +696,16 @@ let environment = [
     {
         name: "MEDIA_URL",
         value: "https://dpc6bywmosi9y.cloudfront.net/"
-    }
+    },
+    {
+        name: "ALCHEMY_KEY",
+        value: alchemyKey
+    },
+    {
+        name: "SECRET_KEY",
+        value: secretKey
 
+    }
 ];
 
 const task = new awsx.ecs.FargateTaskDefinition("task", {

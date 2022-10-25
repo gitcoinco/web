@@ -27,6 +27,13 @@ let readReplica3 = `${process.env["READ_REPLICA_3_DATABASE_URL"]}`
 let readReplica4 = `${process.env["READ_REPLICA_4_DATABASE_URL"]}`
 let oldProdRedisURL = `${process.env["OLD_REDIS_URL"]}`
 
+let secretKey = `${process.env["SECRET_KEY"]}`
+let etherscanApiKey = `${process.env["ETHERSCAN_API_KEY"]}`
+let gtcDistApiUrl = `${process.env["GTC_DIST_API_URL"]}`
+let gtcDistKey = `${process.env["GTC_DIST_KEY"]}`
+let brightIdPrivateKey = `${process.env["BRIGHTID_PRIVATE_KEY"]}`
+let alchemyKey = `${process.env["ALCHEMY_KEY"]}`
+
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
 
@@ -85,6 +92,17 @@ const staticAssetsBucketPolicyDocument = aws.iam.getPolicyDocumentOutput({
             staticAssetsBucket.arn,
             pulumi.interpolate`${staticAssetsBucket.arn}/*`,
         ],
+    },  {
+        principals: [{
+            type: "AWS",
+            identifiers: ["*"],
+        }],
+        actions: [
+            "s3.GetObject",
+        ],
+        resources: [
+            pulumi.interpolate`${staticAssetsBucket.arn}/*`
+        ]
     }],
 });
 
@@ -596,7 +614,7 @@ let environment = [
     },
     {
         name: "ETHERSCAN_API_KEY",
-        value: ""
+        value: etherscanApiKey
     },
     {
         name: "POLYGONSCAN_API_KEY",
@@ -626,7 +644,7 @@ let environment = [
 
     {
         name: "BRIGHTID_PRIVATE_KEY",
-        value: ""
+        value: brightIdPrivateKey
     },
 
     {
@@ -640,11 +658,11 @@ let environment = [
 
     {
         name: "GTC_DIST_API_URL",
-        value: ""
+        value: gtcDistApiUrl
     },
     {
         name: "GTC_DIST_KEY",
-        value: ""
+        value: gtcDistKey
     },
 
     // CYPRESS METAMASK VARIABLES
@@ -719,39 +737,33 @@ let environment = [
     },
     {
         name: "MEDIA_URL",
-        value: "https://c.gitcoin.co/"
-    }
-
-];
-
-const task = new awsx.ecs.FargateTaskDefinition("task", {
-    containers: {
-        web: {
-            image: dockerGtcWebImage,
-            command: ["/bin/review-env-initial-data.bash"],
-            memory: 4096,
-            cpu: 2000,
-            portMappings: [],
-            environment: environment,
-            dependsOn: [],
-            links: []
-        },
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     },
-});
-
-export const taskDefinition = task.taskDefinition.id;
+    {
+        name: "MEDIA_CUSTOM_DOMAIN",
+        value: "d31ygswzsyecnt.cloudfront.net"
+    },
+    {
+        name: "SECRET_KEY",
+        value: secretKey
+    },
+    {
+        name: "ALCHEMY_KEY",
+        value: alchemyKey
+    }
+];
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
-    desiredCount: 6,
+    desiredCount: 10,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
             web: {
                 image: dockerGtcWebImage,
                 command: ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "app.wsgi:application", "--max-requests", "100", "--max-requests-jitter", "10", "--timeout", "60"],
-                memory: 4096,
-                cpu: 1024,
+                memory: 8192,
+                cpu: 2048,
                 portMappings: [httpsListener],
                 environment: environment,
                 links: []
