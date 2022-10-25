@@ -43,7 +43,7 @@ class DashboardUtilsTest(TestCase):
     @staticmethod
     def test_get_web3():
         """Test the dashboard utility get_web3."""
-        networks = ['mainnet', 'rinkeby', 'ropsten']
+        networks = ['mainnet', 'goerli']
         for network in networks:
             web3_provider = get_web3(network)
             assert isinstance(web3_provider, Web3)
