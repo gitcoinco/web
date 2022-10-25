@@ -446,19 +446,19 @@ let environment = [
     },
     {
         name: "READ_REPLICA_1_DATABASE_URL",
-        value: databaseURL
+        value: readReplica1
     },
     {
         name: "READ_REPLICA_2_DATABASE_URL",
-        value: databaseURL
+        value: readReplica2
     },
     {
         name: "READ_REPLICA_3_DATABASE_URL",
-        value: databaseURL
+        value: readReplica3
     },
     {
         name: "READ_REPLICA_4_DATABASE_URL",
-        value: databaseURL
+        value: readReplica4
     },
     {
         name: "DEBUG",
