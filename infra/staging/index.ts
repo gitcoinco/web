@@ -21,6 +21,8 @@ let baseUrl = `http://${domain}/`;
 
 let sentryDSN = `${process.env["SENTRY_DSN"]}`;
 
+let secretKey = `${process.env["SECRET_KEY"]}`
+
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
 
@@ -693,8 +695,11 @@ let environment = [
     {
         name: "MEDIA_URL",
         value: "https://dpc6bywmosi9y.cloudfront.net/"
+    },
+    {
+        name: "SECRET_KEY",
+        value: secretKey
     }
-
 ];
 
 const task = new awsx.ecs.FargateTaskDefinition("task", {
