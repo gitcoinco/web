@@ -98,7 +98,7 @@ const staticAssetsBucketPolicyDocument = aws.iam.getPolicyDocumentOutput({
             identifiers: ["*"],
         }],
         actions: [
-            "s3.GetObject",
+            "s3:GetObject",
         ],
         resources: [
             pulumi.interpolate`${staticAssetsBucket.arn}/*`
@@ -278,7 +278,7 @@ const secgrp_redis = new aws.ec2.SecurityGroup("secgrp_redis", {
 const redis = new aws.elasticache.Cluster("gitcoin-cache", {
     engine: "redis",
     engineVersion: "4.0.10",
-    nodeType: "cache.t2.micro",
+    nodeType: "cache.m5.large",
     numCacheNodes: 1,
     port: 6379,
     subnetGroupName: redisSubnetGroup.name,
