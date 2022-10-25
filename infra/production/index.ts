@@ -748,23 +748,6 @@ let environment = [
     }
 ];
 
-const task = new awsx.ecs.FargateTaskDefinition("task", {
-    containers: {
-        web: {
-            image: dockerGtcWebImage,
-            command: ["/bin/review-env-initial-data.bash"],
-            memory: 4096,
-            cpu: 2000,
-            portMappings: [],
-            environment: environment,
-            dependsOn: [],
-            links: []
-        },
-    },
-});
-
-export const taskDefinition = task.taskDefinition.id;
-
 const service = new awsx.ecs.FargateService("app", {
     cluster,
     desiredCount: 10,
