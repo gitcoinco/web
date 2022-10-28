@@ -21,7 +21,7 @@
     "url": "https://github.com/gitcoinco/web/issues"
   },
   "engines": {
-    "node": "17.1.x"
+    "node": "14.20.1"
   },
   "homepage": "https://github.com/gitcoinco/web#readme",
   "devDependencies": {
