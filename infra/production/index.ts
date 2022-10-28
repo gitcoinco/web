@@ -380,13 +380,13 @@ const staticBucket = new aws.lb.ListenerRule("static", {
     ],
 });
 
-const blog = new aws.lb.ListenerRule("blog", {
+const blog = new aws.lb.ListenerRule("c-gitcoin", {
     listenerArn: httpsListener.listener.arn,
     priority: 150,
     actions: [{
         type: "redirect",
         redirect: {
-            host: "go.gitcoin.co",
+            host: "d31ygswzsyecnt.cloudfront.net",
             port: "443",
             protocol: "HTTPS",
             statusCode: "HTTP_301",
@@ -395,11 +395,32 @@ const blog = new aws.lb.ListenerRule("blog", {
     conditions: [
         {
             pathPattern: {
-                values: ["/blog/*"],
+                values: ["c.gitcoin.co"],
             },
         },
     ],
 });
+
+// const blog = new aws.lb.ListenerRule("blog", {
+//     listenerArn: httpsListener.listener.arn,
+//     priority: 150,
+//     actions: [{
+//         type: "redirect",
+//         redirect: {
+//             host: "go.gitcoin.co",
+//             port: "443",
+//             protocol: "HTTPS",
+//             statusCode: "HTTP_301",
+//         },
+//     }],
+//     conditions: [
+//         {
+//             pathPattern: {
+//                 values: ["/blog/*"],
+//             },
+//         },
+//     ],
+// });
 
 // Create a DNS record for the load balancer
 const www = new aws.route53.Record("www", {
