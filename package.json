@@ -20,6 +20,9 @@
   "bugs": {
     "url": "https://github.com/gitcoinco/web/issues"
   },
+  "engines": {
+    "node": "17.1.x"
+  },
   "homepage": "https://github.com/gitcoinco/web#readme",
   "devDependencies": {
     "@babel/core": "^7.13.16",
