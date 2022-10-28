@@ -120,6 +120,10 @@ const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
     enabled: true,
     isIpv6Enabled: true,
     defaultRootObject: "index.html",
+    aliases: [
+        "c.gitcoin.co",
+        "s.gitcoin.co"
+    ],
     defaultCacheBehavior: {
         allowedMethods: [
             "DELETE",
@@ -375,27 +379,6 @@ const staticBucket = new aws.lb.ListenerRule("static", {
         {
             pathPattern: {
                 values: ["/static/*"],
-            },
-        },
-    ],
-});
-
-const blog = new aws.lb.ListenerRule("c-gitcoin", {
-    listenerArn: httpsListener.listener.arn,
-    priority: 150,
-    actions: [{
-        type: "redirect",
-        redirect: {
-            host: "d31ygswzsyecnt.cloudfront.net",
-            port: "443",
-            protocol: "HTTPS",
-            statusCode: "HTTP_301",
-        },
-    }],
-    conditions: [
-        {
-            pathPattern: {
-                values: ["c.gitcoin.co"],
             },
         },
     ],
