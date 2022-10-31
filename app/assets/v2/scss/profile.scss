@@ -238,7 +238,7 @@
 }
 
 .profile-header__stats .card-header {
-  padding: 0.1rem 0.7rem;
+  padding: 0.1rem;
   color: #666;
   border-radius: 0;
   border-bottom: none;
@@ -248,10 +248,6 @@
 .profile-header__stats .card-header b {
   color: #000;
   font-size: 1.7rem;
-}
-
-.profile-header__stats .card-body {
-  padding: 0.7rem;
 }
 
 
@@ -270,7 +266,6 @@
 @media (min-width: 992px) and (max-width: 1199.98px) {
 
   .profile-header__stats .card-header {
-    padding: 0 0.5rem;
     font-size: 1.2rem;
   }
 
@@ -282,7 +277,7 @@
 
 .profile-header__stats ul {
   list-style-type: none;
-  padding: 0;
+  padding-left: 0.5rem;
   margin: 0;
 }
 

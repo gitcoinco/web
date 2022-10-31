@@ -70,7 +70,7 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt-get update
 RUN apt-get install -y yarn
 RUN yarn global add n
-RUN n stable
+RUN n 14.20.1
 
 COPY package.json /code/
 RUN cd /code && yarn install

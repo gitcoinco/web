@@ -32,6 +32,7 @@ let etherscanApiKey = `${process.env["ETHERSCAN_API_KEY"]}`
 let gtcDistApiUrl = `${process.env["GTC_DIST_API_URL"]}`
 let gtcDistKey = `${process.env["GTC_DIST_KEY"]}`
 let brightIdPrivateKey = `${process.env["BRIGHTID_PRIVATE_KEY"]}`
+let alchemyKey = `${process.env["ALCHEMY_KEY"]}`
 
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
@@ -97,7 +98,7 @@ const staticAssetsBucketPolicyDocument = aws.iam.getPolicyDocumentOutput({
             identifiers: ["*"],
         }],
         actions: [
-            "s3.GetObject",
+            "s3:GetObject",
         ],
         resources: [
             pulumi.interpolate`${staticAssetsBucket.arn}/*`
@@ -119,6 +120,10 @@ const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
     enabled: true,
     isIpv6Enabled: true,
     defaultRootObject: "index.html",
+
+
+
+
     defaultCacheBehavior: {
         allowedMethods: [
             "DELETE",
@@ -277,7 +282,7 @@ const secgrp_redis = new aws.ec2.SecurityGroup("secgrp_redis", {
 const redis = new aws.elasticache.Cluster("gitcoin-cache", {
     engine: "redis",
     engineVersion: "4.0.10",
-    nodeType: "cache.t2.micro",
+    nodeType: "cache.m5.large",
     numCacheNodes: 1,
     port: 6379,
     subnetGroupName: redisSubnetGroup.name,
@@ -379,26 +384,26 @@ const staticBucket = new aws.lb.ListenerRule("static", {
     ],
 });
 
-const blog = new aws.lb.ListenerRule("blog", {
-    listenerArn: httpsListener.listener.arn,
-    priority: 150,
-    actions: [{
-        type: "redirect",
-        redirect: {
-            host: "go.gitcoin.co",
-            port: "443",
-            protocol: "HTTPS",
-            statusCode: "HTTP_301",
-        },
-    }],
-    conditions: [
-        {
-            pathPattern: {
-                values: ["/blog/*"],
-            },
-        },
-    ],
-});
+ const blog = new aws.lb.ListenerRule("blog", {
+     listenerArn: httpsListener.listener.arn,
+     priority: 150,
+     actions: [{
+         type: "redirect",
+         redirect: {
+             host: "go.gitcoin.co",
+             port: "443",
+             protocol: "HTTPS",
+             statusCode: "HTTP_301",
+         },
+     }],
+     conditions: [
+         {
+             pathPattern: {
+             values: ["/blog/*"],
+             },
+         },
+     ],
+ });
 
 // Create a DNS record for the load balancer
 const www = new aws.route53.Record("www", {
@@ -445,19 +450,19 @@ let environment = [
     },
     {
         name: "READ_REPLICA_1_DATABASE_URL",
-        value: databaseURL
+        value: readReplica1
     },
     {
         name: "READ_REPLICA_2_DATABASE_URL",
-        value: databaseURL
+        value: readReplica2
     },
     {
         name: "READ_REPLICA_3_DATABASE_URL",
-        value: databaseURL
+        value: readReplica3
     },
     {
         name: "READ_REPLICA_4_DATABASE_URL",
-        value: databaseURL
+        value: readReplica4
     },
     {
         name: "DEBUG",
@@ -745,25 +750,12 @@ let environment = [
     {
         name: "SECRET_KEY",
         value: secretKey
+    },
+    {
+        name: "ALCHEMY_KEY",
+        value: alchemyKey
     }
 ];
-
-const task = new awsx.ecs.FargateTaskDefinition("task", {
-    containers: {
-        web: {
-            image: dockerGtcWebImage,
-            command: ["/bin/review-env-initial-data.bash"],
-            memory: 4096,
-            cpu: 2000,
-            portMappings: [],
-            environment: environment,
-            dependsOn: [],
-            links: []
-        },
-    },
-});
-
-export const taskDefinition = task.taskDefinition.id;
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,

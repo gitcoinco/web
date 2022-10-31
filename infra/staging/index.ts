@@ -18,8 +18,11 @@ let tempDatabase = `${process.env["TEMP_DATABASE"]}`
 let route53Zone = `${process.env["ROUTE_53_ZONE"]}`;
 let domain = `${process.env["DOMAIN"]}`;
 let baseUrl = `http://${domain}/`;
+let alchemyKey = `${process.env["ALCHEMY_KEY"]}`
 
 let sentryDSN = `${process.env["SENTRY_DSN"]}`;
+
+let secretKey = `${process.env["SECRET_KEY"]}`
 
 export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
@@ -329,9 +332,18 @@ const target = alb.createTargetGroup(
     "web-target", { vpc, port: 80 }
 );
 
+const flowerTarget = alb.createTargetGroup(
+    "flower-target", { vpc, port: 5555, protocol: "HTTPS" }
+);
+
 // Listen to traffic on port 443 & route it through the target group
 const httpsListener = target.createListener("web-listener", {
     port: 443,
+    certificateArn: certificateValidation.certificateArn
+}); 
+
+const flowerListener = flowerTarget.createListener("flower-listener", {
+    port: 5555,
     certificateArn: certificateValidation.certificateArn
 }); 
 
@@ -693,8 +705,16 @@ let environment = [
     {
         name: "MEDIA_URL",
         value: "https://dpc6bywmosi9y.cloudfront.net/"
-    }
+    },
+    {
+        name: "ALCHEMY_KEY",
+        value: alchemyKey
+    },
+    {
+        name: "SECRET_KEY",
+        value: secretKey
 
+    }
 ];
 
 const task = new awsx.ecs.FargateTaskDefinition("task", {
@@ -768,10 +788,10 @@ const flower = new awsx.ecs.FargateService("flower", {
         containers: {
             celery: {
                 image: "mher/flower",
-                command: ["flower", "--broker=" + redisConnectionUrl, "--port=8888"],
+                command: ["celery", "flower", "-A" , "taskapp", "--port=5555"],
                 memory: 4096,
                 cpu: 2000,
-                portMappings: [],
+                portMappings: [flowerListener],
                 environment: environment,
                 dependsOn: [],
                 links: []
