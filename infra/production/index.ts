@@ -120,10 +120,10 @@ const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
     enabled: true,
     isIpv6Enabled: true,
     defaultRootObject: "index.html",
-    aliases: [
-        "c.gitcoin.co",
-        "s.gitcoin.co"
-    ],
+
+
+
+
     defaultCacheBehavior: {
         allowedMethods: [
             "DELETE",
