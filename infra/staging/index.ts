@@ -333,7 +333,7 @@ const target = alb.createTargetGroup(
 );
 
 const flowerTarget = alb.createTargetGroup(
-    "flower-target", { vpc, port: 5555 }
+    "flower-target", { vpc, port: 5555, protocol: "HTTPS" }
 );
 
 // Listen to traffic on port 443 & route it through the target group
@@ -343,7 +343,8 @@ const httpsListener = target.createListener("web-listener", {
 }); 
 
 const flowerListener = flowerTarget.createListener("flower-listener", {
-    port: 443
+    port: 5555,
+    certificateArn: certificateValidation.certificateArn
 }); 
 
 const staticBucket = new aws.lb.ListenerRule("static", {
