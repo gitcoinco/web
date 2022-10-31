@@ -779,7 +779,7 @@ const flower = new awsx.ecs.FargateService("flower", {
         containers: {
             celery: {
                 image: "mher/flower",
-                command: ["flower", "-A" , "taskapp", "--port=5555"],
+                command: ["celery", "flower", "-A" , "taskapp", "--port=5555"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
