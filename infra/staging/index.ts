@@ -344,8 +344,7 @@ const httpsListener = target.createListener("web-listener", {
 
 const flowerListener = flowerTarget.createListener("flower-listener", {
     port: 5555,
-    protocol: "HTTP",
-    certificateArn: certificateValidation.certificateArn
+    protocol: "HTTP"
 }); 
 
 const staticBucket = new aws.lb.ListenerRule("static", {
