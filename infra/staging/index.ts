@@ -332,9 +332,9 @@ const target = alb.createTargetGroup(
     "web-target", { vpc, port: 80 }
 );
 
-// const flowerTarget = alb.createTargetGroup(
-//     "flower-target", { vpc, port: 5555, protocol: "HTTP" }
-// );
+const flowerTarget = alb.createTargetGroup(
+    "flower-target", { vpc, port: 5555, protocol: "HTTP" }
+);
 
 // Listen to traffic on port 443 & route it through the target group
 const httpsListener = target.createListener("web-listener", {
