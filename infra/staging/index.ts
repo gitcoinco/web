@@ -332,9 +332,9 @@ const target = alb.createTargetGroup(
     "web-target", { vpc, port: 80 }
 );
 
-const flowerTarget = alb.createTargetGroup(
-    "flower-target", { vpc, port: 5555, protocol: "HTTP" }
-);
+// const flowerTarget = alb.createTargetGroup(
+//     "flower-target", { vpc, port: 5555, protocol: "HTTP" }
+// );
 
 // Listen to traffic on port 443 & route it through the target group
 const httpsListener = target.createListener("web-listener", {
@@ -342,10 +342,10 @@ const httpsListener = target.createListener("web-listener", {
     certificateArn: certificateValidation.certificateArn
 }); 
 
-const flowerListener = flowerTarget.createListener("flower-listener", {
-    port: 5555,
-    protocol: "HTTP"
-}); 
+// const flowerListener = flowerTarget.createListener("flower-listener", {
+//     port: 5555,
+//     protocol: "HTTP"
+// }); 
 
 const staticBucket = new aws.lb.ListenerRule("static", {
     listenerArn: httpsListener.listener.arn,
@@ -791,7 +791,7 @@ const flower = new awsx.ecs.FargateService("flower", {
                 command: ["celery", "flower", "-A" , "taskapp", "--port=5555"],
                 memory: 4096,
                 cpu: 2000,
-                portMappings: [flowerListener],
+                portMappings: [],
                 environment: environment,
                 dependsOn: [],
                 links: []
