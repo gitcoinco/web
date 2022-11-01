@@ -333,7 +333,7 @@ const target = alb.createTargetGroup(
 );
 
 const flowerTarget = alb.createTargetGroup(
-    "flower-target", { vpc, port: 5555, protocol: "HTTPS" }
+    "flower-target", { vpc, port: 5555, protocol: "HTTP" }
 );
 
 // Listen to traffic on port 443 & route it through the target group
@@ -344,7 +344,7 @@ const httpsListener = target.createListener("web-listener", {
 
 const flowerListener = flowerTarget.createListener("flower-listener", {
     port: 5555,
-    protocol: "HTTPS",
+    protocol: "HTTP",
     certificateArn: certificateValidation.certificateArn
 }); 
 
