@@ -344,6 +344,7 @@ const httpsListener = target.createListener("web-listener", {
 
 const flowerListener = flowerTarget.createListener("flower-listener", {
     port: 5555,
+    protocol: "HTTPS",
     certificateArn: certificateValidation.certificateArn
 }); 
 
