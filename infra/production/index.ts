@@ -324,6 +324,15 @@ const certificateValidation = new aws.acm.CertificateValidation("certificateVali
     validationRecordFqdns: [certificateValidationDomain.fqdn],
   });
 
+// c.gitcoin.co
+const c_gitcoin_co = new aws.acm.Certificate("c-gitcoin-co", {
+    domainName: "c.gitcoin.co",
+    tags: {
+      Environment: "production",
+    },
+    validationMethod: "DNS",
+  });
+
 // Create the listener for the application
 // const listener = new awsx.lb.ApplicationListener("app", { 
 //     port: 443, 
@@ -390,9 +399,9 @@ const staticBucket = new aws.lb.ListenerRule("static", {
      actions: [{
          type: "redirect",
          redirect: {
-             host: "go.gitcoin.co",
-             port: "443",
-             protocol: "HTTPS",
+             host: "52.10.118.130",
+             port: "80",
+             protocol: "HTTP",
              statusCode: "HTTP_301",
          },
      }],
@@ -806,24 +815,26 @@ const celery = new awsx.ecs.FargateService("celery", {
     },
 });
 
-// const flower = new awsx.ecs.FargateService("flower", {
-//     cluster,
-//     desiredCount: 2,
-//     taskDefinitionArgs: {
-//         containers: {
-//             celery: {
-//                 image: "mher/flower",
-//                 command: ["flower", "--broker=" + redisConnectionUrl, "--port=8888"],
-//                 memory: 4096,
-//                 cpu: 2000,
-//                 portMappings: [],
-//                 environment: environment,
-//                 dependsOn: [],
-//                 links: []
-//             },
-//         },
-//     },
-// });
+const flowerBrokerString = pulumi.interpolate`--broker=${redisConnectionUrl}`.apply.toString();
+
+const flower = new awsx.ecs.FargateService("flower", {
+    cluster,
+    desiredCount: 1,
+    taskDefinitionArgs: {
+        containers: {
+            celery: {
+                image: "mher/flower",
+                command: ["celery", "flower", "-A" , flowerBrokerString , "taskapp", "--port=5555"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+        },
+    },
+});
 
 const ecsTarget = new aws.appautoscaling.Target("autoscaling_target", {
     maxCapacity: 10,
