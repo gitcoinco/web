@@ -772,6 +772,8 @@ const celery = new awsx.ecs.FargateService("celery", {
     },
 });
 
+const flowerBrokerString = pulumi.interpolate`--broker=${redisConnectionUrl}`.apply.toString();
+
 const flower = new awsx.ecs.FargateService("flower", {
     cluster,
     desiredCount: 1,
@@ -779,7 +781,7 @@ const flower = new awsx.ecs.FargateService("flower", {
         containers: {
             celery: {
                 image: "mher/flower",
-                command: ["celery", "flower", "-A" , `--broker=${redisConnectionUrl}`, "taskapp", "--port=5555"],
+                command: ["celery", "flower", "-A" , flowerBrokerString , "taskapp", "--port=5555"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
