@@ -399,9 +399,9 @@ const staticBucket = new aws.lb.ListenerRule("static", {
      actions: [{
          type: "redirect",
          redirect: {
-             host: "52.10.118.130",
-             port: "80",
-             protocol: "HTTP",
+             host: "go.gitcoin.co",
+             port: "443",
+             protocol: "HTTPS",
              statusCode: "HTTP_301",
          },
      }],
@@ -775,8 +775,8 @@ const service = new awsx.ecs.FargateService("app", {
             web: {
                 image: dockerGtcWebImage,
                 command: ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "app.wsgi:application", "--max-requests", "100", "--max-requests-jitter", "10", "--timeout", "60"],
-                memory: 8192,
-                cpu: 2048,
+                memory: 4096,
+                cpu: 2000,
                 portMappings: [httpsListener],
                 environment: environment,
                 links: []
