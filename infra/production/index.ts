@@ -398,7 +398,7 @@ const staticBucket = new aws.lb.ListenerRule("static", {
      actions: [{
          type: "redirect",
          redirect: {
-             host: "52.10.118.130",
+             host: "blog.tmp.gitcoin.co",
              port: "443",
              protocol: "HTTPS",
              statusCode: "HTTP_301",
