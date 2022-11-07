@@ -784,9 +784,9 @@ const service = new awsx.ecs.FargateService("app", {
     },
 });
 
-const celery = new awsx.ecs.FargateService("celery", {
+const celery1 = new awsx.ecs.FargateService("celery1", {
     cluster,
-    desiredCount: 6,
+    desiredCount: 1,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
@@ -803,6 +803,66 @@ const celery = new awsx.ecs.FargateService("celery", {
             celeryHighPriority: {
                 image: dockerGtcWebImage,
                 command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "high_priority"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+        },
+    },
+});
+
+const celery2 = new awsx.ecs.FargateService("celery2", {
+    cluster,
+    desiredCount: 1,
+    subnets: vpc.privateSubnetIds,
+    taskDefinitionArgs: {
+        containers: {
+            celery: {
+                image: dockerGtcWebImage,
+                command: ["celery", "-A", "taskapp", "-n", "worker3", "worker", "-Q", "high_priority,default,marketing,celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+            celeryHighPriority: {
+                image: dockerGtcWebImage,
+                command: ["celery", "-A", "taskapp", "-n", "worker4", "worker", "-Q", "high_priority"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+        },
+    },
+});
+
+const celery3 = new awsx.ecs.FargateService("celery3", {
+    cluster,
+    desiredCount: 1,
+    subnets: vpc.privateSubnetIds,
+    taskDefinitionArgs: {
+        containers: {
+            celery: {
+                image: dockerGtcWebImage,
+                command: ["celery", "-A", "taskapp", "-n", "worker5", "worker", "-Q", "high_priority,default,marketing,celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+            celeryHighPriority: {
+                image: dockerGtcWebImage,
+                command: ["celery", "-A", "taskapp", "-n", "worker6", "worker", "-Q", "high_priority"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
