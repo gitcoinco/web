@@ -121,7 +121,8 @@ const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
     isIpv6Enabled: true,
     defaultRootObject: "index.html",
     aliases: [
-        "c.gitcoin.co"
+        "c.gitcoin.co",
+        "s.gitcoin.co"
     ],
     defaultCacheBehavior: {
         allowedMethods: [
@@ -790,7 +791,7 @@ const celery1 = new awsx.ecs.FargateService("celery1", {
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
-            celery: {
+            worker1: {
                 image: dockerGtcWebImage,
                 command: ["celery", "-A", "taskapp", "-n", "worker1", "worker", "-Q", "high_priority,default,marketing,celery"],
                 memory: 4096,
@@ -800,7 +801,7 @@ const celery1 = new awsx.ecs.FargateService("celery1", {
                 dependsOn: [],
                 links: []
             },
-            celeryHighPriority: {
+            worker2: {
                 image: dockerGtcWebImage,
                 command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "high_priority"],
                 memory: 4096,
@@ -810,17 +811,7 @@ const celery1 = new awsx.ecs.FargateService("celery1", {
                 dependsOn: [],
                 links: []
             },
-        },
-    },
-});
-
-const celery2 = new awsx.ecs.FargateService("celery2", {
-    cluster,
-    desiredCount: 1,
-    subnets: vpc.privateSubnetIds,
-    taskDefinitionArgs: {
-        containers: {
-            celery: {
+            worker3: {
                 image: dockerGtcWebImage,
                 command: ["celery", "-A", "taskapp", "-n", "worker3", "worker", "-Q", "high_priority,default,marketing,celery"],
                 memory: 4096,
@@ -830,7 +821,7 @@ const celery2 = new awsx.ecs.FargateService("celery2", {
                 dependsOn: [],
                 links: []
             },
-            celeryHighPriority: {
+            worker4: {
                 image: dockerGtcWebImage,
                 command: ["celery", "-A", "taskapp", "-n", "worker4", "worker", "-Q", "high_priority"],
                 memory: 4096,
@@ -840,17 +831,7 @@ const celery2 = new awsx.ecs.FargateService("celery2", {
                 dependsOn: [],
                 links: []
             },
-        },
-    },
-});
-
-const celery3 = new awsx.ecs.FargateService("celery3", {
-    cluster,
-    desiredCount: 1,
-    subnets: vpc.privateSubnetIds,
-    taskDefinitionArgs: {
-        containers: {
-            celery: {
+            worker5: {
                 image: dockerGtcWebImage,
                 command: ["celery", "-A", "taskapp", "-n", "worker5", "worker", "-Q", "high_priority,default,marketing,celery"],
                 memory: 4096,
@@ -860,7 +841,7 @@ const celery3 = new awsx.ecs.FargateService("celery3", {
                 dependsOn: [],
                 links: []
             },
-            celeryHighPriority: {
+            worker6: {
                 image: dockerGtcWebImage,
                 command: ["celery", "-A", "taskapp", "-n", "worker6", "worker", "-Q", "high_priority"],
                 memory: 4096,
