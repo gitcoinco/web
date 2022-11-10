@@ -191,6 +191,7 @@ const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
     viewerCertificate: {
         acmCertificateArn: starGitcoinCertificate,
         cloudfrontDefaultCertificate: true,
+        sslSupportMethod: "sni-only",
     },
 });
 
