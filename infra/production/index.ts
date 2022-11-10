@@ -26,6 +26,7 @@ let readReplica2 = `${process.env["READ_REPLICA_2_DATABASE_URL"]}`
 let readReplica3 = `${process.env["READ_REPLICA_3_DATABASE_URL"]}`
 let readReplica4 = `${process.env["READ_REPLICA_4_DATABASE_URL"]}`
 let oldProdRedisURL = `${process.env["OLD_REDIS_URL"]}`
+let starGitcoinCertificate = `${process.env["AWS_STAR_GITCOIN_CERT"]}`
 
 let secretKey = `${process.env["SECRET_KEY"]}`
 let etherscanApiKey = `${process.env["ETHERSCAN_API_KEY"]}`
@@ -188,6 +189,7 @@ const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
         Environment: "staging",
     },
     viewerCertificate: {
+        acmCertificateArn: starGitcoinCertificate,
         cloudfrontDefaultCertificate: true,
     },
 });
