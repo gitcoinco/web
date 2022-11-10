@@ -324,15 +324,6 @@ const certificateValidation = new aws.acm.CertificateValidation("certificateVali
     validationRecordFqdns: [certificateValidationDomain.fqdn],
   });
 
-// c.gitcoin.co
-const c_gitcoin_co = new aws.acm.Certificate("c-gitcoin-co", {
-    domainName: "c.gitcoin.co",
-    tags: {
-      Environment: "production",
-    },
-    validationMethod: "DNS",
-  });
-
 // Create the listener for the application
 // const listener = new awsx.lb.ApplicationListener("app", { 
 //     port: 443, 
