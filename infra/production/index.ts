@@ -333,7 +333,6 @@ const certificateValidation = new aws.acm.CertificateValidation("certificateVali
 //     protocol: "HTTPS",
 //     vpc: cluster.vpc, 
 //     certificateArn: certificateValidation.certificateArn,
-    
 // });
 
 // Creates an ALB associated with our custom VPC.
@@ -760,7 +759,7 @@ let environment = [
     },
     {
         name: "ALLOWED_HOSTS",
-        value: "gitcoin.co,cdn.gitcoin.co,origin.gitcoin.co"
+        value: "gitcoin.co,cdn.gitcoin.co,origin.gitcoin.com,production.gitcoin.co,10.0.0.0/16"
     }
 ];
 
