@@ -756,10 +756,6 @@ let environment = [
     {
         name: "ALCHEMY_KEY",
         value: alchemyKey
-    },
-    {
-        name: "ALLOWED_HOSTS",
-        value: "gitcoin.co,cdn.gitcoin.co,origin.gitcoin.com,production.gitcoin.co,10.0.0.0/16"
     }
 ];
 
