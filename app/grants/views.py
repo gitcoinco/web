@@ -3411,7 +3411,7 @@ class GrantSubmissionView(View):
             'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
             'grant_tags': grant_tags
         }
-        return TemplateResponse(request, 'grants/_new.html', params)
+        return TemplateResponse(request, 'grants/_new-sunset-cgrants.html', params)
 
 
 @csrf_exempt
