@@ -257,6 +257,7 @@ jobs:
           GTC_DIST_API_URL: ${{ secrets.GTC_DIST_API_URL }}
           BRIGHTID_PRIVATE_KEY: ${{ secrets.BRIGHTID_PRIVATE_KEY }}
           ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
+          AWS_STAR_GITCOIN_CERT: ${{ secrets.AWS_STAR_GITCOIN_CERT }}
 
       # The static files are already bundled and located in the folder /code/app/static in the container
       - name: Copy static files to bucket

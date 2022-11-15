@@ -26,6 +26,7 @@ let readReplica2 = `${process.env["READ_REPLICA_2_DATABASE_URL"]}`
 let readReplica3 = `${process.env["READ_REPLICA_3_DATABASE_URL"]}`
 let readReplica4 = `${process.env["READ_REPLICA_4_DATABASE_URL"]}`
 let oldProdRedisURL = `${process.env["OLD_REDIS_URL"]}`
+let starGitcoinCertificate = `${process.env["AWS_STAR_GITCOIN_CERT"]}`
 
 let secretKey = `${process.env["SECRET_KEY"]}`
 let etherscanApiKey = `${process.env["ETHERSCAN_API_KEY"]}`
@@ -111,86 +112,88 @@ const staticAssetsBucketPolicy = new aws.s3.BucketPolicy("staticAssetsBucketPoli
     policy: staticAssetsBucketPolicyDocument.apply(staticAssetsBucketPolicyDocument => staticAssetsBucketPolicyDocument.json),
 });
 
-const s3OriginId = "myS3Origin";
-const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
-    origins: [{
-        domainName: staticAssetsBucket.bucketRegionalDomainName,
-        originId: s3OriginId,
-    }],
-    enabled: true,
-    isIpv6Enabled: true,
-    defaultRootObject: "index.html",
-
-
-
-
-    defaultCacheBehavior: {
-        allowedMethods: [
-            "DELETE",
-            "GET",
-            "HEAD",
-            "OPTIONS",
-            "PATCH",
-            "POST",
-            "PUT",
-        ],
-        cachedMethods: [
-            "GET",
-            "HEAD",
-        ],
-        targetOriginId: s3OriginId,
-        forwardedValues: {
-            queryString: false,
-            cookies: {
-                forward: "none",
-            },
-        },
-        viewerProtocolPolicy: "allow-all",
-        minTtl: 0,
-        defaultTtl: 3600,
-        maxTtl: 86400,
-    },
-    orderedCacheBehaviors: [
-        {
-            pathPattern: "/static/*",
-            allowedMethods: [
-                "GET",
-                "HEAD",
-                "OPTIONS",
-            ],
-            cachedMethods: [
-                "GET",
-                "HEAD",
-                "OPTIONS",
-            ],
-            targetOriginId: s3OriginId,
-            forwardedValues: {
-                queryString: false,
-                headers: ["Origin"],
-                cookies: {
-                    forward: "none",
-                },
-            },
-            minTtl: 0,
-            defaultTtl: 86400,
-            maxTtl: 31536000,
-            compress: true,
-            viewerProtocolPolicy: "redirect-to-https",
-        },
-    ],
-    priceClass: "PriceClass_200",
-    restrictions: {
-        geoRestriction: {
-            restrictionType: "none",
-        },
-    },
-    tags: {
-        Environment: "staging",
-    },
-    viewerCertificate: {
-        cloudfrontDefaultCertificate: true,
-    },
-});
+// const s3OriginId = "myS3Origin";
+// const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
+//     origins: [{
+//         domainName: staticAssetsBucket.bucketRegionalDomainName,
+//         originId: s3OriginId,
+//     }],
+//     enabled: true,
+//     isIpv6Enabled: true,
+//     defaultRootObject: "index.html",
+//     aliases: [
+//         "c.gitcoin.co",
+//         "s.gitcoin.co"
+//     ],
+//     defaultCacheBehavior: {
+//         allowedMethods: [
+//             "DELETE",
+//             "GET",
+//             "HEAD",
+//             "OPTIONS",
+//             "PATCH",
+//             "POST",
+//             "PUT",
+//         ],
+//         cachedMethods: [
+//             "GET",
+//             "HEAD",
+//         ],
+//         targetOriginId: s3OriginId,
+//         forwardedValues: {
+//             queryString: false,
+//             cookies: {
+//                 forward: "none",
+//             },
+//         },
+//         viewerProtocolPolicy: "allow-all",
+//         minTtl: 0,
+//         defaultTtl: 3600,
+//         maxTtl: 86400,
+//     },
+//     orderedCacheBehaviors: [
+//         {
+//             pathPattern: "/static/*",
+//             allowedMethods: [
+//                 "GET",
+//                 "HEAD",
+//                 "OPTIONS",
+//             ],
+//             cachedMethods: [
+//                 "GET",
+//                 "HEAD",
+//                 "OPTIONS",
+//             ],
+//             targetOriginId: s3OriginId,
+//             forwardedValues: {
+//                 queryString: false,
+//                 headers: ["Origin"],
+//                 cookies: {
+//                     forward: "none",
+//                 },
+//             },
+//             minTtl: 0,
+//             defaultTtl: 86400,
+//             maxTtl: 31536000,
+//             compress: true,
+//             viewerProtocolPolicy: "redirect-to-https",
+//         },
+//     ],
+//     priceClass: "PriceClass_200",
+//     restrictions: {
+//         geoRestriction: {
+//             restrictionType: "none",
+//         },
+//     },
+//     tags: {
+//         Environment: "staging",
+//     },
+//     viewerCertificate: {
+//         acmCertificateArn: starGitcoinCertificate,
+//         cloudfrontDefaultCertificate: true,
+//         sslSupportMethod: "sni-only",
+//     },
+// });
 
 export const bucketName = staticAssetsBucket.id;
 export const bucketArn = staticAssetsBucket.arn;
@@ -330,7 +333,6 @@ const certificateValidation = new aws.acm.CertificateValidation("certificateVali
 //     protocol: "HTTPS",
 //     vpc: cluster.vpc, 
 //     certificateArn: certificateValidation.certificateArn,
-    
 // });
 
 // Creates an ALB associated with our custom VPC.
@@ -390,7 +392,7 @@ const staticBucket = new aws.lb.ListenerRule("static", {
      actions: [{
          type: "redirect",
          redirect: {
-             host: "go.gitcoin.co",
+             host: "blog.tmp.gitcoin.co",
              port: "443",
              protocol: "HTTPS",
              statusCode: "HTTP_301",
@@ -406,16 +408,16 @@ const staticBucket = new aws.lb.ListenerRule("static", {
  });
 
 // Create a DNS record for the load balancer
-const www = new aws.route53.Record("www", {
-    zoneId: route53Zone,
-    name: domain,
-    type: "A",
-    aliases: [{
-        name: httpsListener.endpoint.hostname,
-        zoneId: httpsListener.loadBalancer.loadBalancer.zoneId,
-        evaluateTargetHealth: true,
-    }]
-});
+// const www = new aws.route53.Record("www", {
+//     zoneId: route53Zone,
+//     name: domain,
+//     type: "A",
+//     aliases: [{
+//         name: httpsListener.endpoint.hostname,
+//         zoneId: httpsListener.loadBalancer.loadBalancer.zoneId,
+//         evaluateTargetHealth: true,
+//     }]
+// });
 
 let environment = [
     {
@@ -766,8 +768,8 @@ const service = new awsx.ecs.FargateService("app", {
             web: {
                 image: dockerGtcWebImage,
                 command: ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "app.wsgi:application", "--max-requests", "100", "--max-requests-jitter", "10", "--timeout", "60"],
-                memory: 8192,
-                cpu: 2048,
+                memory: 4096,
+                cpu: 2000,
                 portMappings: [httpsListener],
                 environment: environment,
                 links: []
@@ -776,13 +778,13 @@ const service = new awsx.ecs.FargateService("app", {
     },
 });
 
-const celery = new awsx.ecs.FargateService("celery", {
+const celery1 = new awsx.ecs.FargateService("celery1", {
     cluster,
-    desiredCount: 6,
+    desiredCount: 3,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
-            celery: {
+            worker1: {
                 image: dockerGtcWebImage,
                 command: ["celery", "-A", "taskapp", "-n", "worker1", "worker", "-Q", "high_priority,default,marketing,celery"],
                 memory: 4096,
@@ -792,7 +794,7 @@ const celery = new awsx.ecs.FargateService("celery", {
                 dependsOn: [],
                 links: []
             },
-            celeryHighPriority: {
+            worker2: {
                 image: dockerGtcWebImage,
                 command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "high_priority"],
                 memory: 4096,
@@ -806,24 +808,26 @@ const celery = new awsx.ecs.FargateService("celery", {
     },
 });
 
-// const flower = new awsx.ecs.FargateService("flower", {
-//     cluster,
-//     desiredCount: 2,
-//     taskDefinitionArgs: {
-//         containers: {
-//             celery: {
-//                 image: "mher/flower",
-//                 command: ["flower", "--broker=" + redisConnectionUrl, "--port=8888"],
-//                 memory: 4096,
-//                 cpu: 2000,
-//                 portMappings: [],
-//                 environment: environment,
-//                 dependsOn: [],
-//                 links: []
-//             },
-//         },
-//     },
-// });
+const flowerBrokerString = pulumi.interpolate`--broker=${redisConnectionUrl}`.apply.toString();
+
+const flower = new awsx.ecs.FargateService("flower", {
+    cluster,
+    desiredCount: 1,
+    taskDefinitionArgs: {
+        containers: {
+            celery: {
+                image: "mher/flower",
+                command: ["celery", "flower", "-A" , flowerBrokerString , "taskapp", "--port=5555"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+        },
+    },
+});
 
 const ecsTarget = new aws.appautoscaling.Target("autoscaling_target", {
     maxCapacity: 10,
