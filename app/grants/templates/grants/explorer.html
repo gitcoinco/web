@@ -625,9 +625,10 @@ along with this program. If not, see
               {% include 'grants/shared/landing_grants.html' with container_class='container p-0' %}
             </b-tab>
             <template v-slot:tabs-end v-if="tabIndex === 0">
-              <li role="presentation" class="flex-fill nav-item text-right">
+              <span></span>
+              <!-- <li role="presentation" class="flex-fill nav-item text-right">
                 <a href="{% url 'grants:new' %}" class="btn btn-primary">{% trans 'Create a Grant' %}</a>
-              </li>
+              </li> -->
             </template>
           </b-tabs>
         </template>
