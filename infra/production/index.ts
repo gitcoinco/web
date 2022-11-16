@@ -328,12 +328,12 @@ const certificateValidation = new aws.acm.CertificateValidation("certificateVali
   });
 
 // Create the listener for the application
-const listener = new awsx.lb.ApplicationListener("app", { 
-    port: 443, 
-    protocol: "HTTPS",
-    vpc: cluster.vpc, 
-    certificateArn: certificateValidation.certificateArn,
-});
+// const listener = new awsx.lb.ApplicationListener("app", { 
+//     port: 443, 
+//     protocol: "HTTPS",
+//     vpc: cluster.vpc, 
+//     certificateArn: certificateValidation.certificateArn,
+// });
 
 // Creates an ALB associated with our custom VPC.
 const alb = new awsx.lb.ApplicationLoadBalancer(
