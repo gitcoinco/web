@@ -145,25 +145,27 @@
           @modal-dismissed="hideModal()">
         </state-modal> -->
         <div>
-          <div class="d-flex flex-row p-0 mb-lg-4 mx-lg-5 trust-bonus-message">
-            <div class="d-flex flex-column p-3 p-md-2">
-              <div class="order-0">
-                <h3 class="line-height-1">Goodbye Trust Bonus. Soon Grants Protocol Launch.</h3>
+          <div>
+            <div class="d-flex flex-row p-2 mb-lg-4 mx-lg-5 trust-bonus-message">
+              <div class="d-flex flex-column p-3 p-md-2">
+                <div class="order-0 d-lg-none w-50 w-md-25 mb-2 align-self-start">
+                  <img src="{% static 'v2/images/trust/no-trust-man.svg' %}" alt="Pink robot" />
+                </div>
+                <div class="order-1">
+                  <h3 class="line-height-1">Goodbye Trust Bonus. Soon Grants Protocol Launch.</h3>
+                </div>
+                <div class="order-2">
+                  <p class="line-height-2 font-weight-light">You cannot create a Trust Bonus score for your Passport anymore. Trust Bonus is exclusively relevant to the legacy Grants app here, which we will not continue operating much longer. On the positive flip side, as you may know, we are in full swing, working toward launching a fully revamped version of Gitcoin Grants: the Gitcoin Grants Protocol. When we roll out the new Grants app, we'll widely communicate with you how to verify your identity in the new app. See ya in the Quadratic Lands!</p>
+                  <p>
+                      <span><i class="fas fa-exclamation-circle"></i></span><a class="text-dark-purple" href="https://gov.gitcoin.co/t/request-for-feedback-proposed-future-for-the-grant-programs-and-gr16-as-we-transition-to-the-protocol/11624/42" target="_blank"><u>Find out more here.</u></a>
+                  </p>
+                </div>
               </div>
-              <div class="order-2">
-                <p class="line-height-2 font-weight-light">You cannot create a Trust Bonus score for your Passport anymore. Trust Bonus is exclusively relevant to the legacy Grants app here, which we will not continue operating much longer. On the positive flip side, as you may know, we are in full swing, working toward launching a fully revamped version of Gitcoin Grants: the Gitcoin Grants Protocol. When we roll out the new Grants app, we'll widely communicate with you how to verify your identity in the new app. See ya in the Quadratic Lands!</p>
-                <p>
-                    <span><i class="fa-solid fa-circle-exclamation"></i></span> Find out more about the upcoming soft launch of the Grants Protocol <a href="https://gov.gitcoin.co/t/request-for-feedback-proposed-future-for-the-grant-programs-and-gr16-as-we-transition-to-the-protocol/11624/42" target="_blank">here</a>
-                </p>
+              <div class="d-none d-lg-block align-self-center w-75 p-lg-3 pr-5">
+                <div>
+                  <img src="{% static 'v2/images/trust/no-trust-man.svg' %}" alt="Pink robot" />
+                </div>  
               </div>
-              <div class="class="order-1 d-lg-none w-md-25 w-50 mb-2 align-self-center">
-                <img src="../../../assets/v2/images/trust/no-trust-man.svg" alt="Pink robot" />
-              </div>  
-            </div>
-            <div class="d-none d-lg-block align-self-center w-75 w-lg-50 p-lg-3 pr-5">
-              <div>
-                <img src="../../../assets/v2/images/trust/no-trust-man.svg" alt="Pink robot" />
-              </div>  
             </div>
           </div>
         </div>
@@ -179,18 +181,16 @@
               <br/>
               For more information check out, <a href="https://go.gitcoin.co/blog/wtf-is-trust-bonus/" target="_blank">"WTF is Trust Bonus?"</a>.
             </span>
-            {% comment %} :disabled="!isStaff && !isSubmissionEnabled" {% endcomment %}
-            <b-button v-if="apuScoreStatus === 'complete'" variant="primary" class="disabled btn col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 mt-3 disabled-button refresh-button" @click="() => checkForPassport()">
+
+            <b-button v-if="apuScoreStatus === 'complete'" variant="primary" class="btn col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 mt-3 disabled-button" @click="() => checkForPassport()">
               Resubmit Passport
             </b-button>
-            <b-button v-else variant="primary" class="disabled col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 btn-primary mt-3" @click="() => checkForPassport()">
+            <b-button v-else class="disabled-button col-12 col-md-auto btn btn-lg mt-3 flex-shrink-0 mt-3" @click="() => checkForPassport()">
               Submit Passport
             </b-button>
-
-            {% comment %} <p v-if="!isSubmissionEnabled" class="text-grey-400 spacer-mt-2 text-left small">GR15 Countdown [[countDown]]</p> {% endcomment %}
-            {% comment %} <p v-if="!isSubmissionEnabled" class="text-grey-400 spacer-mt-2 text-left small">You will be able to connect your Passport when the Round begins.</p> {% endcomment %}
+          
           </div>
-          <div class=""col-12 col-lg-6 position-relative pr-0 pl-0 pr-lg-3">
+          <div class="col-12 col-lg-6 position-relative pr-0 pl-0 pr-lg-3">
             <div class="h-100 shadow bg-white rounded flex-column text-center">
               <div class="d-flex flex-row-reverse"><div class="badge badge-pill bg-lightpurple mt-3 mr-3 font-subheader font-weight-light">GR[[clrRound]]</div></div>
               <div class="px-3 pt-3">
@@ -219,7 +219,6 @@
         </div>
       </div>
     </active-trust-manager>
-
 
   </div>
 
