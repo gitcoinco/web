@@ -16,7 +16,7 @@ class TestNewGrantGetRoute:
         content = str(response.content)
 
         assert response.status_code == 200
-        assert 'process of transitioning' not in content
+        assert 'Create new grant' not in content
         assert 'This old centralized version is now retired' in content
 
     def test_when_logged_in_renders_grants_new_template(self, django_user_model):
