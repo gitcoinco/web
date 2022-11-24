@@ -72,6 +72,7 @@ const staticAssetsBucket = new aws.s3.Bucket("bucket", {
     website: {
         indexDocument: "index.html",
     },
+    bucket: "bucket-0427bb4",
     forceDestroy: true,
 });
 
