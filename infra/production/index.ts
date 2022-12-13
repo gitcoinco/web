@@ -287,7 +287,7 @@ const redis = new aws.elasticache.Cluster("gitcoin-cache", {
     engine: "redis",
     engineVersion: "4.0.10",
     nodeType: "cache.m5.large",
-    numCacheNodes: 3,
+    numCacheNodes: 1,
     port: 6379,
     subnetGroupName: redisSubnetGroup.name,
     securityGroupIds: [secgrp_redis.id]
