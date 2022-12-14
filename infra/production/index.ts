@@ -1,6 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
-import * as awsx from "@pulumi/awsx";
+import * as awsx from "@pulumi/awsx/classic";
 
 // The following vars ar not alloed to be undefined, hence the `${...}` magic
 let dbUsername = `${process.env["DB_USER"]}`;
