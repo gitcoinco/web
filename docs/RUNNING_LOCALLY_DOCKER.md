@@ -117,7 +117,7 @@ Navigate to `http://localhost:8000/`.
 
 ![Running Screenshot 4](https://github.com/gitcoinco/web/raw/master/docs/imgs/screenshoot_server5.png "Running screenshot")
 
-For background build, Gitcoin server runs as a service and its always there. You can stop it using `kill process`, docker-compose to stop it  or other means.
+For background build, Gitcoin server runs as a service and it's always there. You can stop it using `kill process`, docker-compose to stop it  or other means.
 
 *Note: Running `docker-compose logs --tail=50 -f <optional container_name>` will follow all container output in the active terminal window, while specifying a container name will follow that specific container's output. `--tail` is optional.*
 Check out the [Docker Compose CLI Reference](https://docs.docker.com/compose/reference/) for more information.
@@ -153,7 +153,7 @@ DJANGO_STATIC_HOST='https://gitcoin.co'
 
 The development server is conditioned with a representative sampling of test data fixtures outlined below:
 
-* 20ish users doing a variety things
+* 20ish users doing a variety of things
 * Bounties in various statuses - so you can get to work!
 * Grants - ask some friends to support your work on Gitcoin
 * A variety of Kudos for you to send to everybody hard at work on bounties
