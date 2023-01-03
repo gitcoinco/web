@@ -67,7 +67,7 @@ for one signature. If you are donating DAI and ETH, it will ask for two signatur
 After those signatures are received, the transfers are executed so the funds are in your Gitcoin
 zkSync account. From there, all transfers of funds to grant owners are fired off in a rapid process
 that only takes a few  seconds. Any leftover funds in the Gitcoin zkSync account (typically due to
-our conservative estimates of what zkSync trasfer fees will be) are transferred back to your regular
+our conservative estimates of what zkSync transfer fees will be) are transferred back to your regular
 zkSync account so you can access them at https://wallet.zksync.io/.
 
 If you do not have enough funds in your zkSync account to complete checkout, the flow is as follows:
@@ -128,7 +128,7 @@ It works as follows:
 
 grants is built upon [EIP 1337](https://1337alliance.org).
 
-specifically, it is built upon [this smart contract](https://github.com/gitcoinco/grants1337/blob/master/contracts/Subscription.sol) which [was audit'ed by ZKLabs in Q4 2018](https://hackmd.io/s/HJ1QgH8F7).
+specifically, it is built upon [this smart contract](https://github.com/gitcoinco/grants1337/blob/master/contracts/Subscription.sol) which [was audited by ZKLabs in Q4 2018](https://hackmd.io/s/HJ1QgH8F7).
 
 ### How Grants works
 
@@ -166,7 +166,7 @@ aka
 
 When you run this code, it looks through all of the active grants on your local on `<network>`, and then runs `executeSubscription()` on them. if `executeSubscription()` succeeds, it will trigger some other actions (mostly emails, db mutations, etc)
 
-Heres an example successful tx created by the subminer: https://rinkeby.etherscan.io/tx/0x274c159a6d89513c3f0b533a5329bef4ce02b3ffc770bece9a8ce5d269319f72
+Here's an example successful tx created by the subminer: https://rinkeby.etherscan.io/tx/0x274c159a6d89513c3f0b533a5329bef4ce02b3ffc770bece9a8ce5d269319f72
 
 ### More information
 
