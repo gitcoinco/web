@@ -29,6 +29,7 @@ let oldProdRedisURL = `${process.env["OLD_REDIS_URL"]}`
 let starGitcoinCertificate = `${process.env["AWS_STAR_GITCOIN_CERT"]}`
 
 let secretKey = `${process.env["SECRET_KEY"]}`
+let sendgridApiKey = `${process.env["SENDGRID_API_KEY"]}`
 let etherscanApiKey = `${process.env["ETHERSCAN_API_KEY"]}`
 let gtcDistApiUrl = `${process.env["GTC_DIST_API_URL"]}`
 let gtcDistKey = `${process.env["GTC_DIST_KEY"]}`
@@ -461,11 +462,11 @@ let environment = [
     },
     {
         name: "READ_REPLICA_3_DATABASE_URL",
-        value: readReplica3
+        value: readReplica1
     },
     {
         name: "READ_REPLICA_4_DATABASE_URL",
-        value: readReplica4
+        value: readReplica2
     },
     {
         name: "DEBUG",
@@ -589,16 +590,18 @@ let environment = [
         name: "SUPRESS_DEBUG_TOOLBAR",
         value: "1"
     },
-
     {
         name: "SENDGRID_API_KEY",
-        value: ""
+        value: sendgridApiKey
+    },
+    {
+        name: "SENDGRID_EVENT_HOOK_URL",
+        value: "sg_sendgrid_event_processor"
     },
     {
         name: "CONTACT_EMAIL",
         value: ""
     },
-
     {
         name: "FEE_ADDRESS",
         value: ""
