@@ -76,12 +76,13 @@ along with this program. If not, see
       {% endif %}
 
         <div id="grants-showcase">
+          {% include 'grants/landing/gitcoin-alpha.html' %}
           {% include 'grants/landing/landing_qf_active.html' %}
           <div class="">
             <div v-if="isLandingPage" class="my-5">
               {% include 'grants/landing/active_clr_round.html'%}
             </div>
-            <div class="mb-5 py-5 bg-violet-100">
+            <!-- <div class="mb-5 py-5 bg-violet-100">
               <div class="container">
                 <div class="row justify-content-between align-items-center mb-4">
                   <div class="col-auto">
@@ -120,7 +121,7 @@ along with this program. If not, see
                 </div>
               </div>
 
-            </div>
+            </div> -->
 
           </div>
         </div>
