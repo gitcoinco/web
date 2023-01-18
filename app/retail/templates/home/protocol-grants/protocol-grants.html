@@ -156,7 +156,6 @@
       margin-left: calc(0px - 108px * (var(--reducedWidth) / 100));
     }
 
-
     @media only screen and (max-width: 950px) {
       #protocol-grants .grants .text {
         top: 80px;
@@ -181,13 +180,32 @@
       }
     }
   }
+
+  p.round-text a { text-decoration: underline; }
 </style>
 
 <section>
   <div class="container" id="protocol-grants">
     <div class="row bg-light protocol">
       <div class="text p-sm-5 pl-2 pr-2 pb-2 pt-5">
-        <h1 class="text-uppercase font-weight-bold">Grants Protocol</h1>
+        <h1 class="font-weight-bold">Gitcoin Alpha Round</h1>
+        <p class="round-text">
+          We invite you to participate in our Gitcoin Program Alpha Round, a set of 3 Quadratic Funding grants rounds that will allocate a $1M total matching pool to <a href="https://grant-explorer.gitcoin.co/#/round/1/0xd95a1969c41112cee9a2c931e849bcef36a16f4c">Open Source</a>, <a href="https://grant-explorer.gitcoin.co/#/round/1/0xe575282b376e3c9886779a841a2510f1dd8c2ce4">Ethereum Infrastructure</a>, and <a href="https://grant-explorer.gitcoin.co/#/round/1/0x1b165fe4da6bc58ab8370ddc763d367d29f50ef0">Climate Solutions</a>.
+        </p>
+
+        <a
+          href="/grants"
+          class="text-uppercase button"
+          title="View Rounds & Browse Grants"
+          >View Rounds & Browse Grants</a
+        >
+      </div>
+
+      <div class="protocol-img"></div>
+    </div>
+    <div class="row bg-dark grants">
+      <div class="text p-sm-5 p-2">
+        <h1 class="font-weight-bold">Grants Protocol</h1>
         <p>
           Grants Protocol aims to decentralize funding access, empowering any
           community to run their own grants program.
@@ -198,24 +216,6 @@
           class="text-uppercase button"
           title="Explore Gitcoin Grants Protocol"
           >Explore Grants Protocol</a
-        >
-      </div>
-
-      <div class="protocol-img"></div>
-    </div>
-    <div class="row bg-dark grants">
-      <div class="text p-sm-5 p-2">
-        <h1 class="text-uppercase font-weight-bold">Gitcoin Grants</h1>
-        <p>
-          Gitcoin Grants is a canonical example of the Grants Protocol's
-          capabilities, and will continue its mission to support public goods.
-        </p>
-
-        <a
-          href="/grants"
-          class="text-uppercase button"
-          title="See Gitcoin Grants"
-          >See Gitcoin Grants</a
         >
       </div>
 
