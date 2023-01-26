@@ -1,10 +1,21 @@
+{% load humanize static i18n tz %}
+
 <div class="container">
   <div class="row">
     <div class="pl-0 col-12 col-sm-12 col-md-12 mt-5 mb-3">
-      <h1 class="font-weight-bold">
+      <h1 class="font-weight-bold mb-3">
         Gitcoin Program Alpha Round Links
         <span style="font-size: 26px">(17-31Jan)</span>
       </h1>
+
+      <div class="mb-3">
+        <img
+          src="{{ STATIC_URL }}v2/images/rounds/gitcoin-alpha/alpha-round-sponsors.png"
+          alt="Gitcoin Alpha Round Sponsors"
+          style="width: 100%"
+        />
+      </div>
+
       <p class="font-weight-light">
         The Gitcoin Program Alpha Round is a set of 3
         <a
