@@ -165,6 +165,9 @@
       #protocol-grants .grants .text {
         top: 100px;
       }
+      #protocol-grants .text {
+        width: 100%;
+      }
     }
     @media only screen and (max-width: 780px) {
       #protocol-grants .grants .text {
@@ -181,6 +184,41 @@
     }
   }
 
+  @media only screen and (max-width: 400px) {
+    #protocol-grants .protocol-img {
+      --reducedWidth: 50;
+      background-size: calc(235px * (var(--reducedWidth) / 100))
+        calc(122px * (var(--reducedWidth) / 100));
+      width: calc(235px * (var(--reducedWidth) / 100));
+      height: calc(122px * (var(--reducedWidth) / 100));
+      margin-left: calc(0px - 117px * (var(--reducedWidth) / 100));
+    }
+
+    #protocol-grants .grants-img {
+      --reducedWidth: 50;
+      background-size: calc(217px * (var(--reducedWidth) / 100))
+        calc(217px * (var(--reducedWidth) / 100));
+      width: calc(217px * (var(--reducedWidth) / 100));
+      height: calc(217px * (var(--reducedWidth) / 100));
+      left: 50%;
+      top: -27px;
+      margin-left: calc(0px - 108px * (var(--reducedWidth) / 100));
+    }
+    #protocol-grants .circle {
+      --reducedWidth: 30;
+      background-size: calc(480px * (var(--reducedWidth) / 100))
+        calc(480px * (var(--reducedWidth) / 100));
+      width: calc(480px * (var(--reducedWidth) / 100));
+      height: calc(480px * (var(--reducedWidth) / 100));
+      margin-left: calc(0px - (240px * (var(--reducedWidth) / 100)));
+      margin-top: calc(0px - (240px * (var(--reducedWidth) / 100)));
+    }
+
+    #protocol-grants .grants .text { top: 95px; }
+
+
+  }
+
   p.round-text a { text-decoration: underline; }
 </style>
 
@@ -188,9 +226,25 @@
   <div class="container" id="protocol-grants">
     <div class="row bg-light protocol">
       <div class="text p-sm-5 pl-2 pr-2 pb-2 pt-5">
-        <h1 class="font-weight-bold">Gitcoin Alpha Round <span style="font-size: 26px;">(17-31Jan)</span></h1>
+        <h1 class="font-weight-bold">
+          Gitcoin Alpha Round <span style="font-size: 26px">(17-31Jan)</span>
+        </h1>
         <p class="round-text">
-          We invite you to participate in our Gitcoin Program Alpha Round, a set of 3 Quadratic Funding grants rounds that will allocate a $1M total matching pool to <a href="https://grant-explorer.gitcoin.co/#/round/1/0xd95a1969c41112cee9a2c931e849bcef36a16f4c">Open Source</a>, <a href="https://grant-explorer.gitcoin.co/#/round/1/0xe575282b376e3c9886779a841a2510f1dd8c2ce4">Ethereum Infrastructure</a>, and <a href="https://grant-explorer.gitcoin.co/#/round/1/0x1b165fe4da6bc58ab8370ddc763d367d29f50ef0">Climate Solutions</a>.
+          We invite you to participate in our Gitcoin Program Alpha Round, a set
+          of 3 Quadratic Funding grants rounds that will allocate a $1M total
+          matching pool to
+          <a
+            href="https://grant-explorer.gitcoin.co/#/round/1/0xd95a1969c41112cee9a2c931e849bcef36a16f4c"
+            >Open Source</a
+          >,
+          <a
+            href="https://grant-explorer.gitcoin.co/#/round/1/0xe575282b376e3c9886779a841a2510f1dd8c2ce4"
+            >Ethereum Infrastructure</a
+          >, and
+          <a
+            href="https://grant-explorer.gitcoin.co/#/round/1/0x1b165fe4da6bc58ab8370ddc763d367d29f50ef0"
+            >Climate Solutions</a
+          >.
         </p>
 
         <a
