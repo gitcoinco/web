@@ -1,12 +1,12 @@
 <!-- nav cart icon/count + dropdown -->
 <div id="gc-cart" class="nav-item dropdown gc-cart order-md-first">
-  <a href="{% url 'grants:cart' %}" class="gc-cart__icon nav-link dropdown-toggle dropdown-toggle-md-no-caret" id="cartDropdown" role="button"
+  <!-- <a href="{% url 'grants:cart' %}" class="gc-cart__icon nav-link dropdown-toggle dropdown-toggle-md-no-caret" id="cartDropdown" role="button"
     @mouseover="onLinkMouseOver" @click="onLinkClick"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <!-- <i class="far fa-shopping-cart fa-fw fa-lg"></i> -->
+    <i class="far fa-shopping-cart fa-fw fa-lg"></i>
     <span class="pl-3 d-md-none">Cart</span>
     <span class="cart-notification-dot notification__dot ml-2 ml-md-0" :class="{'notification__dot_active': cart_data_count}">[[ cart_data_count ]]</span>
-  </a>
+  </a> -->
   <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 animation slideDownIn gc-cart-box shadow-lg p-0 px-3 overflow-hidden" aria-labelledby="cartDropdown" style="min-width: 352px;">
     <gc-cart-content ref="navCart"/>
   </div>

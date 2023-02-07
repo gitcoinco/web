@@ -257,11 +257,11 @@ along with this program. If not, see
                     @input="params.sort_option = '', delayedChangeQuery()"
                     @keyup.enter="changeQuery({page: 1})"/>
                   <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
-                    <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
+                    <!-- <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.3rem 1rem;">
-                      <!-- <i class="far fa-shopping-cart fa-fw fa-lg"></i> -->
+                      <i class="far fa-shopping-cart fa-fw fa-lg"></i>
                       <span class="cart-notification-dot notification__dot ml-2 mt-n1" :class="{'notification__dot_active': cart_data_count}">[[ cart_data_count ]]</span>
-                    </a>
+                    </a> -->
                     <div class="dropdown-menu dropdown-menu-right gc-cart-box p-0 px-3 overflow-hidden" aria-labelledby="cartDropdown" style="margin-top: 6px; min-width: 352px;">
                       <gc-cart-content ref="navCart"/>
                     </div>
