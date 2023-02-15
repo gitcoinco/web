@@ -765,7 +765,7 @@ let environment = [
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
-    desiredCount: 10,
+    desiredCount: 6,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
