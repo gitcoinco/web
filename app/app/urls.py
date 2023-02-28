@@ -562,6 +562,7 @@ urlpatterns = [
     re_path(r'^products/?$', retail.views.products, name='products'),
     re_path(r'^landing/avatar/?', retail.views.avatar, name='avatar_landing'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
+    re_path(r'^results', retail.views.results2023, name='results-2023'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?$', retail.views.results, name='results'),
     re_path(r'^activity/?$', retail.views.activity, name='activity'),
