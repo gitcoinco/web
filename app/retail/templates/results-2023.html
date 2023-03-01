@@ -25,9 +25,6 @@
   <head>
     <meta name="title" content="Gitcoin Platform Stats & Testimonials | Gitcoin">
     <meta name="description" content="See the Cumulative Bounty History of Gitcoin in USD, Bounty Completion Rate, Median Bounty Turnaround Time, Testimonials and more.">
-    {% bundle css file results %}
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/results.scss" %} />
-    {% endbundle %}
   </head>
   <body class="{{ active }} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
@@ -80,10 +77,6 @@
       {% include 'shared/footer.html' %}
       {% include 'shared/footer_scripts.html' %}
 
-
-      {% bundle merge_js file retail_unveil %}
-        <script src="jquery.unveil.js" base-dir="/node_modules/jquery-unveil/"></script>
-      {% endbundle %}
     </div>
   </body>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
