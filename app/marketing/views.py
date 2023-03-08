@@ -40,7 +40,7 @@ from app.utils import sync_profile
 from chartit import PivotChart, PivotDataPool
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
-from dashboard.views import mautic_proxy_backend
+# from dashboard.views import mautic_proxy_backend
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_github_primary_email
 from grants.models import Grant
@@ -252,21 +252,21 @@ def matching_settings(request):
     return TemplateResponse(request, 'settings/matching.html', context)
 
 
-def set_mautic_dnc(profile, es, form):
-    """Places contact on the DNC list on mautic
+# def set_mautic_dnc(profile, es, form):
+#     """Places contact on the DNC list on mautic
 
-        Args:
-            profile (Profile): The user who is being unsubscribed
-            es (EmailSubscriber): The details of the subscription
-            form (dict): email_type: bool
-    """
-    preferences = es.preferences.get('suppression_preferences', {})
-    # ensure contact is marked as DNC in mautic (this wont be in sync if the user unsubscribes by following the link in the email)
-    # todo: add a cronjob to keep this state in sync with mautic or place unsubscribe logic in django and include gitcoin.co links in emails
-    if bool(form.get('marketing', False)) == True and preferences.get('marketing', False) == False:
-        mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/add', b'{"reason":3}')
-    elif bool(form.get('marketing', True)) == False and preferences.get('marketing', True) == True:
-        mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/remove', b'{"reason":3}')
+#         Args:
+#             profile (Profile): The user who is being unsubscribed
+#             es (EmailSubscriber): The details of the subscription
+#             form (dict): email_type: bool
+#     """
+#     preferences = es.preferences.get('suppression_preferences', {})
+#     # ensure contact is marked as DNC in mautic (this wont be in sync if the user unsubscribes by following the link in the email)
+#     # todo: add a cronjob to keep this state in sync with mautic or place unsubscribe logic in django and include gitcoin.co links in emails
+#     if bool(form.get('marketing', False)) == True and preferences.get('marketing', False) == False:
+#         mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/add', b'{"reason":3}')
+#     elif bool(form.get('marketing', True)) == False and preferences.get('marketing', True) == True:
+#         mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/remove', b'{"reason":3}')
 
 
 
@@ -306,8 +306,8 @@ def email_settings(request, key):
             es.email = email
             unsubscribed_email_type = {}
             unsubscribed_email_type[email_type] = True
-            if email_type == 'marketing':
-                set_mautic_dnc(profile, es, unsubscribed_email_type)
+            # if email_type == 'marketing':
+            #     set_mautic_dnc(profile, es, unsubscribed_email_type)
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
             ip = get_ip(request)
@@ -353,7 +353,7 @@ def email_settings(request, key):
                     if key not in form.keys():
                         form[key] = False
 
-                set_mautic_dnc(profile, es, form)
+                # set_mautic_dnc(profile, es, form)
                 es.build_email_preferences(form)
                 es = record_form_submission(request, es, 'email')
                 ip = get_ip(request)
@@ -535,7 +535,7 @@ def account_settings(request):
             profile.save()
 
             # remove email
-            mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/delete')
+            # mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/delete')
 
             if es:
                 es.delete()
@@ -615,7 +615,7 @@ def job_settings(request):
             profile.save()
 
             # remove email
-            mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/delete')
+            # mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/delete')
 
             if es:
                 es.delete()
