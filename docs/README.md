@@ -93,7 +93,7 @@ Check out the [CHANGELOG](https://docs.gitcoin.co/mk_changelog/) for details abo
 
 Also,
 
-* want to become a contributor ? Checkout our [guidelines](https://docs.gitcoin.co/mk_contributors/) & [styleguide](https://docs.gitcoin.co/mk_styleguide/).
+* want to become a contributor ? Check out our [guidelines](https://docs.gitcoin.co/mk_contributors/) & [styleguide](https://docs.gitcoin.co/mk_styleguide/).
 * [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
 * check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
 
@@ -148,7 +148,7 @@ Technically, the system is architected:
 If you
 
 * have some work on your Github Issues board that you don't have time (or skills) to do.
-* are dependant upon an upstream repo for something, and you'd like to incentivize them to work on it.
+* are dependent upon an upstream repo for something, and you'd like to incentivize them to work on it.
 
 try posting a funded issue at [https://gitcoin.co/bounty/new](https://gitcoin.co/bounty/new).
 
