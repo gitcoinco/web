@@ -474,7 +474,7 @@ let environment = [
     },
     {
         name: "BASE_URL",
-        value: "https://gitcoin.co/"
+        value: "https://bounties.gitcoin.co/"
     },
     {
         name: "SENTRY_DSN",

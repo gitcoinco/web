@@ -103,7 +103,7 @@ from marketing.mails import (
     wall_post_email,
 )
 from marketing.models import Keyword
-from mautic_logging.models import MauticLog
+# from mautic_logging.models import MauticLog
 from oauth2_provider.decorators import protected_resource
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from passport_score.models import GR15TrustScore
@@ -7594,84 +7594,84 @@ def file_upload(request):
     return JsonResponse(data)
 
 
-@csrf_exempt
-def mautic_api(request, endpoint=''):
+# @csrf_exempt
+# def mautic_api(request, endpoint=''):
 
-    if request.user.is_authenticated:
-        response = mautic_proxy(request, endpoint)
-        return response
-    else:
-        return JsonResponse(
-            { 'error': _('You must be authenticated') },
-            status=401
-        )
-
-
-def mautic_proxy(request, endpoint=''):
-    params = request.GET
-    if request.method == 'GET':
-        response = mautic_proxy_backend(request.method, endpoint, None, params)
-    elif request.method in ['POST','PUT','PATCH','DELETE']:
-        response = mautic_proxy_backend(request.method, endpoint, request.body, params)
-
-    return JsonResponse(response)
+#     if request.user.is_authenticated:
+#         response = mautic_proxy(request, endpoint)
+#         return response
+#     else:
+#         return JsonResponse(
+#             { 'error': _('You must be authenticated') },
+#             status=401
+#         )
 
 
-def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
-    # print(method, endpoint, payload, params)
-    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
-    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
-    headers = {"Authorization": f"Basic {token}"}
-    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
+# def mautic_proxy(request, endpoint=''):
+#     params = request.GET
+#     if request.method == 'GET':
+#         response = mautic_proxy_backend(request.method, endpoint, None, params)
+#     elif request.method in ['POST','PUT','PATCH','DELETE']:
+#         response = mautic_proxy_backend(request.method, endpoint, request.body, params)
 
-    if payload:
-        body_unicode = payload.decode('utf-8')
-        payload = json.loads(body_unicode)
-        http_response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload))
-    else:
-        http_response = getattr(requests, method.lower())(url=url, headers=headers, params=params)
-
-    response = http_response.json()
+#     return JsonResponse(response)
 
 
-    # Temporary logging of Mautic interaction in order to prepare for a move over from Mautic to Hubspot.
-    try:
-        log = MauticLog(method=method, endpoint=endpoint, payload=payload, params=params, status_code=http_response.status_code)
-        log.save()
-    except Exception:
-        pass
+# def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
+#     # print(method, endpoint, payload, params)
+#     credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
+#     token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
+#     headers = {"Authorization": f"Basic {token}"}
+#     url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
 
-    return response
+#     if payload:
+#         body_unicode = payload.decode('utf-8')
+#         payload = json.loads(body_unicode)
+#         http_response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload))
+#     else:
+#         http_response = getattr(requests, method.lower())(url=url, headers=headers, params=params)
+
+#     response = http_response.json()
 
 
-@csrf_exempt
-@require_POST
-def mautic_profile_save(request):
+#     # Temporary logging of Mautic interaction in order to prepare for a move over from Mautic to Hubspot.
+#     try:
+#         log = MauticLog(method=method, endpoint=endpoint, payload=payload, params=params, status_code=http_response.status_code)
+#         log.save()
+#     except Exception:
+#         pass
 
-    if request.user.is_authenticated:
-        profile = request.user.profile if hasattr(request.user, 'profile') else None
-        if not profile:
-            return JsonResponse(
-                { 'error': _('You must be authenticated') },
-                status=401
-            )
-        mautic_id = request.POST.get('mtcId')
-        profile.mautic_id = mautic_id
-        profile.save()
+#     return response
 
-    else:
-        return JsonResponse(
-            { 'error': _('You must be authenticated') },
-            status=401
-        )
 
-    return JsonResponse(
-        {
-            'success': True,
-            'msg': 'Data saved'
-        },
-        status=200
-    )
+# @csrf_exempt
+# @require_POST
+# def mautic_profile_save(request):
+
+#     if request.user.is_authenticated:
+#         profile = request.user.profile if hasattr(request.user, 'profile') else None
+#         if not profile:
+#             return JsonResponse(
+#                 { 'error': _('You must be authenticated') },
+#                 status=401
+#             )
+#         mautic_id = request.POST.get('mtcId')
+#         profile.mautic_id = mautic_id
+#         profile.save()
+
+#     else:
+#         return JsonResponse(
+#             { 'error': _('You must be authenticated') },
+#             status=401
+#         )
+
+#     return JsonResponse(
+#         {
+#             'success': True,
+#             'msg': 'Data saved'
+#         },
+#         status=200
+#     )
 
 @staff_member_required
 def export_grants_ethelo(request):
