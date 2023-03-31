@@ -91,7 +91,7 @@ python-magic
 django-oauth-toolkit==1.2.0
 ddtrace
 metadata-parser==0.10.0
-redis==3.3.11
+redis==4.4.4
 wiki==0.7.3
 django-bulk-update
 pdfrw
