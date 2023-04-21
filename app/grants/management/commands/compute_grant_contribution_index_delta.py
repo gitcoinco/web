@@ -10,7 +10,7 @@ from grants.models.grant import GrantCLR
 
 class Command(BaseCommand):
 
-    help = "Rebuilds the table GrantContributionIndex"
+    help = "This command will compute the missing contribution from the GrantContributionIndex and write them to the table"
 
     def handle(self, *args, **kwargs):
         self.stdout.write(f"{datetime.now()} Building query for contributions ...")
@@ -59,6 +59,21 @@ class Command(BaseCommand):
         ]
         self.stdout.write(f"{datetime.now()} Got {len(contributions)} contributions")
 
+        self.stdout.write(f"{datetime.now()} Build ID set for contributions")
+        contribution_ids = set([t[0] for t in contributions])
+
+        self.stdout.write(f"{datetime.now()} Build ID set for indexed contributions")
+        existing_contribution_ids_in_index = set(gcid for (gcid, ) in GrantContributionIndex.objects.all().values_list("contribution_id"))
+
+        contribution_ids_delta = contribution_ids - existing_contribution_ids_in_index
+        self.stdout.write(f"{datetime.now()} contribution_ids_delta: {contribution_ids_delta}")
+        self.stdout.write(f"{datetime.now()} num contributions in contribution_ids_delta: {len(contribution_ids_delta)}")
+        
+        contributions = [c for c in contributions if c[0] in contribution_ids_delta]
+        self.stdout.write(f"{datetime.now()} Num new contributions: {len(contributions)}")
+        
+        self.stdout.write(f"{datetime.now()} Saving to GrantContributionIndex ...")
+
         self.stdout.write(f"{datetime.now()} Building contribIndexList ...")
         contribIndexList = [
             GrantContributionIndex(
@@ -71,34 +86,8 @@ class Command(BaseCommand):
             for contribution_id, profile_id, grant_id, amount, _, round_num  in contributions
         ]
 
-        count = len(contribIndexList)
-        self.stdout.write(f"{datetime.now()} Length of contribIndexList: {count}")
-        self.stdout.write(f"{datetime.now()} Clearing GrantContributionIndex ...")
-
-        first_id = 0
-        last_id = 0
-
-        try:
-            first_id = GrantContributionIndex.objects.all().order_by("id")[0].id
-            last_id = GrantContributionIndex.objects.all().order_by("-id")[0].id
-        except:
-            pass
-
-        self.stdout.write(
-            f"{datetime.now()} ... deleting {last_id - first_id + 1} records"
-        )
-
-        count_to_delete = last_id - first_id
-        count_deleted = 0
         batch_size = 50000
-        for i in range(first_id, last_id, batch_size):
-            count_deleted += batch_size
-            self.stdout.write(
-                f"{datetime.now()} ... {(count_deleted / count_to_delete * 100):.2f}% deleting {count} records up to id {i + batch_size}"
-            )
-            GrantContributionIndex.objects.filter(id__lt=i + batch_size).delete()
-
-        self.stdout.write(f"{datetime.now()} Saving to GrantContributionIndex ...")
+        count = len(contribIndexList)
 
         for i in range(0, count, batch_size):
             self.stdout.write(
