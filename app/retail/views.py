@@ -510,6 +510,8 @@ def robotstxt(request):
 
 
 def about(request):
+    # redirect to new site
+    return redirect('https://gitcoin.co/about')
 
     data_about = JSONStore.objects.get(view='about', key='general').data
 
@@ -1326,7 +1328,7 @@ def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
 def blog(request):
-    return redirect('https://go.gitcoin.co/blog')
+    return redirect('https://gitcoin.co/blog?utm_source=bounties.gitcoin.co')
 
 def calendar(request):
     return redirect('https://calendar.google.com/calendar/embed?src=7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com')

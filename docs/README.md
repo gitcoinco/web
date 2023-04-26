@@ -26,6 +26,7 @@
 </p>
 
 # web repo
+
 <p align="center">
   <a href="https://twitter.com/gitcoin">
    <img src="https://img.shields.io/twitter/follow/gitcoin?style=social" alt="Follow @gitcoin" />
@@ -54,8 +55,6 @@
 
 </p>
 
-
-
 ### Table of Contents
 
 - [Gitcoin](#gitcoin)
@@ -83,7 +82,6 @@
     - [Tips](#tips)
     - [Kudos](#kudos)
 - [Licenses](#licenses)
-  
 
 ### On Github
 
@@ -93,9 +91,9 @@ Check out the [CHANGELOG](https://docs.gitcoin.co/mk_changelog/) for details abo
 
 Also,
 
-* want to become a contributor ? Checkout our [guidelines](https://docs.gitcoin.co/mk_contributors/) & [styleguide](https://docs.gitcoin.co/mk_styleguide/).
-* [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
-* check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
+- want to become a contributor ? Checkout our [guidelines](https://docs.gitcoin.co/mk_contributors/) & [styleguide](https://docs.gitcoin.co/mk_styleguide/).
+- [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
+- check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
 
 ### On Gitcoin
 
@@ -105,21 +103,21 @@ Also,
 
 Functionally, the app has several key features:
 
-* Smart Contracts -- Where funded issues are stored and indexed.
-* Brochureware -- Describes the project.
-* Funded Issue Explorer -- A searchable index of all of the work available in the system.
-* Funded Issue Submission / Acceptance flow -- Interface between the application and web3.
-* API - the HTTPS API
-* Bot - the GitcoinBot
+- Smart Contracts -- Where funded issues are stored and indexed.
+- Brochureware -- Describes the project.
+- Funded Issue Explorer -- A searchable index of all of the work available in the system.
+- Funded Issue Submission / Acceptance flow -- Interface between the application and web3.
+- API - the HTTPS API
+- Bot - the GitcoinBot
 
 [More about how/why to interact with web3 here](https://gitcoin.co/web3).
 
 Technically, the system is architected:
 
-* __Web3__ The main source of truth for the system is the Ethereum blockchain. Check out the [smart contracts](https://github.com/gitcoinco/smart_contracts).
-* __Web2__ This part of the app is built with Python, Django, Postgres, and a handful of other tools that are common in the web2 ecosystem.
-* __Web 3 Bridge__ This is the bridge between web3 and the rest of the application. Mostly built in javascript(web3js) and python(web3py).
-* __Brochureware__ Just a nice little landing page telling folks what the Gitcoin project is.
+- **Web3** The main source of truth for the system is the Ethereum blockchain. Check out the [smart contracts](https://github.com/gitcoinco/smart_contracts).
+- **Web2** This part of the app is built with Python, Django, Postgres, and a handful of other tools that are common in the web2 ecosystem.
+- **Web 3 Bridge** This is the bridge between web3 and the rest of the application. Mostly built in javascript(web3js) and python(web3py).
+- **Brochureware** Just a nice little landing page telling folks what the Gitcoin project is.
 
 # Developing
 
@@ -147,8 +145,8 @@ Technically, the system is architected:
 
 If you
 
-* have some work on your Github Issues board that you don't have time (or skills) to do.
-* are dependant upon an upstream repo for something, and you'd like to incentivize them to work on it.
+- have some work on your Github Issues board that you don't have time (or skills) to do.
+- are dependant upon an upstream repo for something, and you'd like to incentivize them to work on it.
 
 try posting a funded issue at [https://gitcoin.co/bounty/new](https://gitcoin.co/bounty/new).
 
@@ -156,28 +154,28 @@ try posting a funded issue at [https://gitcoin.co/bounty/new](https://gitcoin.co
 
 Basics
 
-* [Getting Started With Gitcoin](https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a)
-* [Fund an Issue on Gitcoin](https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3)
+- [Getting Started With Gitcoin](https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a)
+- [Fund an Issue on Gitcoin](https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3)
 
 Advanced
 
-* [Make a Contributor Friendly Repo](https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9)
-* [Set your OSS repos monetary policy](https://medium.com/gitcoin/setting-your-oss-repos-monetary-policy-9c493118cd34)
-* [Payout Several Contribs at Once](https://medium.com/gitcoin/payout-several-contributors-at-once-8742c13a8fdd)
-* [Crowdfund Bounties](https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d)
+- [Make a Contributor Friendly Repo](https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9)
+- [Set your OSS repos monetary policy](https://medium.com/gitcoin/setting-your-oss-repos-monetary-policy-9c493118cd34)
+- [Payout Several Contribs at Once](https://medium.com/gitcoin/payout-several-contributors-at-once-8742c13a8fdd)
+- [Crowdfund Bounties](https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d)
 
 Background
 
-* [Everything you need to know about Gitcoin](https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21)
-* [Our Vision: Open Source Money will BUIDL the OSS Ecosystem](https://go.gitcoin.co/blog/open-source-money-will-buidl-the-open-source-ecosystem/)
+- [Everything you need to know about Gitcoin](https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21)
+- [Our Vision: Open Source Money will BUIDL the OSS Ecosystem](https://gitcoin.co/blog/open-source-money-will-buidl-the-open-source-ecosystem/)
 
 Testimonials & Case Studies
 
-* [Augur](https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30)
-* [Balance](https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f)
-* [uPort](https://medium.com/gitcoin/gitcoin-testimonials-uport-1510222f3744)
-* [Ethereum Foundation](https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6)
-* [Market Protocol](https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19)
+- [Augur](https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30)
+- [Balance](https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f)
+- [uPort](https://medium.com/gitcoin/gitcoin-testimonials-uport-1510222f3744)
+- [Ethereum Foundation](https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6)
+- [Market Protocol](https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19)
 
 ## Integrating the 'available work widget' into your repository
 
@@ -193,7 +191,7 @@ Gitcoinbot will allow you to add issues straight from github.
 
 ## Adding your token to Gitcoin
 
-Have an ERC20 compatible token that you'd like to use on the platform?  Great!  Submit [this form](https://gitcoin.co/submittoken) to submit it to the system
+Have an ERC20 compatible token that you'd like to use on the platform? Great! Submit [this form](https://gitcoin.co/submittoken) to submit it to the system
 
 ## High Level flows...
 
@@ -218,11 +216,12 @@ Chain of Custody
 
 Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason.
 
-We may introduce arbitration at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
+We may introduce arbitration at some point in the future. Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
 
 #### Showing Support to Individuals
 
 - via [Tips](https://gitcoin.co/tips)
+
   - A free, fast way to show immediate gratitude towards an individual via github username or email address
 
 - via [Kudos](https://gitcoin.co/kudos)
@@ -237,6 +236,7 @@ This is the high level flow of a tip on Gitcoin:
 ### Kudos
 
 Note:
+
 - Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
 - Kudos are also secured by Tips
 

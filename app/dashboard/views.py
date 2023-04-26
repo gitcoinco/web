@@ -3128,7 +3128,7 @@ def get_passport_trust_bonus(request, handle):
 
 @require_GET
 def passport(request):
-    url = 'https://go.gitcoin.co/gitcoin-passport-0?utm_source=gitcoinco&utm_medium=referral&utm_campaign=topnav&utm_content=Passport'
+    url = 'https://gitcoin.co/passport?utm_source=gitcoinco&utm_medium=referral&utm_campaign=topnav&utm_content=Passport'
     return redirect(url)
 
 

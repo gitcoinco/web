@@ -1,24 +1,13 @@
-{% extends 'emails/template.html' %}
-{% comment %}
-Copyright (C) 2021 Gitcoin Core
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program. If not, see
-<http: //www.gnu.org/licenses />.
-
-{% endcomment %}
-{% load i18n static grants_extra %}
-
+{% extends 'emails/template.html' %} {% comment %} Copyright (C) 2021 Gitcoin
+Core This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your option)
+any later version. This program is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General
+Public License for more details. You should have received a copy of the GNU
+Affero General Public License along with this program. If not, see <http:
+//www.gnu.org/licenses />. {% endcomment %} {% load i18n static grants_extra %}
 {% block content %}
 <style>
   h1 {
@@ -38,17 +27,17 @@ along with this program. If not, see
     height: 2px;
     border-radius: 25px;
     border: none;
-    background-color: #D2D2D2;
+    background-color: #d2d2d2;
   }
 
   .grant-email-name {
-    color: #0D0764;
+    color: #0d0764;
   }
 
   .grant-email-amount {
     font-size: 1.5em;
     font-weight: 600;
-    color: #6F3FF5;
+    color: #6f3ff5;
     margin: 0;
   }
 
@@ -66,7 +55,7 @@ along with this program. If not, see
     font-size: 12px;
     border-radius: 3px;
     text-decoration: none;
-    background-color: #00D373;
+    background-color: #00d373;
     color: white;
     font-weight: 600;
     margin-left: 1em;
@@ -98,51 +87,73 @@ along with this program. If not, see
 </style>
 
 <div id="content-body">
-  <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
+  <img
+    class="center-img bounties-img"
+    src="{% static 'v2/images/emails/grants.png' %}"
+  />
 
-  <img src="{% static 'v2/images/new_grant.png' %}" alt="success icon" width="100px" height="100px">
+  <img
+    src="{% static 'v2/images/new_grant.png' %}"
+    alt="success icon"
+    width="100px"
+    height="100px"
+  />
 
   <h1>{% trans "New Grant Created" %}</h1>
 
-  <p style="margin-bottom:0.25rem;">{% trans "You've created a new grant!" %}</p>
-  <p style="margin-bottom:1em;">
-    {% blocktrans with link="https://gitcoin.notion.site/fc5155ddb7804560a42387043bd805c1?v=937073ff11d149d29e08aa5901befc77" %}
-      We are reviewing grants as we get closer to each grant round.
-      You can check the status of your grant on this <a href="{{ link }}">Notion board</a>.
-      Please be patient while we review your grant."
-    {% endblocktrans %}
+  <p style="margin-bottom: 0.25rem">
+    {% trans "You've created a new grant!" %}
   </p>
-  <p style="margin-top:0.25rem;">
+  <p style="margin-bottom: 1em">
+    {% blocktrans with
+    link="https://gitcoin.notion.site/fc5155ddb7804560a42387043bd805c1?v=937073ff11d149d29e08aa5901befc77"
+    %} We are reviewing grants as we get closer to each grant round. You can
+    check the status of your grant on this
+    <a href="{{ link }}">Notion board</a>. Please be patient while we review
+    your grant." {% endblocktrans %}
+  </p>
+  <p style="margin-top: 0.25rem">
     {% blocktrans with link="https://academy.binance.com/en/glossary/buidl" %}
-    In the mean time, get ready to <a href="{{ link }}">buidl</a> and push forward open source!
-    {% endblocktrans %}
+    In the mean time, get ready to <a href="{{ link }}">buidl</a> and push
+    forward open source! {% endblocktrans %}
   </p>
-  <hr style="margin-left: 0;">
-  <img id="grant-logo"
+  <hr style="margin-left: 0" />
+  <img
+    id="grant-logo"
     src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}"
-    alt="grant logo">
+    alt="grant logo"
+  />
   <h1 class="grant-email-name">{{ grant.title }}</h1>
   <p class="grant-description">{{ grant.description }}</p>
-  <div style="margin-top: 2em;">
-    <a class="button" style="display: block;" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">
+  <div style="margin-top: 2em">
+    <a
+      class="button"
+      style="display: block"
+      href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}"
+    >
       {% trans "View Your Grant" %}
     </a>
-    <br>
-    <a style="display: block; text-align: center;"
-      href="https://go.gitcoin.co/blog/how-to-maximize-your-matching-with-gitcoin-grants/?{{ utm_tracking }}">
+    <br />
+    <a
+      style="display: block; text-align: center"
+      href="https://gitcoin.co/blog/how-to-maximize-your-matching-with-gitcoin-grants/?{{ utm_tracking }}"
+    >
       {% trans "Learn how to maximize your matching" %}
     </a>
   </div>
-  <hr style="margin-left: 0; margin-top: 2em;">
+  <hr style="margin-left: 0; margin-top: 2em" />
   <div>
-    <h4 style="font-weight: bold;">Help us improve Gitcoin Grants for you!</h4>
+    <h4 style="font-weight: bold">Help us improve Gitcoin Grants for you!</h4>
     <p>
-      We’d love to hear how about your experience creating a grant! Your honest feedback helps us improve the product.
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSec0TFV6acg6wle-azcYtb0YvxQR2D20qbh-x8230Sgw-7wbg/viewform">
+      We’d love to hear how about your experience creating a grant! Your honest
+      feedback helps us improve the product.
+      <a
+        href="https://docs.google.com/forms/d/e/1FAIpQLSec0TFV6acg6wle-azcYtb0YvxQR2D20qbh-x8230Sgw-7wbg/viewform"
+      >
         Take the 2 minute survey
       </a>
     </p>
-    <img src="{% static 'v2/images/tree-gr12.png' %}" alt="GR12 Tree">
+    <img src="{% static 'v2/images/tree-gr12.png' %}" alt="GR12 Tree" />
   </div>
 </div>
 
