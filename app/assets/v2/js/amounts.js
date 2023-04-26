@@ -54,7 +54,7 @@ const get_rates_estimate = function(usd_amount) {
   }
   rates_addon = rates_addon.join(', ');
 
-  const help_addon = 'Read our <a href="https://go.gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/" target="_blank" class="underline" rel="noopener noreferrer">pricing guide</a>.';
+  const help_addon = 'Read our <a href="https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/" target="_blank" class="underline" rel="noopener noreferrer">pricing guide</a>.';
 
   return (rates_addon + help_addon);
 };
