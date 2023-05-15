@@ -75,7 +75,7 @@ collectfast==0.6.2
 django-health-check==3.7.0
 elastic-apm==3.0.1
 mkdocs==1.2.3
-pymdown-extensions==5.0
+pymdown-extensions==10.0
 mkdocs-material==3.0.4
 pydoc-markdown==2.0.4
 oauth2client==4.1.3
