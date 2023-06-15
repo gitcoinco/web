@@ -23,9 +23,9 @@ along with this program. If not, see
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
-  <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
+  <meta name="title" content="Create Funded Issue/Bounty | Gitcoin moving to Buidlbox">
   <meta name="description"
-    content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
+    content="Gitcoin bounties are moving over to buidlbox.io">
   <style>
     .issue_description {
       height: 400px;
@@ -72,7 +72,7 @@ along with this program. If not, see
         <div class="buidlbox-container row p-5">
 
             <div class="mb-5">
-            {% include 'shared/buidlbox_logo.html' %}
+            {% include 'shared/buidlbox_logo.svg' %}
             </div>
 
             <div class="text-center">
@@ -108,19 +108,6 @@ along with this program. If not, see
     {% include 'shared/current_profile.html' %}
     {% include 'grants/components/form_wrapper.html' %}
 
-    <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
-
-
-    <script src="{% static "v2/js/ipfs.js" %}"></script>
-    <script src="{% static "v2/js/abi.js" %}"></script>
-
-    <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
-
-
-    <script src="{% static "v2/js/pages/wallet_address_validation.js" %}"></script>
-    <script src="{% static "v2/js/grants/form_wrapper.js" %}"></script>
-    <script src="{% static "v2/js/pages/bounty_progress_bar.js" %}"></script>
   </div>
 </body>
 
