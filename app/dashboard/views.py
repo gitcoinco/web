@@ -173,6 +173,9 @@ def oauth_connect(request, *args, **kwargs):
     return JsonResponse(user_profile, status=200, safe=False)
 
 
+
+
+
 def org_perms(request):
     if request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
@@ -4456,6 +4459,10 @@ def labs(request):
         'socials': socials
     }
     return TemplateResponse(request, 'labs.html', context)
+
+def move_to_buidlbox(request):
+    return TemplateResponse(request, 'bounty/move_to_buidlbox.html', {})
+
 
 
 @login_required
