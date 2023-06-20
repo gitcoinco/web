@@ -419,7 +419,7 @@ urlpatterns = [
         r'^bounties/contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_bounties, name='contributor_bounties'
     ),
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
-    url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
+    url(r'^bounty/new/?', dashboard.views.move_to_buidlbox, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
     # TODO: Rename below to bounty/
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),

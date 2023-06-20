@@ -1,0 +1,114 @@
+{% comment %}
+Copyright (C) 2021 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+
+{% endcomment %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards.html' %}
+  <meta name="title" content="Create Funded Issue/Bounty | Gitcoin moving to Buidlbox">
+  <meta name="description"
+    content="Gitcoin bounties are moving over to buidlbox.io">
+  <style>
+    .issue_description {
+      height: 400px;
+      padding: 1em;
+      overflow: auto;
+      resize: vertical;
+      background-color: #f9f9f9;
+    }
+
+    .issue_description img {
+      max-width: 100%;
+    }
+
+    /* Override some CSS attributes of ql-editor, so that placeholder does not overflow */
+    .ql-container.ql-snow {
+      overflow: hidden;
+    }
+
+    .ql-editor.ql-blank {
+      white-space: nowrap;
+    }
+
+    .buidlbox-container {
+      margin: 0 auto;
+      width: 100%;
+      max-width: 500px;
+      background: #363232;
+      background-image: url("{{ STATIC_URL }}v2/images/buidlbox/landing-bg.svg");
+      color: #fff;
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="content__main min-vh-100 d-md-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash px-0">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="mt-5 container-fluid pb-5 pt-5" id="gc-hackathon-new-bounty">
+
+        <div class="buidlbox-container row p-5">
+
+            <div class="mb-5">
+            {% include 'shared/buidlbox_logo.svg' %}
+            </div>
+
+            <div class="text-center">
+                <h3 class="mb-5">
+                    Hackathons have moved and bounties are coming soon on <a href="https://buidlbox.io" title="Buidlbox" style="color: #fff; ">Buidlbox</a>
+                </h3>
+                <p>You'll be automatically redirected in <span id="countdown">5</span> seconds.</p>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <script>
+        window.onload = function() {
+            var countdown = 5;
+            var countdownElement = document.getElementById('countdown');
+
+            var countdownTimer = setInterval(function() {
+                countdown--;
+                countdownElement.textContent = countdown;
+                if (countdown <= 0) {
+                   clearInterval(countdownTimer);
+                   window.location.href = 'https://buidlbox.io?utm_source=bounties.gitcoin.co&utm_medium=referral&utm_campaign=gitcoin_buidlbox';
+                }
+            }, 1000);
+        };
+    </script>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/footer_scripts.html' with vue=True %}
+    {% include 'shared/current_profile.html' %}
+    {% include 'grants/components/form_wrapper.html' %}
+
+  </div>
+</body>
+
+</html>
