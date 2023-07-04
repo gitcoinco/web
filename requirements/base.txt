@@ -22,7 +22,7 @@ Pillow==8.3.2
 premailer
 populus
 psycopg2-binary==2.8
-PyJWT==1.5.3
+PyJWT==2.4.0
 PyPdf2
 python-twitter==3.2
 sendgrid==5.6.0
