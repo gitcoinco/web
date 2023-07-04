@@ -1,0 +1,1197 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: assets/v2/js/lib/tezos/walletbeacon.min.js:1
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-05 14:11+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: assets/onepager/js/receive.js:51 assets/onepager/js/receive.js:92
+#: assets/v2/js/event_ethdenver2019/kudos_bulk_receive.js:19
+#: assets/v2/js/pages/kudos_receive.js:59
+#: assets/v2/js/pages/kudos_receive.js:100 assets/v2/js/pages/kudos_send.js:231
+#: assets/v2/js/pages/kudos_send.js:670
+msgid "You are not on the right web3 network.  Please switch to "
+msgstr ""
+
+#: assets/onepager/js/receive.js:82 assets/v2/js/pages/kudos_receive.js:90
+msgid "You are not on a web3 browser.  Please switch to a web3 browser."
+msgstr ""
+
+#: assets/onepager/js/receive.js:87 assets/v2/js/pages/kudos_receive.js:95
+msgid "You do not have permission to do that."
+msgstr ""
+
+#: assets/onepager/js/receive.js:97 assets/v2/js/pages/kudos_receive.js:104
+msgid "Please confirm that "
+msgstr ""
+
+#: assets/onepager/js/request.js:95
+msgid "You must enter the amount!"
+msgstr ""
+
+#: assets/onepager/js/request.js:100 assets/onepager/js/send.js:244
+msgid "You must enter a username."
+msgstr ""
+
+#: assets/onepager/js/send.js:188 assets/v2/js/pages/kudos_send.js:221
+#: assets/v2/js/pages/kudos_send.js:370
+msgid ""
+"You must have a web3 enabled browser to do this.  Please download Metamask."
+msgstr ""
+
+#: assets/onepager/js/send.js:195
+msgid "You must unlock & enable Gitcoin via your web3 wallet to continue."
+msgstr ""
+
+#: assets/onepager/js/send.js:229 assets/v2/js/pages/kudos_send.js:405
+msgid ""
+"To Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr ""
+
+#: assets/onepager/js/send.js:234 assets/v2/js/pages/kudos_send.js:410
+msgid ""
+"From Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr ""
+
+#: assets/onepager/js/send.js:239
+msgid "You must enter an number for the amount!"
+msgstr ""
+
+#: assets/onepager/js/send.js:249 assets/v2/js/pages/kudos_send.js:420
+msgid "You must accept the terms."
+msgstr ""
+
+#: assets/onepager/js/send.js:296 assets/v2/js/pages/kudos_send.js:513
+msgid "There was an error."
+msgstr ""
+
+#: assets/onepager/js/send.js:344
+msgid ""
+"You will now be asked to confirm two transactions.  The first is gas money, "
+"so your receipient doesnt have to pay it.  The second is the actual token "
+"transfer. (note: check Metamask extension, sometimes the 2nd confirmation "
+"window doesnt popup)"
+msgstr ""
+
+#: assets/onepager/js/web3alert.js:29
+msgid ""
+"You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
+msgstr ""
+
+#: assets/onepager/js/web3alert.js:33
+msgid "Please connect to Metamask."
+msgstr ""
+
+#: assets/onepager/js/web3alert.js:35
+msgid "Please unlock Metamask."
+msgstr ""
+
+#: assets/v2/js/3box-sync.js:8
+msgid "Failed to backup data to 3Box. Please try again."
+msgstr ""
+
+#: assets/v2/js/amounts.js:11
+msgid "Approx: "
+msgstr ""
+
+#: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:113
+#: assets/v2/js/amounts.js:163
+msgid "Approx: Unknown amount"
+msgstr ""
+
+#: assets/v2/js/amounts.js:70 assets/v2/js/amounts.js:126
+msgid "Incorrect amount"
+msgstr ""
+
+#: assets/v2/js/avatar.js:25 assets/v2/js/avatar3d.js:173
+#: assets/v2/js/avatar_builder.js:439
+msgid "Error occurred while saving. Please try again."
+msgstr ""
+
+#: assets/v2/js/avatar.js:75 assets/v2/js/avatar.js:100
+msgid "Your Avatar Has Been Changed!"
+msgstr ""
+
+#: assets/v2/js/avatar3d.js:168 assets/v2/js/avatar_builder.js:434
+msgid "Your Avatar Has Been Saved To your Gitcoin Profile!"
+msgstr ""
+
+#: assets/v2/js/avatar3d.js:190 assets/v2/js/avatar_builder.js:453
+msgid "The avatar has been saved to GitCoin profile. Now upload to 3Box..."
+msgstr ""
+
+#: assets/v2/js/base.js:308
+msgid "Are you a Funder or a Contributor?"
+msgstr ""
+
+#: assets/v2/js/base.js:311
+msgid "Let us know so we could optimize the <br>best experience for you!"
+msgstr ""
+
+#: assets/v2/js/base.js:369
+msgid "Thanks, you can read the guide <a href=\"/how/funder\">here.</a>"
+msgstr ""
+
+#: assets/v2/js/base.js:376
+msgid "Thanks, you can read the guide <a href=\"/how/contributor\">here.</a>"
+msgstr ""
+
+#: assets/v2/js/board.js:92 assets/v2/js/board.js:113 assets/v2/js/board.js:135
+msgid "Contributor removed from bounty."
+msgstr ""
+
+#: assets/v2/js/grants/_detail-component.js:187
+msgid "Please login."
+msgstr ""
+
+#: assets/v2/js/grants/_detail-component.js:201
+msgid "Your flag has been sent to Gitcoin."
+msgstr ""
+
+#: assets/v2/js/grants/_detail-component.js:204
+msgid "Your report failed to save Please try again."
+msgstr ""
+
+#: assets/v2/js/grants/cart/algorand_extension.js:158
+#: assets/v2/js/grants/cart/binance_extension.js:57
+#: assets/v2/js/grants/cart/harmony_extension.js:46
+#: assets/v2/js/grants/cart/polkadot_extension.js:108
+#: assets/v2/js/grants/cart/rsk_extension.js:100
+msgid "Unable to contribute to grant due to "
+msgstr ""
+
+#: assets/v2/js/lib/harmony/HarmonyAccount.browser.js:2
+#: assets/v2/js/lib/harmony/HarmonyJs.browser.js:2
+msgid "_read()"
+msgstr ""
+
+#: assets/v2/js/lib/harmony/HarmonyJs.browser.js:2
+msgid "gb18030-ranges"
+msgstr ""
+
+#: assets/v2/js/lib/harmony/HarmonyJs.browser.js:2
+msgid "gb18030"
+msgstr ""
+
+#: assets/v2/js/lib/harmony/HarmonyJs.browser.js:2
+msgid "big5"
+msgstr ""
+
+#: assets/v2/js/lib/harmony/HarmonyJs.browser.js:2
+msgid "jis0212"
+msgstr ""
+
+#: assets/v2/js/lib/harmony/HarmonyJs.browser.js:2
+msgid "jis0208"
+msgstr ""
+
+#: assets/v2/js/lib/harmony/HarmonyJs.browser.js:2
+msgid "euc-kr"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4472
+msgid "emitReadable"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4474
+msgid "emit readable"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4478
+msgid "maybeReadMore read 0"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4481
+msgid "readable nexttick read 0"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4483
+msgid "resume read 0"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4487
+msgid "flow"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4533
+msgid "read"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4537
+msgid "read: emitReadable"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4541
+msgid "need readable"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4541
+msgid "length less than watermark"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4541
+msgid "reading or ended"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4541
+msgid "do read"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4550
+#, javascript-format
+msgid "pipe count=%d opts=%j"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4553
+msgid "onunpipe"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4553
+msgid "cleanup"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4555
+msgid "onend"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4560
+msgid "pipeOnDrain"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4566
+msgid "ondata"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4566
+msgid "false write response, pause"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4568
+msgid "onerror"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4572
+msgid "onfinish"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4574
+msgid "unpipe"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4578
+msgid "pipe resume"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4608
+msgid "resume"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4610
+#, javascript-format
+msgid "call pause flowing=%j"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4610
+msgid "pause"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4617
+msgid "wrapped end"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4623
+msgid "wrapped data"
+msgstr ""
+
+#: assets/v2/js/lib/web3.0.20.7.min.js:4631
+msgid "wrapped _read"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_detail/algorand_extension.js:159
+#: assets/v2/js/pages/bounty_detail/binance_extension.js:20
+#: assets/v2/js/pages/bounty_detail/casper_extension.js:61
+#: assets/v2/js/pages/bounty_detail/polkadot_extension.js:19
+#: assets/v2/js/pages/bounty_detail/rsk_extension.js:96
+#: assets/v2/js/pages/bounty_detail/tezos_extension.js:48
+#: assets/v2/js/pages/bounty_detail/xinfin_extension.js:55
+msgid "Unable to payout bounty due to: "
+msgstr ""
+
+#: assets/v2/js/pages/bounty_detail/casper_extension.js:16
+msgid "Please download or enable CasperLabs Signer extension."
+msgstr ""
+
+#: assets/v2/js/pages/bounty_detail/harmony_extension.js:46
+msgid "Unable to payout bounty due to "
+msgstr ""
+
+#: assets/v2/js/pages/bounty_detail/web3_modal.js:41
+msgid "Unable to payout bounty. Please try again."
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:106
+msgid "Issue"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:107
+msgid "Issue Funding Info"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:108
+msgid "Funder"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:109
+msgid "Submitter"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:110
+msgid "Meta"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:136
+msgid "OPEN ISSUE"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:142
+msgid "This issue is past its expiration date, but it is still active."
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:144
+msgid "Check with the submitter to see if they still want to see it fulfilled."
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:148
+msgid "work started"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:150
+msgid "work submitted"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:152
+msgid "done"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:154
+msgid "cancelled"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:655
+msgid "Are you sure you want to stop work?"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:657
+#: assets/v2/js/pages/bounty_details.js:1116
+msgid "Start Work"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:658
+#: assets/v2/js/pages/bounty_details.js:1123
+msgid "Notify the funder that you would like to take on this project"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:704
+#: assets/v2/js/pages/bounty_details.js:1114
+#: assets/v2/js/pages/bounty_details.js:1116
+#: assets/v2/js/pages/bounty_details2.js:1049
+msgid "Stop Work"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:705
+#: assets/v2/js/pages/bounty_details.js:1123
+#: assets/v2/js/pages/bounty_details2.js:1050
+msgid "Notify the funder that you will not be working on this project"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:736
+#: assets/v2/js/pages/bounty_details2.js:1080
+msgid "What steps will you take to complete this task? (min 30 chars)"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:764
+#: assets/v2/js/pages/bounty_details2.js:1136
+msgid "Please provide an action plan for this ticket. (min 30 chars)"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:883
+#: assets/v2/js/pages/bounty_details.js:889
+msgid "Failed to sync issue. Please reload the page and try again."
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:911
+msgid "Funded Issue Details: "
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:919
+msgid "Funder Address: "
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1081
+msgid "Submit Work"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1083
+msgid "Submit work for the funder to review"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1098
+#: assets/v2/js/pages/bounty_details.js:1100
+msgid "Send Payment Reminder"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1114
+msgid "Express Interest"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1138
+msgid "Release Bounty"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1140
+msgid "Release this reserved bounty to the public"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1152
+msgid "Payout the bounty to one or more submitters."
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1166
+msgid "Increase Funding"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1166
+msgid "Contribute Funds"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1168
+msgid "Help by funding or promoting this issue"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1223
+msgid "View On Github"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1225
+msgid "View issue details and comments on Github"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1257
+msgid "Suspend Auto Approval"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1259
+msgid ""
+"Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1272
+msgid "Hide Bounty"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1274
+msgid "Hides Bounty from Active Bounties"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1286
+msgid "Toggle Remarket Ready"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1288
+msgid ""
+"Sets Remarket Ready if not already remarket ready.  Unsets it if already "
+"remarket ready."
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1296
+msgid "Snooze Gitcoinbot"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1298
+msgid "Snooze Gitcoinbot reminders"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1309
+msgid "Mark as Reviewed"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1311
+msgid "Marks the bounty activity as reviewed."
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1322
+msgid "Override Status"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1324
+msgid "Override Status with a status of your choosing"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1333
+#: assets/v2/js/pages/bounty_details.js:1335
+msgid "View in Admin"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1342
+msgid "Contact Funder"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1344
+msgid "Contact Funder via Email"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1422
+#: assets/v2/js/pages/bounty_details2.js:1039
+#: assets/v2/js/pages/dashboard-hackathon.js:588
+#: assets/v2/js/pages/dashboard-hackathon.js:610
+#: assets/v2/js/pages/dashboard.js:592 assets/v2/js/pages/dashboard.js:618
+#: assets/v2/js/shared.js:195 assets/v2/js/shared.js:287
+#: assets/v2/js/shared.js:307
+msgid "got an error. please try again, or contact support@gitcoin.co"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1433 assets/v2/js/vue-filters.js:68
+msgid "Bounty Created"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1434 assets/v2/js/vue-filters.js:69
+msgid "Work Started"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1435 assets/v2/js/vue-filters.js:70
+msgid "Work Stopped"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1436 assets/v2/js/vue-filters.js:72
+msgid "Work Submitted"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1437 assets/v2/js/vue-filters.js:73
+msgid "Work Done"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1438 assets/v2/js/vue-filters.js:74
+msgid "Approved"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1439 assets/v2/js/vue-filters.js:75
+msgid "Rejected Contributor"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1440 assets/v2/js/vue-filters.js:76
+msgid "Contributor Applied"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1441 assets/v2/js/vue-filters.js:77
+msgid "Increased Funding"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1442 assets/v2/js/vue-filters.js:78
+msgid "Canceled Bounty"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1443 assets/v2/js/vue-filters.js:79
+msgid "Added new Crowdfund Contribution"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1444 assets/v2/js/vue-filters.js:80
+msgid "Tip Sent"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1445 assets/v2/js/vue-filters.js:81
+msgid "Tip Received"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1446 assets/v2/js/vue-filters.js:84
+msgid "Escalated for Abandonment of Bounty"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1447 assets/v2/js/vue-filters.js:85
+msgid "Warned for Abandonment of Bounty"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1448 assets/v2/js/vue-filters.js:86
+msgid "Dinged and Removed from Bounty by Staff"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1449 assets/v2/js/vue-filters.js:87
+msgid "Removed from Bounty by Staff"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1450 assets/v2/js/vue-filters.js:88
+msgid "Removed from Bounty by Funder"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1451 assets/v2/js/vue-filters.js:82
+msgid "Bounty Details Updated"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1452 assets/v2/js/vue-filters.js:83
+msgid "Extended Bounty Expiration"
+msgstr ""
+
+#: assets/v2/js/pages/bounty_details.js:1603
+msgid "There's no activity yet!"
+msgstr ""
+
+#: assets/v2/js/pages/cancel_bounty/ETH.js:15
+#: assets/v2/js/pages/fulfill_bounty/ETH.js:14
+#: assets/v2/js/pages/increase_bounty.js:67
+#: assets/v2/js/pages/process_bounty.js:155
+msgid ""
+"You are on an unsupported network.  Please change your network to a "
+"supported network."
+msgstr ""
+
+#: assets/v2/js/pages/cancel_bounty/ETH.js:34
+#: assets/v2/js/pages/process_bounty.js:196
+msgid "Could not get bounty details"
+msgstr ""
+
+#: assets/v2/js/pages/cancel_bounty/ETH.js:43
+#: assets/v2/js/pages/process_bounty.js:204
+msgid "No active bounty found for this Github URL on "
+msgstr ""
+
+#: assets/v2/js/pages/cancel_bounty/ETH.js:58
+msgid ""
+"This bounty is already in progress, canceling the issue is no longer "
+"possible."
+msgstr ""
+
+#: assets/v2/js/pages/cancel_bounty/ETH.js:62
+msgid ""
+"No active funded issue found at this address.  Are you sure this is an "
+"active funded issue?"
+msgstr ""
+
+#: assets/v2/js/pages/cancel_bounty/ETH.js:68
+msgid "Only the address that submitted this funded issue may kill the bounty."
+msgstr ""
+
+#: assets/v2/js/pages/cancel_bounty/ETH.js:89
+msgid "Cancel bounty submitted to web3."
+msgstr ""
+
+#: assets/v2/js/pages/cancel_bounty/ETH.js:97
+#: assets/v2/js/pages/fulfill_bounty/ETH.js:98
+#: assets/v2/js/pages/process_bounty.js:258
+msgid "There was an error"
+msgstr ""
+
+#: assets/v2/js/pages/change_bounty.js:329 assets/v2/js/pages/new_bounty.js:468
+msgid "Unable to upgrade to featured bounty. Please try again."
+msgstr ""
+
+#: assets/v2/js/pages/fulfill_bounty/ETH.js:65
+msgid "Could not get bounty details."
+msgstr ""
+
+#: assets/v2/js/pages/fulfill_bounty/ETH.js:87
+msgid "Fulfillment submitted to web3."
+msgstr ""
+
+#: assets/v2/js/pages/fulfill_bounty/token.js:8
+msgid ""
+"Add Github Link to let the funder know where they can check out your work"
+msgstr ""
+
+#: assets/v2/js/pages/fulfill_bounty/token.js:14
+msgid "Add valid email you would want the bounty to be sent to"
+msgstr ""
+
+#: assets/v2/js/pages/fulfill_bounty/token.js:17
+msgid "Add valid address you would want the bounty to be sent to"
+msgstr ""
+
+#: assets/v2/js/pages/increase_bounty.js:83
+#: assets/v2/js/pages/process_bounty.js:173
+msgid "Please accept the terms of service."
+msgstr ""
+
+#: assets/v2/js/pages/increase_bounty.js:87
+msgid "Invalid Amount."
+msgstr ""
+
+#: assets/v2/js/pages/increase_bounty.js:97
+msgid "Please enter a valid github issue URL."
+msgstr ""
+
+#: assets/v2/js/pages/increase_bounty.js:101
+msgid "Please enter an amount."
+msgstr ""
+
+#: assets/v2/js/pages/increase_bounty.js:137
+msgid "There was an error.  Please try again or contact support."
+msgstr ""
+
+#: assets/v2/js/pages/increase_bounty.js:149
+msgid "Submission sent to web3."
+msgstr ""
+
+#: assets/v2/js/pages/increase_bounty.js:164
+msgid "No active funded issue found at this address on "
+msgstr ""
+
+#: assets/v2/js/pages/increase_bounty.js:244
+#: assets/v2/js/pages/increase_bounty.js:258
+#: assets/v2/js/pages/new_bounty.js:502 assets/v2/js/pages/new_bounty.js:522
+msgid "Unable to pay bounty fee. Please try again."
+msgstr ""
+
+#: assets/v2/js/pages/increase_funding_limit_request_form.js:9
+msgid "characters left"
+msgstr ""
+
+#: assets/v2/js/pages/increase_funding_limit_request_form.js:56
+#: assets/v2/js/shared.js:255
+msgid "Network error. Please reload the page and try again."
+msgstr ""
+
+#: assets/v2/js/pages/kudos_bulk_receive.js:28
+msgid "Please connect to a web3 wallet."
+msgstr ""
+
+#: assets/v2/js/pages/kudos_bulk_receive.js:35
+msgid "Please unlock your web3 wallet."
+msgstr ""
+
+#: assets/v2/js/pages/kudos_send.js:225
+msgid "Please unlock metamask."
+msgstr ""
+
+#: assets/v2/js/pages/kudos_send.js:400
+msgid "You must specify a recipient."
+msgstr ""
+
+#: assets/v2/js/pages/kudos_send.js:415
+msgid "You must enter a number for the amount!"
+msgstr ""
+
+#: assets/v2/js/pages/kudos_send.js:427
+msgid ""
+"Kudos are intended to be compliments. just like you *can* give yourself a "
+"compliment or *can* give yourself an award, you are also able to send "
+"yourself a Kudos. "
+msgstr ""
+
+#: assets/v2/js/pages/kudos_send.js:607
+msgid ""
+"You will now be asked to confirm a transaction to cover the cost of the "
+"Kudos and the gas money."
+msgstr ""
+
+#: assets/v2/js/pages/onboard.js:56
+msgid "Done"
+msgstr ""
+
+#: assets/v2/js/pages/onboard.js:63
+msgid "Next"
+msgstr ""
+
+#: assets/v2/js/pages/onboard.js:88
+msgid "Install Metamask"
+msgstr ""
+
+#: assets/v2/js/pages/onboard.js:97
+msgid "Unlock Metamask"
+msgstr ""
+
+#: assets/v2/js/pages/onboard.js:108
+msgid "Unlocked"
+msgstr ""
+
+#: assets/v2/js/pages/onboard.js:109 assets/v2/js/pages/onboard.js:110
+msgid "Ethereum Payout Address"
+msgstr ""
+
+#: assets/v2/js/pages/process_bounty.js:52
+msgid "Could not get fulfillment details"
+msgstr ""
+
+#: assets/v2/js/pages/process_bounty.js:60
+msgid ""
+"No bounty fulfillments found for this Github URL.  Please use the advanced "
+"payout tool instead."
+msgstr ""
+
+#: assets/v2/js/pages/process_bounty.js:179
+msgid "Please enter a issue URL."
+msgstr ""
+
+#: assets/v2/js/pages/process_bounty.js:183
+msgid "Please enter a fulfillment Id."
+msgstr ""
+
+#: assets/v2/js/pages/process_bounty.js:219
+msgid ""
+"No active funding found at this address.  Are you sure this is an active "
+"funded issue?"
+msgstr ""
+
+#: assets/v2/js/pages/process_bounty.js:221
+msgid "No claimee found for this bounty."
+msgstr ""
+
+#: assets/v2/js/pages/process_bounty.js:225
+msgid "You can only process a funded issue if you submitted it initially."
+msgstr ""
+
+#: assets/v2/js/pages/process_bounty.js:245
+msgid "Submitted transaction to web3, saving comment(s)..."
+msgstr ""
+
+#: assets/v2/js/pages/process_bounty.js:248
+msgid "Submitted transaction to web3."
+msgstr ""
+
+#: assets/v2/js/pages/profile-backup.js:33
+#: assets/v2/js/pages/profile-edit.js:33 assets/v2/js/status.js:507
+#: assets/v2/js/status.js:553
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: assets/v2/js/pages/profile-edit.js:28
+msgid "User profile banner has been updated."
+msgstr ""
+
+#: assets/v2/js/pages/profile-edit.js:52
+msgid "Select a banner"
+msgstr ""
+
+#: assets/v2/js/pages/profile-edit.js:73
+msgid "Use Banner"
+msgstr ""
+
+#: assets/v2/js/pages/profile-edit.js:76
+msgid "Cancel"
+msgstr ""
+
+#: assets/v2/js/pages/profile-edit.js:89
+msgid "Failed to load list of banner images. Try refreshing your browser"
+msgstr ""
+
+#: assets/v2/js/pages/quests.new.js:29
+msgid "The number of answers for each question are limited to "
+msgstr ""
+
+#: assets/v2/js/pages/quests.new.js:52
+msgid "The number of questions are limited to "
+msgstr ""
+
+#: assets/v2/js/pages/quests.new.js:64
+msgid "You cannot have 0 answers per question"
+msgstr ""
+
+#: assets/v2/js/pages/quests.new.js:85
+msgid "you cannot have 0 questsions"
+msgstr ""
+
+#: assets/v2/js/rating.js:31
+msgid "Thanks for your feedback."
+msgstr ""
+
+#: assets/v2/js/shared.js:190
+msgid "Sent payout reminder"
+msgstr ""
+
+#: assets/v2/js/shared.js:411
+msgid "New bounty"
+msgstr ""
+
+#: assets/v2/js/shared.js:412
+msgid "Work started"
+msgstr ""
+
+#: assets/v2/js/shared.js:413
+msgid "Work stopped"
+msgstr ""
+
+#: assets/v2/js/shared.js:414
+msgid "Work submitted"
+msgstr ""
+
+#: assets/v2/js/shared.js:415
+msgid "Work done"
+msgstr ""
+
+#: assets/v2/js/shared.js:416
+msgid "Worker approved"
+msgstr ""
+
+#: assets/v2/js/shared.js:417
+msgid "Worker rejected"
+msgstr ""
+
+#: assets/v2/js/shared.js:418
+msgid "Worker applied"
+msgstr ""
+
+#: assets/v2/js/shared.js:419
+msgid "Increased funding"
+msgstr ""
+
+#: assets/v2/js/shared.js:420
+msgid "Canceled bounty"
+msgstr ""
+
+#: assets/v2/js/shared.js:421
+msgid "New crowdfund contribution"
+msgstr ""
+
+#: assets/v2/js/shared.js:422
+msgid "New tip"
+msgstr ""
+
+#: assets/v2/js/shared.js:423
+msgid "Tip received"
+msgstr ""
+
+#: assets/v2/js/shared.js:424
+msgid "Escalated for abandonment of bounty"
+msgstr ""
+
+#: assets/v2/js/shared.js:425
+msgid "Warned for abandonment of bounty"
+msgstr ""
+
+#: assets/v2/js/shared.js:426
+msgid "Dinged and removed from bounty by staff"
+msgstr ""
+
+#: assets/v2/js/shared.js:427
+msgid "Removed from bounty by staff"
+msgstr ""
+
+#: assets/v2/js/shared.js:428
+msgid "Removed from bounty by funder"
+msgstr ""
+
+#: assets/v2/js/shared.js:429
+msgid "Bounty details changed"
+msgstr ""
+
+#: assets/v2/js/shared.js:1275
+msgid " You have "
+msgstr ""
+
+#: assets/v2/js/shared.js:1275
+msgid " but you need "
+msgstr ""
+
+#: assets/v2/js/status.js:537 assets/v2/js/status.js:627
+msgid "Status has been saved."
+msgstr ""
+
+#: assets/v2/js/vue-filters.js:71
+msgid "Stopped worker"
+msgstr ""
+
+#: assets/v2/js/vue-filters.js:89
+msgid "New Kudos"
+msgstr ""
+
+#: assets/v2/js/vue-filters.js:90
+msgid "Bounty paid to"
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:4
+msgid ""
+"Open source software has become a relevant part of the software industry and "
+"a number of software ecosystems. It has become an alternative to commercial "
+"software in various areas and is already included in many commercial "
+"software products."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:5
+msgid ""
+"OSS can support the development of new software because companies can use "
+"existing software to create their software products. Therefore, it can be a "
+"catalyst for new software developments and the creation of new software "
+"companies."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:6
+msgid ""
+"OSS can ... be considered as an important factor in the value creation of "
+"other software, even if it is difficult to quantify. Today, OSS often "
+"replaces the standard middleware platform provided by a third party. It "
+"limits costs and, more importantly, dependency to some extent."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:7
+msgid ""
+"Software vendors that build new products can save costs if they reuse "
+"existing open source software components instead of developing software on "
+"their own or buying software components. As a result, open source software "
+"can foster the development of new software products as well as the creation "
+"of new software vendors."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:8
+msgid ""
+"OSS allows companies to incorporate IT in their value chain in an easy way. "
+"Instead of buying commercial software that may involve the risk of a vendor "
+"lock-in, they just have to share value with the OSS community."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:9
+msgid ""
+"The basic principle of open source software development is that a community "
+"of software experts contributes time and effort for coding, reviewing and "
+"testing to publicly available source code."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:10
+msgid ""
+"Open source can ... be a key success factor for co-innovation as none of the "
+"participants will have the upper hand. OSS can create standards that are "
+"very important for the development of emerging technologies and that help "
+"lower the total cost of ownership."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:11
+msgid ""
+"Future software must be easily developed from components and freely "
+"available software and its maintenance must be supported by a wide "
+"community. This includes a reuse and evolution of existing software and "
+"modules: rather than developing from scratch, existing software must become "
+"more easily retrievable, interoperable and usable."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:12
+msgid ""
+"OSS is also a firm promoter of standards and interoperability. This openness "
+"lowers the risk of a vendor lock-in. OSS is based on communities that "
+"develop software in a collaborative way. Many enabling technologies for SMAC "
+"have strong OSS roots."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:13
+msgid ""
+"Some commercial vendors offer open source software in order to create a "
+"large user community. They generate revenues from subscriptions to support "
+"and updates and/or professional services as well as from selling extensions "
+"or professional editions that are based on the open source software. "
+"Examples are the providers of the Linux distributions RedHat and Suse."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:14
+msgid ""
+"Major commercial software vendors such as IBM and HP have made open source "
+"technology a part of their business by integrating it into their own "
+"products and by providing professional services for open source software."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:15
+msgid ""
+"Many business applications already include open source software and this is "
+"going to increase. Some vendors may donate part of their products to an open "
+"source foundation in order to create a larger user community that will "
+"potentially become buyers of commercial add-ons or services. On the other "
+"hand, open source software that is free of charge can be an alternative to "
+"commercial application software."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:16
+msgid ""
+"According to Carlo Daffara, a researcher in the field of IT economics who "
+"contributed to several European Commission research projects involving open "
+"source, the European economy saves around EUR114 billion per year by using "
+"open source software solutions. Apart from direct cost savings, other "
+"benefits of open source are reduced project failure and lower cost of code "
+"maintenance."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:17
+msgid ""
+"Quoting several sources, [Carlo Daffara, researcher in IT economics] "
+"estimates that about 35 per cent of the software  used in the past five "
+"years was directly or indirectly derived from open source."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:18
+msgid ""
+"Companies outsource activities that are less critical. For example, a car "
+"manufacturer will hardly outsource the in-house software development for its "
+"autonomous driving technology, as this is highly confidential and highly "
+"relevant for its competitiveness."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:19
+msgid ""
+"Outsourcing can be an alternative to in-house software development and more "
+"and more companies take advantage of this. ... Two areas of potential "
+"outsourcing in the area of in-house software development are testing and "
+"maintenance."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:20
+msgid ""
+"As demand for individual software development increases, companies evaluate "
+"ways to outsource such activities due to internal skill shortages and cost "
+"considerations."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:22
+msgid ""
+"Victor Hugo once remarked: 'You can resist an invading army; you cannot "
+"resist an idea whose time has come'. The Drucker Forum will ask the question "
+"and deliver elements of response as to whether the time for a new "
+"entrepreneurial age has come."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:23
+msgid ""
+"Digital technology has played an accelerating role in this transformation "
+"[to an entrepreneurial society] by dramatically lowering barriers to entry "
+"in many industries and by providing new tools for managing knowledge "
+"creation and sharing and by enabling new forms of continuous learning, all "
+"on a global canvas."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:24
+msgid ""
+"While the journey towards an entrepreneurial society is by no means a "
+"straight-line progression towards a well-defined destination, broad cultural "
+"changes have brought entrepreneurialism into the mainstream. An activity "
+"that was once regarded as peripheral, perhaps even a bit suspect, has become "
+"cool, celebrated by politicians and embraced by the new generations."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:25
+msgid ""
+"[T]he emergence of an entrepreneurial culture entails a broader "
+"transformation of the economic fabric of our society, as we see in the rapid "
+"proliferation of free agents in the form of contractors, freelancers and "
+"self-employed workers on on-demand platforms, for example."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:26
+msgid ""
+"[I]n a world of rapid change frequent job and career moves, switches between "
+"employed and independent roles become the rule rather than the exception."
+msgstr ""
+
+#: assets/v2/js/waiting_room_entertainment.js:27
+msgid ""
+"Within large organizations a renewed focus on freeing up the creative and "
+"innovative potential of workers points in the same direction [as that of the "
+"entrepreneurial society] i.e. a new mindset of ownership, responsibility and "
+"autonomy."
+msgstr ""
