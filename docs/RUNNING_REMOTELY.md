@@ -32,7 +32,7 @@ It's recommended you create a new user as using root is dangerous.
 
 You will be prompted to enter a password, and some personal data (this is optional).
 
-Sudo priviledges are required, to grant priviledges type:
+Sudo privileges are required, to grant privileges type:
 
 ```shell
 # usermod -aG sudo newuser

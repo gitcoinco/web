@@ -118,7 +118,7 @@ git fetch upstream
 ### Step 2: Branch
 
 It's always better to create local branches to work on a specific issue. Makes
-life easier for you if you are the kind who enjoys multiple things parallely.
+life easier for you if you are the kind who enjoys multiple things parallelly.
 These should also be created directly off of the `master` branch.
 
 ```shell
