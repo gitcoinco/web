@@ -600,7 +600,7 @@ let environment = [
     },
     {
         name: "CONTACT_EMAIL",
-        value: ""
+        value: "support@gitcoin.co"
     },
     {
         name: "FEE_ADDRESS",
