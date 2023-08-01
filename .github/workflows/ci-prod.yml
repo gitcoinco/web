@@ -191,7 +191,7 @@ jobs:
 
   deploy:
     name: Deploy
-    # needs: build-and-test
+    needs: build-and-test
     environment: production
     runs-on: ubuntu-latest
 
