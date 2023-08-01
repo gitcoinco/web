@@ -30,7 +30,7 @@ These API calls require you to be authenticated as a team member of a grant:
 * https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
 * https://gitcoin.co/grants/v1/api/export_info/grant12_round7.json
 
-Authentication on Gitcoin is primary centric around our user model, which (for now) is dependant upon Github.  If you are accessing the data programmatically, you may not be able to handle the Github authentication cycle, and for that reason we have begun providing limited access to this data via an API Key / Secret model.  Here's how it works.
+Authentication on Gitcoin is primary centric around our user model, which (for now) is dependent upon Github.  If you are accessing the data programmatically, you may not be able to handle the Github authentication cycle, and for that reason we have begun providing limited access to this data via an API Key / Secret model.  Here's how it works.
 
 1. Access any API which requires authorization via the standard authentication flow in browser.
 2. You will be issued credentials, which you can find in the response: `body.meta.api_key`.
