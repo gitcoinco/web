@@ -65,14 +65,14 @@ urlpatterns = [
     path('grants/cart', RedirectView.as_view(url='https://explorer.gitcoin.co/'), name='redirect_grants_cart'),
     path('grants', RedirectView.as_view(url='https://explorer.gitcoin.co/'), name='redirect_grants'),
     path('grants/<path:path>', RedirectView.as_view(url='https://grants.gitcoin.co'), name='redirect_grants_any'),
-    path('explorer', RedirectView.as_view(url='https://app.buidlbox.io/'), name='redirect_explorer'),
+    path('explorer', RedirectView.as_view(url='https://app.buidlbox.io/bounty-explorer'), name='redirect_explorer'),
     path('settings/<path:path>', RedirectView.as_view(url='https://explorer.gitcoin.co/'), name='redirect_settings_any'),
-    path('bounties/<path:path>', RedirectView.as_view(url='https://app.buidlbox.io/'), name='redirect_bounties_any'),
-    path('bounty/<path:path>', RedirectView.as_view(url='https://app.buidlbox.io/'), name='redirect_bounty_any'),
+    path('bounties/<path:path>', RedirectView.as_view(url='https://app.buidlbox.io/bounty-explorer'), name='redirect_bounties_any'),
+    path('bounty/<path:path>', RedirectView.as_view(url='https://app.buidlbox.io/bounty-explorer'), name='redirect_bounty_any'),
     path('hackathons/<path:path>', RedirectView.as_view(url='https://app.buidlbox.io/'), name='redirect_hackathons_any'),
     path('mission', RedirectView.as_view(url='https://www.gitcoin.co/about'), name='redirect_mission'),
     path('metamask', RedirectView.as_view(url='https://metamask.io/'), name='redirect_metamask'),
-    path('issue/<path:path>', RedirectView.as_view(url='https://app.buidlbox.io/'), name='redirect_issue_any'),
+    path('issue/<path:path>', RedirectView.as_view(url='https://app.buidlbox.io/bounty-explorer'), name='redirect_issue_any'),
     path('', RedirectView.as_view(url='https://gitcoin.co'), name='redirect_home'),
 
     # Catch-all pattern
