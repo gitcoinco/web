@@ -5,8 +5,12 @@ on:
   push:
     branches: [ master, stable ]
 
+permissions: {}
 jobs:
   build-and-test:
+    permissions:
+      contents: write # to push pages branch (peaceiris/actions-gh-pages)
+
     name: Build and Test
 
     # run only when code is compiling and tests are passing
