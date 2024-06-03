@@ -59,7 +59,7 @@ Werkzeug[watchdog]==0.15.5
 imageio
 boto3==1.18.22
 django-storages==1.11.1
-eth-account==0.2.2
+eth-account==0.5.9
 django-classy-tags==0.8.0
 django-cookie-law==2.0.1
 django-impersonate==1.3
