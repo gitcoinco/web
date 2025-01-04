@@ -21,3 +21,4 @@ didkit==0.2.1
 datar==0.8.6
 pdtypes==0.0.4
 importlib-metadata==4.13.0
+django>=4.2.15 # not directly required, pinned by Snyk to avoid a vulnerability
