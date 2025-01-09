@@ -32,7 +32,7 @@ It's recommended you create a new user as using root is dangerous.
 
 You will be prompted to enter a password, and some personal data (this is optional).
 
-Sudo priviledges are required, to grant priviledges type:
+Sudo privileges are required, to grant privileges type:
 
 ```shell
 # usermod -aG sudo newuser
@@ -191,7 +191,7 @@ Add a new connection, use the droplet IP with port 5901. You'll be prompted for 
 
 ![screenshot5](https://github.com/gitcoinco/web/raw/master/docs/imgs/rr5.png)
 
-Inmediately after connecting you should see the desktop environment. There's no web browser installed, let's install Firefox:
+Immediately after connecting you should see the desktop environment. There's no web browser installed, let's install Firefox:
 
 ```shell
 $ sudo apt install firefox

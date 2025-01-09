@@ -67,7 +67,7 @@ for one signature. If you are donating DAI and ETH, it will ask for two signatur
 After those signatures are received, the transfers are executed so the funds are in your Gitcoin
 zkSync account. From there, all transfers of funds to grant owners are fired off in a rapid process
 that only takes a few  seconds. Any leftover funds in the Gitcoin zkSync account (typically due to
-our conservative estimates of what zkSync trasfer fees will be) are transferred back to your regular
+our conservative estimates of what zkSync transfer fees will be) are transferred back to your regular
 zkSync account so you can access them at https://wallet.zksync.io/.
 
 If you do not have enough funds in your zkSync account to complete checkout, the flow is as follows:
