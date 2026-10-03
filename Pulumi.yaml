@@ -1,0 +1,4 @@
+name: web
+runtime: nodejs
+description: A Pulumi program
+version: "3.95.0"
