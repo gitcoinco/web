@@ -1,0 +1,50 @@
+name: Infrastructure Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      skip_build:
+        description: 'Skip application build'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  update-infrastructure:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Update infrastructure only
+        run: |
+          if [ "${{ github.event.inputs.skip_build }}" = "true" ]; then
+            echo "Updating infrastructure without application build"
+            # Add infrastructure-only deployment commands here
+            # Example: terraform apply, cloudformation deploy, etc.
+          else
+            echo "Full deployment including application build"
+            npm run build
+            # Add full deployment commands here
+          fi
+          
+      - name: Deployment status
+        run: |
+          echo "Infrastructure update completed for environment: ${{ github.event.inputs.environment }}"
